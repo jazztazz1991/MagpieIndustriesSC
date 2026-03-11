@@ -1,0 +1,381 @@
+.groupsPage {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e0);
+}
+
+.createBtn {
+  padding: 0.5rem 1.25rem;
+  background: var(--accent, #3b82f6);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.createBtn:hover {
+  background: var(--accent-hover, #2563eb);
+}
+
+.groupList {
+  display: grid;
+  gap: 1rem;
+}
+
+.groupCard {
+  background: var(--surface, #1e1e2e);
+  border: 1px solid var(--border, #2e2e3e);
+  border-radius: 8px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.groupCard:hover {
+  border-color: var(--accent, #3b82f6);
+  box-shadow: 0 0 0 1px var(--accent, #3b82f6);
+}
+
+.groupCardName {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e0);
+  margin-bottom: 0.35rem;
+}
+
+.groupCardDesc {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #a0a0b0);
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.groupCardMeta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-tertiary, #808090);
+}
+
+.groupHeader {
+  margin-bottom: 2rem;
+}
+
+.groupHeaderName {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e0);
+  margin-bottom: 0.25rem;
+}
+
+.groupHeaderDesc {
+  font-size: 0.95rem;
+  color: var(--text-secondary, #a0a0b0);
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.ownerBadge {
+  font-size: 0.8rem;
+  color: var(--text-tertiary, #808090);
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e0);
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border, #2e2e3e);
+  padding-bottom: 0.5rem;
+}
+
+.memberList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.memberRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface, #1e1e2e);
+  border: 1px solid var(--border, #2e2e3e);
+  border-radius: 6px;
+}
+
+.memberInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.memberAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--border, #2e2e3e);
+  object-fit: cover;
+}
+
+.memberName {
+  font-weight: 500;
+  color: var(--text-primary, #e0e0e0);
+}
+
+.roleBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.roleBadgeLeader {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.roleBadgeOfficer {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.roleBadgeMember {
+  background: rgba(160, 160, 176, 0.1);
+  color: #a0a0b0;
+}
+
+.removeBtn {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.removeBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.createForm {
+  background: var(--surface, #1e1e2e);
+  border: 1px solid var(--border, #2e2e3e);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.createFormTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e0);
+  margin-bottom: 0.75rem;
+}
+
+.formGroup {
+  margin-bottom: 0.75rem;
+}
+
+.formGroup label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #a0a0b0);
+  margin-bottom: 0.25rem;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg, #121220);
+  border: 1px solid var(--border, #2e2e3e);
+  border-radius: 6px;
+  color: var(--text-primary, #e0e0e0);
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.formActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.formSubmit {
+  padding: 0.5rem 1rem;
+  background: var(--accent, #3b82f6);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.formSubmit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.formCancel {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--text-secondary, #a0a0b0);
+  border: 1px solid var(--border, #2e2e3e);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.addMemberForm {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.addMemberForm input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg, #121220);
+  border: 1px solid var(--border, #2e2e3e);
+  border-radius: 6px;
+  color: var(--text-primary, #e0e0e0);
+  font-size: 0.9rem;
+}
+
+.addMemberBtn {
+  padding: 0.5rem 1rem;
+  background: var(--accent, #3b82f6);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.addMemberBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dangerZone {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+}
+
+.dangerZoneTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ef4444;
+  margin-bottom: 0.75rem;
+}
+
+.dangerBtn {
+  padding: 0.5rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+  transition: background 0.2s;
+}
+
+.dangerBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.eventList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.eventCard {
+  background: var(--surface, #1e1e2e);
+  border: 1px solid var(--border, #2e2e3e);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+}
+
+.eventTitle {
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e0);
+  margin-bottom: 0.25rem;
+}
+
+.eventMeta {
+  font-size: 0.8rem;
+  color: var(--text-tertiary, #808090);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary, #a0a0b0);
+  font-size: 0.95rem;
+}
+
+.error {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary, #a0a0b0);
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--accent, #3b82f6);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}

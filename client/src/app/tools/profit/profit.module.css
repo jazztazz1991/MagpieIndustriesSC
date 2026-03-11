@@ -1,0 +1,68 @@
+.slider {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sliderRow input[type="range"] {
+  flex: 1;
+}
+
+.sliderValue {
+  min-width: 3rem;
+  text-align: right;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btnCompare {
+  padding: 0.6rem 1.25rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btnCompare:hover {
+  background: var(--accent-hover);
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable:hover {
+  color: var(--accent);
+}
+
+.sortArrow {
+  margin-left: 0.25rem;
+  font-size: 0.7rem;
+}
+
+.highlight {
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.comparisonSection {
+  margin-top: 1.5rem;
+}

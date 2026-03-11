@@ -1,0 +1,49 @@
+services:
+  # Express API Server
+  - type: web
+    name: magpie-api
+    runtime: node
+    plan: free
+    rootDir: .
+    buildCommand: |
+      npm install
+      npm run build --workspace=shared
+      cd server && npx prisma generate && npm run build
+    startCommand: node server/dist/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: magpie-db
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: CLIENT_URL
+        value: https://magpie-client.onrender.com
+      - key: PORT
+        value: 3001
+
+  # Next.js Client
+  - type: web
+    name: magpie-client
+    runtime: node
+    plan: free
+    rootDir: .
+    buildCommand: |
+      npm install
+      npm run build --workspace=shared
+      cd client && npm run build
+    startCommand: cd client && npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: https://magpie-api.onrender.com
+      - key: PORT
+        value: 3000
+
+databases:
+  - name: magpie-db
+    plan: free
+    databaseName: magpie_industries

@@ -1,0 +1,443 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String?
+  rsiHandle    String?
+  avatarUrl    String?
+  bio          String?
+  role         Role     @default(REGISTERED)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  accounts               Account[]
+  friendRequestsSent     Friendship[]  @relation("friendRequestsSent")
+  friendRequestsReceived Friendship[]  @relation("friendRequestsReceived")
+  ownedGroups            Group[]       @relation("ownedGroups")
+  groupMemberships       GroupMember[]
+  createdEvents          Event[]       @relation("createdEvents")
+  eventRSVPs             EventRSVP[]
+  activities             Activity[]
+  comments               Comment[]
+
+  // Org relations
+  ownedOrgs              Org[]                  @relation("ownedOrgs")
+  orgMemberships         OrgMember[]
+  fleetShips             FleetShip[]            @relation("fleetShips")
+  createdOperations      Operation[]            @relation("createdOperations")
+  treasuryTransactions   TreasuryTransaction[]  @relation("treasuryTransactions")
+  joinRequests           JoinRequest[]
+  authoredGuides         OrgGuide[]             @relation("authoredGuides")
+  authoredAnnouncements  OrgAnnouncement[]      @relation("authoredAnnouncements")
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  provider          String  // "discord" | "rsi"
+  providerAccountId String
+  accessToken       String?
+  refreshToken      String?
+  expiresAt         Int?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Friendship {
+  id          String       @id @default(cuid())
+  requesterId String
+  addresseeId String
+  status      FriendStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  requester User @relation("friendRequestsSent", fields: [requesterId], references: [id], onDelete: Cascade)
+  addressee User @relation("friendRequestsReceived", fields: [addresseeId], references: [id], onDelete: Cascade)
+
+  @@unique([requesterId, addresseeId])
+  @@map("friendships")
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  ownerId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner   User          @relation("ownedGroups", fields: [ownerId], references: [id], onDelete: Cascade)
+  members GroupMember[]
+  events  Event[]
+
+  @@map("groups")
+}
+
+model GroupMember {
+  id       String    @id @default(cuid())
+  groupId  String
+  userId   String
+  role     GroupRole  @default(MEMBER)
+  joinedAt DateTime  @default(now())
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId])
+  @@map("group_members")
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  groupId     String?
+  orgId       String?
+  creatorId   String
+  title       String
+  description String?
+  eventType   String    // "mining", "salvage", "combat", "trade", "social", "other"
+  startsAt    DateTime
+  endsAt      DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  group     Group?      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  org       Org?        @relation("orgEvents", fields: [orgId], references: [id], onDelete: Cascade)
+  creator   User        @relation("createdEvents", fields: [creatorId], references: [id], onDelete: Cascade)
+  attendees EventRSVP[]
+
+  @@map("events")
+}
+
+model EventRSVP {
+  id      String     @id @default(cuid())
+  eventId String
+  userId  String
+  status  RSVPStatus @default(GOING)
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@map("event_rsvps")
+}
+
+model Activity {
+  id        String   @id @default(cuid())
+  userId    String
+  orgId     String?
+  type      String   // "friend_added", "group_joined", "group_created", "event_created", "comment_posted", "org_*"
+  targetId  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  org  Org? @relation("orgActivities", fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([orgId, createdAt])
+  @@map("activities")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  userId    String
+  guidePath String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([guidePath, createdAt])
+  @@map("comments")
+}
+
+// --- Org Models ---
+
+model Org {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  spectrumId  String?   // RSI Spectrum org ID
+  logoUrl     String?
+  bannerUrl   String?
+  isPublic    Boolean   @default(true)
+  motd        String?   // Message of the day
+  ownerId     String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  owner            User                  @relation("ownedOrgs", fields: [ownerId], references: [id], onDelete: Cascade)
+  members          OrgMember[]
+  roles            OrgRole[]
+  fleetShips       FleetShip[]
+  operations       Operation[]
+  transactions     TreasuryTransaction[]
+  recruitmentPosts RecruitmentPost[]
+  orgEvents        Event[]               @relation("orgEvents")
+  joinRequests     JoinRequest[]
+  guides           OrgGuide[]
+  announcements    OrgAnnouncement[]
+  orgActivities    Activity[]             @relation("orgActivities")
+
+  @@map("orgs")
+}
+
+model OrgMember {
+  id       String   @id @default(cuid())
+  orgId    String
+  userId   String
+  roleId   String?
+  joinedAt DateTime @default(now())
+
+  org  Org      @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role OrgRole? @relation(fields: [roleId], references: [id], onDelete: SetNull)
+
+  crewAssignments CrewAssignment[]
+
+  @@unique([orgId, userId])
+  @@map("org_members")
+}
+
+model OrgRole {
+  id          String   @id @default(cuid())
+  orgId       String
+  name        String
+  rank        Int      @default(0) // higher = more authority
+  permissions Json     @default("[]") // string array of permission keys
+  createdAt   DateTime @default(now())
+
+  org     Org         @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  members OrgMember[]
+
+  @@unique([orgId, name])
+  @@map("org_roles")
+}
+
+model FleetShip {
+  id        String   @id @default(cuid())
+  orgId     String
+  ownerId   String   // the org member who owns this ship
+  shipId    String   // references static ship data key
+  shipName  String   // display name (e.g. "Aurora MR")
+  nickname  String?  // custom name the owner gave it
+  status    ShipStatus @default(ACTIVE)
+  createdAt DateTime @default(now())
+
+  org   Org  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  owner User @relation("fleetShips", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  operationShips OperationShip[]
+
+  @@map("fleet_ships")
+}
+
+model Operation {
+  id            String          @id @default(cuid())
+  orgId         String
+  creatorId     String
+  title         String
+  description   String?
+  operationType String          // "mining", "salvage", "cargo", "combat", "security", "mixed"
+  status        OperationStatus @default(PLANNING)
+  startsAt      DateTime?
+  endsAt        DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  org     Org  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  creator User @relation("createdOperations", fields: [creatorId], references: [id], onDelete: Cascade)
+
+  ships OperationShip[]
+
+  @@map("operations")
+}
+
+model OperationShip {
+  id          String @id @default(cuid())
+  operationId String
+  fleetShipId String
+
+  operation Operation @relation(fields: [operationId], references: [id], onDelete: Cascade)
+  fleetShip FleetShip @relation(fields: [fleetShipId], references: [id], onDelete: Cascade)
+
+  crewAssignments CrewAssignment[]
+
+  @@unique([operationId, fleetShipId])
+  @@map("operation_ships")
+}
+
+model CrewAssignment {
+  id              String @id @default(cuid())
+  operationShipId String
+  orgMemberId     String
+  position        String // "Captain", "Gunner", "Mining Lead", etc.
+  createdAt       DateTime @default(now())
+
+  operationShip OperationShip @relation(fields: [operationShipId], references: [id], onDelete: Cascade)
+  orgMember     OrgMember     @relation(fields: [orgMemberId], references: [id], onDelete: Cascade)
+
+  @@unique([operationShipId, orgMemberId])
+  @@map("crew_assignments")
+}
+
+model TreasuryTransaction {
+  id          String          @id @default(cuid())
+  orgId       String
+  userId      String          // who recorded the transaction
+  type        TransactionType
+  amount      Int             // in aUEC
+  description String?
+  createdAt   DateTime        @default(now())
+
+  org  Org  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user User @relation("treasuryTransactions", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([orgId, createdAt])
+  @@map("treasury_transactions")
+}
+
+model RecruitmentPost {
+  id          String   @id @default(cuid())
+  orgId       String
+  title       String
+  description String
+  requirements String?
+  isOpen      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  org Org @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("recruitment_posts")
+}
+
+model JoinRequest {
+  id        String            @id @default(cuid())
+  orgId     String
+  userId    String
+  message   String?
+  status    JoinRequestStatus @default(PENDING)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  org  Org  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, userId])
+  @@map("join_requests")
+}
+
+enum JoinRequestStatus {
+  PENDING
+  APPROVED
+  DENIED
+}
+
+enum Role {
+  VISITOR
+  REGISTERED
+  GROUP_MEMBER
+  ORG_MEMBER
+  ORG_LEADER
+  ADMIN
+}
+
+enum FriendStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum GroupRole {
+  MEMBER
+  OFFICER
+  LEADER
+}
+
+enum RSVPStatus {
+  GOING
+  MAYBE
+  NOT_GOING
+}
+
+enum ShipStatus {
+  ACTIVE
+  DESTROYED
+  LOANED
+  IN_REPAIR
+}
+
+enum OperationStatus {
+  PLANNING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+}
+
+enum GuideCategory {
+  RANKS
+  OPERATIONS
+  TREASURY
+  RULES
+  GENERAL
+}
+
+// --- Org Info Models ---
+
+model OrgGuide {
+  id        String        @id @default(cuid())
+  orgId     String
+  authorId  String
+  title     String
+  content   String        // Markdown content
+  category  GuideCategory @default(GENERAL)
+  sortOrder Int           @default(0)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  org    Org  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  author User @relation("authoredGuides", fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([orgId, category, sortOrder])
+  @@map("org_guides")
+}
+
+model OrgAnnouncement {
+  id        String   @id @default(cuid())
+  orgId     String
+  authorId  String
+  title     String
+  content   String
+  isPinned  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  org    Org  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  author User @relation("authoredAnnouncements", fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([orgId, createdAt])
+  @@map("org_announcements")
+}

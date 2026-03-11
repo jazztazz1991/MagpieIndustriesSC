@@ -1,0 +1,238 @@
+.recruitmentPage {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--accent, #4a9eff);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e8);
+}
+
+.createBtn {
+  padding: 0.5rem 1.25rem;
+  background: var(--accent, #4a9eff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+}
+
+.createBtn:hover {
+  opacity: 0.9;
+}
+
+.createForm {
+  background: var(--bg-tertiary, #1a1a2e);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.createFormTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e8);
+  margin-bottom: 0.75rem;
+}
+
+.formGroup {
+  margin-bottom: 0.75rem;
+}
+
+.formGroup label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #8888a0);
+  margin-bottom: 0.25rem;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 6px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.formActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.formSubmit {
+  padding: 0.5rem 1rem;
+  background: var(--accent, #4a9eff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.formSubmit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.formCancel {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--text-secondary, #8888a0);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.postList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.postCard {
+  background: var(--bg-tertiary, #1a1a2e);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.postHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.postTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e8);
+}
+
+.badgeOpen {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(74, 222, 128, 0.12);
+  color: var(--success, #4ade80);
+}
+
+.badgeClosed {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(136, 136, 160, 0.12);
+  color: var(--text-secondary, #8888a0);
+}
+
+.postDesc {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #8888a0);
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.postMeta {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+  margin-bottom: 0.75rem;
+}
+
+.postActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.toggleBtn {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  background: rgba(74, 158, 255, 0.1);
+  color: var(--accent, #4a9eff);
+  border: 1px solid rgba(74, 158, 255, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toggleBtn:hover {
+  background: rgba(74, 158, 255, 0.2);
+}
+
+.deleteBtn {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error, #ef4444);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.deleteBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary, #8888a0);
+  font-size: 0.95rem;
+}
+
+.error {
+  color: var(--error, #ef4444);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary, #8888a0);
+}

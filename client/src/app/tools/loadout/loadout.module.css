@@ -1,0 +1,107 @@
+.shipSelector {
+  margin-bottom: 1.5rem;
+}
+
+.slotsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.slotRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.slotLabel {
+  min-width: 140px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.slotSelect {
+  flex: 1;
+}
+
+.slotIndex {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  min-width: 20px;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.summaryItem {
+  padding: 1rem;
+  background: var(--bg-primary);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.summaryLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.summaryValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.summaryHighlight {
+  grid-column: 1 / -1;
+  background: rgba(74, 158, 255, 0.08);
+  border: 1px solid var(--accent);
+}
+
+.summaryHighlight .summaryValue {
+  color: var(--accent);
+}
+
+.componentInfo {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.15rem;
+}
+
+.layoutColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .layoutColumns {
+    grid-template-columns: 1fr;
+  }
+
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .slotRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .slotSelect {
+    width: 100%;
+  }
+}

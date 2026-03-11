@@ -1,0 +1,371 @@
+/* Tracker layout */
+.trackerGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .trackerGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Search and filter bar */
+.searchBar {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.searchInput {
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  outline: none;
+  flex: 1;
+  min-width: 180px;
+}
+
+.searchInput:focus {
+  border-color: var(--accent);
+}
+
+/* Category filter pills */
+.filterPills {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.pill {
+  padding: 0.35rem 0.75rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.pill:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.pillActive {
+  composes: pill;
+  border-color: var(--accent);
+  background: rgba(74, 158, 255, 0.12);
+  color: var(--accent);
+}
+
+/* Item grid */
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.65rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.itemName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemCategory {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+/* Quantity controls */
+.qtyControls {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.qtyBtn {
+  width: 28px;
+  height: 28px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s;
+}
+
+.qtyBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.qtyBtn:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.qtyBtn:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.qtyInput {
+  width: 48px;
+  height: 28px;
+  text-align: center;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-left: none;
+  border-right: none;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.qtyInput::-webkit-outer-spin-button,
+.qtyInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.qtyInput:focus {
+  border-color: var(--accent);
+}
+
+/* Goal selector */
+.goalSelect {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  outline: none;
+  margin-bottom: 1rem;
+}
+
+.goalSelect:focus {
+  border-color: var(--accent);
+}
+
+/* Progress items */
+.progressList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.progressItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.progressLabel {
+  color: var(--text-primary);
+}
+
+.progressCount {
+  color: var(--text-secondary);
+}
+
+.progressCountComplete {
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.progressBarTrack {
+  height: 8px;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progressBarFillComplete {
+  height: 100%;
+  background: #4ade80;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* Overall progress */
+.overallProgress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: var(--bg-primary);
+  border-radius: 8px;
+}
+
+.overallPercent {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 60px;
+}
+
+.overallPercentComplete {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #4ade80;
+  min-width: 60px;
+}
+
+.overallBarTrack {
+  flex: 1;
+  height: 10px;
+  background: var(--bg-secondary);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.overallBarFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.overallBarFillComplete {
+  height: 100%;
+  background: #4ade80;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+/* Favor display */
+.favorDisplay {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--bg-primary);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.favorCount {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.favorLabel {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Action buttons */
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.btnPrimary {
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: #000;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btnPrimary:hover {
+  background: var(--accent-hover);
+}
+
+.btnDanger {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #ef4444;
+  border-radius: 6px;
+  color: #ef4444;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btnDanger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Empty / no-selection states */
+.emptyState {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 2rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* Contract reward preview */
+.rewardPreview {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(74, 158, 255, 0.06);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.rewardLabel {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.rewardValue {
+  color: var(--accent);
+  font-weight: 600;
+}

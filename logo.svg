@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+  <defs>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0088cc;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="wing" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.9" />
+      <stop offset="50%" style="stop-color:#0099dd;stop-opacity:0.7" />
+      <stop offset="100%" style="stop-color:#004466;stop-opacity:0.3" />
+    </linearGradient>
+  </defs>
+
+  <!-- Magpie bird icon - stylized/geometric -->
+  <g transform="translate(15, 12)">
+    <!-- Body -->
+    <path d="M40,75 Q25,65 22,50 Q20,38 28,28 Q36,18 48,18 Q58,18 63,26 Q68,34 65,48 L58,72 Z"
+          fill="#e8e8e8" stroke="none"/>
+    <!-- Dark head/cap -->
+    <path d="M35,35 Q32,22 42,16 Q52,12 60,20 Q65,28 60,38 Q55,32 48,30 Q40,28 35,35 Z"
+          fill="#1a1a2e" stroke="none"/>
+    <!-- Eye -->
+    <circle cx="48" cy="26" r="3" fill="#00d4ff"/>
+    <circle cx="48" cy="26" r="1.2" fill="#0a0a1a"/>
+    <!-- Beak -->
+    <path d="M58,24 L70,22 L60,28 Z" fill="#667788"/>
+    <!-- Wing - swept back, sci-fi style -->
+    <path d="M30,42 Q18,38 5,50 Q-2,56 2,65 L22,58 Q28,52 30,42 Z"
+          fill="url(#wing)" stroke="none"/>
+    <!-- Tail feathers - angular/industrial -->
+    <path d="M38,72 L25,92 L32,90 L42,78 Z" fill="#1a1a2e"/>
+    <path d="M44,74 L35,95 L42,92 L48,78 Z" fill="#2a2a3e"/>
+    <!-- Chest highlight -->
+    <path d="M42,40 Q38,50 40,62 Q44,68 50,65 Q55,55 52,42 Q48,36 42,40 Z"
+          fill="#f0f0f0" opacity="0.6"/>
+  </g>
+
+  <!-- Text: MAGPIE -->
+  <text x="95" y="55" font-family="'Segoe UI', Arial, sans-serif" font-weight="700"
+        font-size="36" letter-spacing="4" fill="#e8e8e8">MAGPIE</text>
+
+  <!-- Text: INDUSTRIES -->
+  <text x="95" y="82" font-family="'Segoe UI', Arial, sans-serif" font-weight="300"
+        font-size="20" letter-spacing="8" fill="url(#accent)">INDUSTRIES</text>
+
+  <!-- Subtle tagline line -->
+  <line x1="95" y1="90" x2="340" y2="90" stroke="#00d4ff" stroke-width="0.5" opacity="0.4"/>
+
+  <!-- SC badge -->
+  <text x="95" y="106" font-family="'Segoe UI', Arial, sans-serif" font-weight="300"
+        font-size="10" letter-spacing="3" fill="#667788">STAR CITIZEN COMPANION</text>
+</svg>

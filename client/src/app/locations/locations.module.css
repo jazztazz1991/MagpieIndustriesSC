@@ -1,0 +1,39 @@
+/* Location-specific styles (supplements guides.module.css) */
+
+.typeTag {
+  margin-left: 0.5rem;
+}
+
+.featureList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.featureBadge {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.4rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.emptyMessage {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 3rem;
+}

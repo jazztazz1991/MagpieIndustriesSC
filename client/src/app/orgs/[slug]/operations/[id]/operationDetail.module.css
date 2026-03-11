@@ -1,0 +1,377 @@
+.detailPage {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--accent, #4a9eff);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+.detailHeader {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border, #1e1e2e);
+}
+
+.detailTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.detailTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e8);
+}
+
+/* Badges (type + status) */
+.typeBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.typeMining {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--warning, #f59e0b);
+}
+
+.typeSalvage {
+  background: rgba(168, 162, 158, 0.15);
+  color: #a8a29e;
+}
+
+.typeCargo {
+  background: rgba(74, 222, 128, 0.15);
+  color: var(--success, #4ade80);
+}
+
+.typeCombat {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--error, #ef4444);
+}
+
+.typeSecurity {
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
+}
+
+.typeMixed {
+  background: rgba(74, 158, 255, 0.15);
+  color: var(--accent, #4a9eff);
+}
+
+.statusBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statusPlanning {
+  background: rgba(74, 158, 255, 0.15);
+  color: var(--accent, #4a9eff);
+}
+
+.statusActive {
+  background: rgba(74, 222, 128, 0.15);
+  color: var(--success, #4ade80);
+}
+
+.statusCompleted {
+  background: rgba(160, 160, 176, 0.15);
+  color: #a0a0b0;
+}
+
+.statusCancelled {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--error, #ef4444);
+}
+
+.detailMeta {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #8888a0);
+  flex-wrap: wrap;
+}
+
+.detailDescription {
+  font-size: 0.95rem;
+  color: var(--text-secondary, #8888a0);
+  line-height: 1.5;
+  margin-top: 0.75rem;
+}
+
+/* Status Controls */
+.statusControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.statusControls label {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #8888a0);
+  font-weight: 600;
+}
+
+.statusControls select {
+  padding: 0.4rem 0.6rem;
+  background: var(--bg-primary, #0a0a0f);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 6px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+
+.statusUpdateBtn {
+  padding: 0.4rem 0.8rem;
+  background: var(--accent, #4a9eff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.statusUpdateBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Section */
+.section {
+  margin-bottom: 2rem;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border, #1e1e2e);
+  padding-bottom: 0.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e8);
+}
+
+/* Add Ship to Operation */
+.addShipRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.addShipRow select {
+  flex: 1;
+  padding: 0.45rem 0.6rem;
+  background: var(--bg-primary, #0a0a0f);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 6px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+
+.addBtn {
+  padding: 0.4rem 0.8rem;
+  background: var(--accent, #4a9eff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.addBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Ship Cards within Operation */
+.shipCard {
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.shipCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.shipCardName {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e8);
+}
+
+.removeShipBtn {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.7rem;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error, #ef4444);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.removeShipBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+/* Crew Roster */
+.crewList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.crewRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35rem 0.6rem;
+  background: var(--bg-tertiary, #1a1a2e);
+  border-radius: 4px;
+}
+
+.crewInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.crewName {
+  font-size: 0.9rem;
+  color: var(--text-primary, #e0e0e8);
+  font-weight: 500;
+}
+
+.crewPosition {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #8888a0);
+  background: rgba(74, 158, 255, 0.1);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
+.removeCrewBtn {
+  padding: 0.15rem 0.4rem;
+  font-size: 0.7rem;
+  background: transparent;
+  color: var(--error, #ef4444);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.removeCrewBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Assign Crew Form */
+.assignCrewForm {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.assignCrewForm select {
+  padding: 0.35rem 0.5rem;
+  background: var(--bg-primary, #0a0a0f);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 4px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+
+.assignBtn {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  background: rgba(74, 222, 128, 0.15);
+  color: var(--success, #4ade80);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.assignBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggleAssignBtn {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  background: rgba(74, 158, 255, 0.1);
+  color: var(--accent, #4a9eff);
+  border: 1px solid rgba(74, 158, 255, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Empty / Loading / Error */
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary, #8888a0);
+  font-size: 0.95rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary, #8888a0);
+}
+
+.error {
+  color: var(--error, #ef4444);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.emptyCrewNote {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+  padding: 0.35rem 0.6rem;
+  font-style: italic;
+}

@@ -1,0 +1,276 @@
+.fleetPage {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e8);
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--accent, #4a9eff);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+/* Add Ship Form */
+.addForm {
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.addFormTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e8);
+  margin-bottom: 0.75rem;
+}
+
+.formRow {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 160px;
+}
+
+.formGroup label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #8888a0);
+  margin-bottom: 0.25rem;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-primary, #0a0a0f);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 6px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.formSubmit {
+  padding: 0.5rem 1.25rem;
+  background: var(--accent, #4a9eff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  align-self: flex-end;
+  white-space: nowrap;
+}
+
+.formSubmit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.formSubmit:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+/* Fleet Table */
+.fleetGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.shipRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 6px;
+  gap: 1rem;
+}
+
+.shipInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.shipName {
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e8);
+  white-space: nowrap;
+}
+
+.shipNickname {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #8888a0);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shipOwner {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+  white-space: nowrap;
+}
+
+/* Status Badges */
+.statusBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.statusActive {
+  background: rgba(74, 222, 128, 0.15);
+  color: var(--success, #4ade80);
+}
+
+.statusDestroyed {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--error, #ef4444);
+}
+
+.statusLoaned {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--warning, #f59e0b);
+}
+
+.statusInRepair {
+  background: rgba(251, 146, 60, 0.15);
+  color: #fb923c;
+}
+
+/* Ship Actions */
+.shipActions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.editBtn {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  background: rgba(74, 158, 255, 0.1);
+  color: var(--accent, #4a9eff);
+  border: 1px solid rgba(74, 158, 255, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.editBtn:hover {
+  background: rgba(74, 158, 255, 0.2);
+}
+
+.removeBtn {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error, #ef4444);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.removeBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+/* Edit Modal / Inline Edit */
+.editForm {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.editForm input,
+.editForm select {
+  padding: 0.35rem 0.6rem;
+  background: var(--bg-primary, #0a0a0f);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 4px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+
+.saveBtn {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  background: rgba(74, 222, 128, 0.15);
+  color: var(--success, #4ade80);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  background: transparent;
+  color: var(--text-secondary, #8888a0);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Empty / Loading / Error */
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary, #8888a0);
+  font-size: 0.95rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary, #8888a0);
+}
+
+.error {
+  color: var(--error, #ef4444);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}

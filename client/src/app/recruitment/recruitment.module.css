@@ -1,0 +1,167 @@
+.boardPage {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e8);
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary, #8888a0);
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+}
+
+.searchBar {
+  margin-bottom: 1.5rem;
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.6rem 0.9rem;
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 6px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.searchInput::placeholder {
+  color: var(--text-secondary, #8888a0);
+}
+
+.postGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.postCard {
+  background: var(--bg-tertiary, #1a1a2e);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 8px;
+  padding: 1.25rem;
+  transition: border-color 0.2s;
+}
+
+.postCard:hover {
+  border-color: var(--accent, #4a9eff);
+}
+
+.orgInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.orgLogo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--bg-secondary, #12121a);
+}
+
+.orgLogoPlaceholder {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent, #4a9eff);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.orgName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent, #4a9eff);
+}
+
+.postTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e8);
+  margin-bottom: 0.5rem;
+}
+
+.postDesc {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #8888a0);
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+
+.requirements {
+  font-size: 0.825rem;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-secondary, #12121a);
+  border-radius: 4px;
+  line-height: 1.4;
+}
+
+.requirementsLabel {
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e8);
+  margin-right: 0.35rem;
+}
+
+.requirementsText {
+  color: var(--text-secondary, #8888a0);
+}
+
+.postFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border, #1e1e2e);
+}
+
+.postDate {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+}
+
+.viewOrgLink {
+  font-size: 0.85rem;
+  color: var(--accent, #4a9eff);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.viewOrgLink:hover {
+  text-decoration: underline;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary, #8888a0);
+  font-size: 0.95rem;
+}
+
+.error {
+  color: var(--error, #ef4444);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary, #8888a0);
+}
