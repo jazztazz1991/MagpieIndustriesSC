@@ -20,6 +20,7 @@ export default function Navbar() {
 
         <div className={styles.links}>
           <Link href="/tools/mining">Mining</Link>
+          <Link href="/tools/mining-locations">Where to Mine</Link>
           <Link href="/tools/salvage">Salvage</Link>
           <Link href="/tools/refinery">Refinery</Link>
           <Link href="/tools/trade">Trade</Link>
@@ -32,6 +33,9 @@ export default function Navbar() {
           <Link href="/community/friends">Community</Link>
           <Link href="/orgs">Orgs</Link>
           <Link href="/recruitment">Recruit</Link>
+          <Link href="/suggestions">Suggest</Link>
+          <Link href="/reports">Reports</Link>
+          {user?.isAdmin && <Link href="/admin">Admin</Link>}
         </div>
 
         <button
@@ -88,6 +92,7 @@ export default function Navbar() {
       {menuOpen && (
         <div className={`${styles.mobileMenu} ${styles.mobileMenuOpen}`}>
           <Link href="/tools/mining" onClick={closeMenu}>Mining</Link>
+          <Link href="/tools/mining-locations" onClick={closeMenu}>Where to Mine</Link>
           <Link href="/tools/salvage" onClick={closeMenu}>Salvage</Link>
           <Link href="/tools/refinery" onClick={closeMenu}>Refinery</Link>
           <Link href="/tools/trade" onClick={closeMenu}>Trade</Link>
@@ -100,6 +105,9 @@ export default function Navbar() {
           <Link href="/community/friends" onClick={closeMenu}>Community</Link>
           <Link href="/orgs" onClick={closeMenu}>Orgs</Link>
           <Link href="/recruitment" onClick={closeMenu}>Recruit</Link>
+          <Link href="/suggestions" onClick={closeMenu}>Suggest</Link>
+          <Link href="/reports" onClick={closeMenu}>Reports</Link>
+          {user?.isAdmin && <Link href="/admin" onClick={closeMenu}>Admin</Link>}
 
           <div className={styles.mobileAuth}>
             {user ? (

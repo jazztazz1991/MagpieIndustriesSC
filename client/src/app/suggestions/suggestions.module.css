@@ -1,0 +1,204 @@
+.suggestionsPage {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e8);
+}
+
+.newBtn {
+  padding: 0.5rem 1rem;
+  background: var(--accent, #4a9eff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.sortBtn {
+  padding: 0.4rem 0.75rem;
+  border-radius: 4px;
+  border: 1px solid var(--border, #1e1e2e);
+  background: var(--bg-secondary, #12121a);
+  color: var(--text-secondary, #8888a0);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.sortBtnActive {
+  border-color: var(--accent, #4a9eff);
+  color: var(--accent, #4a9eff);
+}
+
+.createForm {
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.formGroup label {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+  font-weight: 600;
+}
+
+.formGroup input,
+.formGroup textarea {
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-primary, #0a0a12);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 6px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.9rem;
+}
+
+.formGroup textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.submitBtn {
+  padding: 0.5rem 1.25rem;
+  background: var(--accent, #4a9eff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.suggestionList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.suggestionCard {
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.voteBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 50px;
+}
+
+.voteBtn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary, #8888a0);
+  line-height: 1;
+}
+
+.voteBtn:hover,
+.voteBtnActive {
+  color: var(--accent, #4a9eff);
+}
+
+.voteCount {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e8);
+}
+
+.suggestionContent {
+  flex: 1;
+}
+
+.suggestionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.suggestionTitle {
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e8);
+}
+
+.statusBadge {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.statusPending { background: #1e3a5f; color: #4a9eff; }
+.statusUnderReview { background: #3a3a1e; color: #e0c050; }
+.statusPlanned { background: #1e3a2e; color: #50c070; }
+.statusDeclined { background: #3a1e1e; color: #e05050; }
+
+.suggestionMeta {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+  margin-bottom: 0.5rem;
+}
+
+.suggestionDesc {
+  font-size: 0.85rem;
+  color: var(--text-primary, #e0e0e8);
+}
+
+.adminNotesBox {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: var(--bg-primary, #0a0a12);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+}
+
+.emptyState {
+  text-align: center;
+  color: var(--text-secondary, #8888a0);
+  padding: 2rem;
+}
+
+.loading {
+  text-align: center;
+  color: var(--text-secondary, #8888a0);
+  padding: 4rem;
+}
+
+.error {
+  color: #e05050;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}

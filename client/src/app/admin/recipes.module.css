@@ -1,0 +1,320 @@
+.recipesPage {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--accent, #4a9eff);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e8);
+}
+
+.newBtn {
+  padding: 0.5rem 1rem;
+  background: var(--accent, #4a9eff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.filterBar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.selectSmall {
+  padding: 0.4rem 0.6rem;
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 4px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.85rem;
+}
+
+/* Form */
+.createForm {
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.formTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e8);
+  margin-bottom: 0.75rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.formGridFull {
+  grid-column: 1 / -1;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.formGroup label {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+  font-weight: 600;
+}
+
+.formGroup input,
+.formGroup textarea,
+.formGroup select {
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-primary, #0a0a12);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 6px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.9rem;
+}
+
+.formGroup textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+/* Ingredients / Objectives / Rewards */
+.listSection {
+  margin-top: 0.75rem;
+}
+
+.listSectionTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary, #8888a0);
+  margin-bottom: 0.5rem;
+}
+
+.listRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.listRow input {
+  padding: 0.35rem 0.5rem;
+  background: var(--bg-primary, #0a0a12);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 4px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.85rem;
+}
+
+.listRow input:first-child {
+  flex: 1;
+}
+
+.listRow input[type="number"] {
+  width: 60px;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  color: #e05050;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.addBtn {
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  border: 1px dashed var(--border, #1e1e2e);
+  background: none;
+  color: var(--text-secondary, #8888a0);
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.addBtn:hover {
+  border-color: var(--accent, #4a9eff);
+  color: var(--accent, #4a9eff);
+}
+
+.formActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.submitBtn {
+  padding: 0.5rem 1.25rem;
+  background: var(--accent, #4a9eff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.cancelBtn {
+  padding: 0.5rem 1.25rem;
+  background: var(--bg-primary, #0a0a12);
+  color: var(--text-secondary, #8888a0);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Cards */
+.recipeList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.recipeCard {
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.recipeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.recipeName {
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 1rem;
+}
+
+.categoryBadge {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  background: var(--border, #1e1e2e);
+  color: var(--text-secondary, #8888a0);
+  text-transform: uppercase;
+}
+
+.difficultyBadge {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+}
+
+.diffEasy { background: #1e3a2e; color: #50c070; }
+.diffMedium { background: #3a3a1e; color: #e0c050; }
+.diffHard { background: #3a2a1e; color: #e08050; }
+.diffExpert { background: #3a1e1e; color: #e05050; }
+
+.recipeMeta {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+  margin-bottom: 0.5rem;
+}
+
+.recipeDesc {
+  font-size: 0.85rem;
+  color: var(--text-primary, #e0e0e8);
+  margin-bottom: 0.5rem;
+}
+
+.ingredientList,
+.objectiveList,
+.rewardList {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+  padding-left: 1rem;
+  margin: 0;
+}
+
+.ingredientList li,
+.objectiveList li,
+.rewardList li {
+  margin-bottom: 0.2rem;
+}
+
+.cardActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.editBtn {
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid var(--border, #1e1e2e);
+  background: var(--bg-primary, #0a0a12);
+  color: var(--text-primary, #e0e0e8);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.deleteBtn {
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid #3a1e1e;
+  background: none;
+  color: #e05050;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.emptyState {
+  text-align: center;
+  color: var(--text-secondary, #8888a0);
+  padding: 2rem;
+}
+
+.loading {
+  text-align: center;
+  color: var(--text-secondary, #8888a0);
+  padding: 4rem;
+}
+
+.error {
+  color: #e05050;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.denied {
+  text-align: center;
+  color: var(--text-secondary, #8888a0);
+  padding: 4rem 1rem;
+}

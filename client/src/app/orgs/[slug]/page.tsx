@@ -65,16 +65,26 @@ interface OrgActivity {
   user: { id: string; username: string };
 }
 
-type TabKey = "overview" | "members" | "guides" | "events" | "fleet" | "operations" | "recruitment";
+type TabKey = "overview" | "members";
 
-const TABS: { key: TabKey; label: string }[] = [
+interface TabDef {
+  key: string;
+  label: string;
+  href?: string;
+}
+
+const INLINE_TABS: TabDef[] = [
   { key: "overview", label: "Overview" },
   { key: "members", label: "Members" },
-  { key: "guides", label: "Guides" },
-  { key: "events", label: "Events" },
-  { key: "fleet", label: "Fleet" },
-  { key: "operations", label: "Operations" },
-  { key: "recruitment", label: "Recruitment" },
+];
+
+const NAV_TABS: TabDef[] = [
+  { key: "guides", label: "Guides", href: "guides" },
+  { key: "fleet", label: "Fleet", href: "fleet" },
+  { key: "operations", label: "Operations", href: "operations" },
+  { key: "treasury", label: "Treasury", href: "treasury" },
+  { key: "calendar", label: "Calendar", href: "calendar" },
+  { key: "recruitment", label: "Recruitment", href: "recruitment" },
 ];
 
 export default function OrgDetailPage({
@@ -321,14 +331,23 @@ export default function OrgDetailPage({
 
       {/* Tabs */}
       <div className={styles.tabs}>
-        {TABS.map((tab) => (
+        {INLINE_TABS.map((tab) => (
           <button
             key={tab.key}
             className={`${styles.tab} ${activeTab === tab.key ? styles.tabActive : ""}`}
-            onClick={() => setActiveTab(tab.key)}
+            onClick={() => setActiveTab(tab.key as TabKey)}
           >
             {tab.label}
           </button>
+        ))}
+        {isMember && NAV_TABS.map((tab) => (
+          <Link
+            key={tab.key}
+            href={`/orgs/${org.slug}/${tab.href}`}
+            className={styles.tab}
+          >
+            {tab.label}
+          </Link>
         ))}
       </div>
 
@@ -462,57 +481,6 @@ export default function OrgDetailPage({
           </div>
         )}
 
-        {activeTab === "guides" && (
-          <div className={styles.placeholderTab}>
-            <Link href={`/orgs/${org.slug}/guides`} className={styles.dashboardBtn}>
-              View Guides
-            </Link>
-            <div className={styles.emptyState}>
-              Browse organization guides, rules, and documentation.
-            </div>
-          </div>
-        )}
-
-        {activeTab === "events" && (
-          <div className={styles.placeholderTab}>
-            <div className={styles.emptyState}>
-              Organization events will appear here.
-            </div>
-          </div>
-        )}
-
-        {activeTab === "fleet" && (
-          <div className={styles.placeholderTab}>
-            <Link href={`/orgs/${org.slug}/fleet`} className={styles.dashboardBtn}>
-              View Fleet
-            </Link>
-            <div className={styles.emptyState}>
-              Manage your organization&apos;s ships and fleet.
-            </div>
-          </div>
-        )}
-
-        {activeTab === "operations" && (
-          <div className={styles.placeholderTab}>
-            <Link href={`/orgs/${org.slug}/operations`} className={styles.dashboardBtn}>
-              View Operations
-            </Link>
-            <div className={styles.emptyState}>
-              View and manage organization operations.
-            </div>
-          </div>
-        )}
-
-        {activeTab === "recruitment" && (
-          <div className={styles.placeholderTab}>
-            <Link href={`/orgs/${org.slug}/recruitment`} className={styles.dashboardBtn}>
-              View Recruitment
-            </Link>
-            <div className={styles.emptyState}>
-              Browse and manage recruitment posts.
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Transfer Ownership Modal */}

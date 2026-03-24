@@ -1,0 +1,273 @@
+.adminPage {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e8);
+  margin-bottom: 1.5rem;
+}
+
+.denied {
+  text-align: center;
+  color: var(--text-secondary, #8888a0);
+  padding: 4rem 1rem;
+  font-size: 1.1rem;
+}
+
+/* Stats */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.statValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--accent, #4a9eff);
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+  margin-top: 0.25rem;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--border, #1e1e2e);
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  padding: 0.5rem 1rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary, #8888a0);
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab:hover {
+  color: var(--text-primary, #e0e0e8);
+}
+
+.tabActive {
+  color: var(--accent, #4a9eff);
+  border-bottom-color: var(--accent, #4a9eff);
+}
+
+/* User Table */
+.searchBar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 6px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.9rem;
+}
+
+.userTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.userTable th,
+.userTable td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border, #1e1e2e);
+  font-size: 0.85rem;
+}
+
+.userTable th {
+  color: var(--text-secondary, #8888a0);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.userTable td {
+  color: var(--text-primary, #e0e0e8);
+}
+
+.adminBadge {
+  background: var(--accent, #4a9eff);
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.toggleBtn {
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid var(--border, #1e1e2e);
+  background: var(--bg-secondary, #12121a);
+  color: var(--text-primary, #e0e0e8);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.toggleBtn:hover {
+  border-color: var(--accent, #4a9eff);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.pageBtn {
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+  border: 1px solid var(--border, #1e1e2e);
+  background: var(--bg-secondary, #12121a);
+  color: var(--text-primary, #e0e0e8);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Report / Suggestion queue */
+.queueList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.queueCard {
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.queueHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.queueTitle {
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e8);
+}
+
+.statusBadge {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.statusOpen { background: #1e3a5f; color: #4a9eff; }
+.statusInProgress { background: #3a3a1e; color: #e0c050; }
+.statusResolved { background: #1e3a2e; color: #50c070; }
+.statusClosed { background: #2a2a2a; color: #888; }
+.statusPending { background: #1e3a5f; color: #4a9eff; }
+.statusUnderReview { background: #3a3a1e; color: #e0c050; }
+.statusPlanned { background: #1e3a2e; color: #50c070; }
+.statusDeclined { background: #3a1e1e; color: #e05050; }
+
+.queueMeta {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+  margin-bottom: 0.5rem;
+}
+
+.queueDesc {
+  font-size: 0.85rem;
+  color: var(--text-primary, #e0e0e8);
+  margin-bottom: 0.75rem;
+}
+
+.queueActions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.selectSmall {
+  padding: 0.3rem 0.5rem;
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 4px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.8rem;
+}
+
+.inputSmall {
+  padding: 0.3rem 0.5rem;
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 4px;
+  color: var(--text-primary, #e0e0e8);
+  font-size: 0.8rem;
+  flex: 1;
+  min-width: 150px;
+}
+
+.saveBtn {
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+  border: none;
+  background: var(--accent, #4a9eff);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.emptyState {
+  text-align: center;
+  color: var(--text-secondary, #8888a0);
+  padding: 2rem;
+}
+
+.loading {
+  text-align: center;
+  color: var(--text-secondary, #8888a0);
+  padding: 4rem;
+}
+
+.filterBar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}

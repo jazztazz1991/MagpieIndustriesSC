@@ -4,15 +4,17 @@ import type { Ore } from "@/data/mining";
 
 const quantanium: Ore = {
   name: "Quantanium",
+  abbrev: "QUAN",
   type: "rock",
   valuePerSCU: 88000,
-  instability: 0.95,
-  resistance: 0.6,
+  instability: 850,
+  resistance: 60,
   description: "Test ore",
 };
 
 const inert: Ore = {
   name: "Inert Material",
+  abbrev: "INER",
   type: "rock",
   valuePerSCU: 0,
   instability: 0,

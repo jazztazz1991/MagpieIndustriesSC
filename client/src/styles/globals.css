@@ -1,3 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #0a0a0f;
+  --color-bg-secondary: #12121a;
+  --color-text-primary: #e0e0e8;
+  --color-text-secondary: #8888a0;
+  --color-accent: #4a9eff;
+  --color-accent-hover: #6db3ff;
+  --color-border: #1e1e2e;
+}
+
+/* Legacy CSS variable support — existing .module.css files still reference these */
 :root {
   --bg-primary: #0a0a0f;
   --bg-secondary: #12121a;

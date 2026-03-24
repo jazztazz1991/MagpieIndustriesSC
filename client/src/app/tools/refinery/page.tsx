@@ -1,77 +1,144 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ores, Ore } from "@/data/mining";
-import { refineryMethods } from "@/data/refinery";
+import type { Ore } from "@/data/mining";
+import { useGameData } from "@/hooks/useGameData";
 import { calculateRefineryOutput } from "@/domain/refinery";
 import styles from "../tools.module.css";
 
-export default function RefineryOptimizer() {
-  const valuableOres = ores.filter((o) => o.valuePerSCU > 0);
-  const [selectedOre, setSelectedOre] = useState<Ore>(valuableOres[0]);
-  const [inputSCU, setInputSCU] = useState(32);
+interface OreEntry {
+  ore: Ore;
+  scu: number;
+}
 
+export default function RefineryOptimizer() {
+  const { data: gameData, loading: gameDataLoading } = useGameData();
+  const { ores, refineryMethods } = gameData;
+
+  const valuableOres = useMemo(() => ores.filter((o) => o.valuePerSCU > 0), [ores]);
+
+  const [batch, setBatch] = useState<OreEntry[]>([]);
+  // Initialize batch when ores load
+  const initBatch = batch.length === 0 && valuableOres.length > 0;
+  if (initBatch) {
+    setBatch([{ ore: valuableOres[0], scu: 32 }]);
+  }
+
+  const addOre = () => {
+    const unused = valuableOres.find(
+      (o) => !batch.some((b) => b.ore.name === o.name)
+    );
+    if (unused) setBatch([...batch, { ore: unused, scu: 8 }]);
+  };
+
+  const removeOre = (index: number) => {
+    setBatch(batch.filter((_, i) => i !== index));
+  };
+
+  const updateOre = (index: number, oreName: string) => {
+    const ore = valuableOres.find((o) => o.name === oreName)!;
+    const updated = [...batch];
+    updated[index] = { ...updated[index], ore };
+    setBatch(updated);
+  };
+
+  const updateSCU = (index: number, scu: number) => {
+    const updated = [...batch];
+    updated[index] = { ...updated[index], scu };
+    setBatch(updated);
+  };
+
+  // Calculate totals per method across all ores in the batch
   const comparisons = useMemo(
     () =>
-      refineryMethods.map((method) => ({
-        method,
-        result: calculateRefineryOutput(
-          inputSCU,
-          selectedOre.valuePerSCU,
-          method
-        ),
-      })),
-    [inputSCU, selectedOre]
+      refineryMethods.map((method) => {
+        const perOre = batch.map((entry) => ({
+          ore: entry.ore.name,
+          scu: entry.scu,
+          result: calculateRefineryOutput(entry.scu, entry.ore.valuePerSCU, method),
+        }));
+
+        const totalOutputSCU = perOre.reduce((s, p) => s + p.result.outputSCU, 0);
+        const totalGross = perOre.reduce((s, p) => s + p.result.grossValue, 0);
+        const totalCost = perOre.reduce((s, p) => s + p.result.processingCost, 0);
+        const totalProfit = totalGross - totalCost;
+        const maxTime = Math.max(...perOre.map((p) => p.result.timeMinutes));
+        const profitPerMinute = maxTime > 0 ? Math.round(totalProfit / maxTime) : 0;
+
+        return { method, perOre, totalOutputSCU, totalGross, totalCost, totalProfit, maxTime, profitPerMinute };
+      }),
+    [batch, refineryMethods]
   );
 
-  const bestProfit = Math.max(...comparisons.map((c) => c.result.netProfit));
-  const bestEfficiency = Math.max(
-    ...comparisons.map((c) => c.result.profitPerMinute)
-  );
+  const bestProfit = Math.max(...comparisons.map((c) => c.totalProfit));
+  const bestEfficiency = Math.max(...comparisons.map((c) => c.profitPerMinute));
+  const totalInputSCU = batch.reduce((s, b) => s + b.scu, 0);
+
+  if (gameDataLoading) {
+    return (
+      <div className={styles.page}>
+        <h1 className={styles.title}>Refinery Optimizer</h1>
+        <p className={styles.subtitle}>Loading game data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>
       <h1 className={styles.title}>Refinery Optimizer</h1>
       <p className={styles.subtitle}>
-        Compare refinery methods by yield, time, and profit.
+        Compare refinery methods by yield, time, and profit. Add multiple ores for batch processing.
       </p>
 
+      {/* Batch Input */}
       <div className={styles.panel}>
-        <h2 className={styles.panelTitle}>Input</h2>
-        <div className={styles.inputRow}>
-          <label className={styles.field}>
-            <span>Ore Type</span>
-            <select
-              value={selectedOre.name}
-              onChange={(e) =>
-                setSelectedOre(
-                  valuableOres.find((o) => o.name === e.target.value)!
-                )
-              }
-              className={styles.select}
-              aria-label="Select ore type"
-            >
-              {valuableOres.map((o) => (
-                <option key={o.name} value={o.name}>
-                  {o.name} — {o.valuePerSCU.toLocaleString()} aUEC/SCU
-                </option>
-              ))}
-            </select>
-          </label>
-          <label htmlFor="input-scu" className={styles.field}>
-            <span>Input SCU</span>
-            <input
-              id="input-scu"
-              type="number"
-              value={inputSCU}
-              onChange={(e) => setInputSCU(Number(e.target.value))}
-              min={1}
-              className={styles.input}
-            />
-          </label>
+        <h2 className={styles.panelTitle}>Ore Batch</h2>
+
+        <div className={styles.compositionList}>
+          {batch.map((entry, i) => (
+            <div key={i} className={styles.compositionRow}>
+              <select
+                value={entry.ore.name}
+                onChange={(e) => updateOre(i, e.target.value)}
+                className={styles.select}
+                aria-label={`Select ore ${i + 1}`}
+              >
+                {valuableOres.map((o) => (
+                  <option key={o.name} value={o.name}>
+                    {o.name} — {o.valuePerSCU.toLocaleString()} aUEC/SCU
+                  </option>
+                ))}
+              </select>
+              <input
+                type="number"
+                value={entry.scu}
+                onChange={(e) => updateSCU(i, Number(e.target.value))}
+                min={0.1}
+                step={0.1}
+                className={styles.pctInput}
+                aria-label={`SCU for ${entry.ore.name}`}
+              />
+              <span className={styles.pctLabel}>SCU</span>
+              <button
+                onClick={() => removeOre(i)}
+                className={styles.removeBtn}
+                aria-label={`Remove ${entry.ore.name}`}
+              >
+                &times;
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div className={styles.compositionFooter}>
+          <button onClick={addOre} className={styles.addBtn} aria-label="Add ore to batch">
+            + Add Ore
+          </button>
+          <span className={styles.budget}>Total: {totalInputSCU.toFixed(1)} SCU</span>
         </div>
       </div>
 
+      {/* Method Comparison */}
       <div className={styles.panel}>
         <h2 className={styles.panelTitle}>Method Comparison</h2>
 
@@ -90,33 +157,25 @@ export default function RefineryOptimizer() {
               </tr>
             </thead>
             <tbody>
-              {comparisons.map(({ method, result }) => (
+              {comparisons.map(({ method, totalOutputSCU, totalGross, totalCost, totalProfit, maxTime, profitPerMinute }) => (
                 <tr key={method.name}>
                   <td>
                     <strong>{method.name}</strong>
                   </td>
                   <td>{(method.yieldMultiplier * 100).toFixed(0)}%</td>
-                  <td>{result.outputSCU}</td>
-                  <td>{result.grossValue.toLocaleString()}</td>
-                  <td>{result.processingCost.toLocaleString()}</td>
+                  <td>{totalOutputSCU.toFixed(2)}</td>
+                  <td>{totalGross.toLocaleString()}</td>
+                  <td>{totalCost.toLocaleString()}</td>
                   <td
-                    className={
-                      result.netProfit === bestProfit
-                        ? styles.bestValue
-                        : undefined
-                    }
+                    className={totalProfit === bestProfit ? styles.bestValue : undefined}
                   >
-                    {result.netProfit.toLocaleString()}
+                    {totalProfit.toLocaleString()}
                   </td>
-                  <td>{result.timeMinutes} min</td>
+                  <td>{maxTime} min</td>
                   <td
-                    className={
-                      result.profitPerMinute === bestEfficiency
-                        ? styles.bestValue
-                        : undefined
-                    }
+                    className={profitPerMinute === bestEfficiency ? styles.bestValue : undefined}
                   >
-                    {result.profitPerMinute.toLocaleString()}
+                    {profitPerMinute.toLocaleString()}
                   </td>
                 </tr>
               ))}
@@ -125,6 +184,65 @@ export default function RefineryOptimizer() {
         </div>
       </div>
 
+      {/* Per-Ore Breakdown (shown when multiple ores) */}
+      {batch.length > 1 && (
+        <div className={styles.panel}>
+          <h2 className={styles.panelTitle}>Per-Ore Breakdown (Best Method)</h2>
+          {(() => {
+            const best = comparisons.reduce((a, b) =>
+              a.totalProfit > b.totalProfit ? a : b
+            );
+            return (
+              <>
+                <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "1rem" }}>
+                  Using <strong>{best.method.name}</strong> — highest net profit
+                </p>
+                <div className={styles.tableWrap}>
+                  <table className={styles.table}>
+                    <thead>
+                      <tr>
+                        <th>Ore</th>
+                        <th>Input SCU</th>
+                        <th>Output SCU</th>
+                        <th>Gross Value</th>
+                        <th>Cost</th>
+                        <th>Net Profit</th>
+                        <th>Time</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {best.perOre.map((p) => (
+                        <tr key={p.ore}>
+                          <td>{p.ore}</td>
+                          <td>{p.scu}</td>
+                          <td>{p.result.outputSCU}</td>
+                          <td>{p.result.grossValue.toLocaleString()}</td>
+                          <td>{p.result.processingCost.toLocaleString()}</td>
+                          <td>{p.result.netProfit.toLocaleString()}</td>
+                          <td>{p.result.timeMinutes} min</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr className={styles.totalRow}>
+                        <td>Total</td>
+                        <td>{totalInputSCU.toFixed(1)}</td>
+                        <td>{best.totalOutputSCU.toFixed(2)}</td>
+                        <td>{best.totalGross.toLocaleString()}</td>
+                        <td>{best.totalCost.toLocaleString()}</td>
+                        <td>{best.totalProfit.toLocaleString()}</td>
+                        <td>{best.maxTime} min</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </>
+            );
+          })()}
+        </div>
+      )}
+
+      {/* Method Details */}
       <div className={styles.panel}>
         <h2 className={styles.panelTitle}>Method Details</h2>
         <div className={styles.methodGrid}>
@@ -134,8 +252,8 @@ export default function RefineryOptimizer() {
               <p>{m.description}</p>
               <div className={styles.methodStats}>
                 <span>Yield: {(m.yieldMultiplier * 100).toFixed(0)}%</span>
-                <span>Speed: {(m.timeMultiplier * 100).toFixed(0)}%</span>
-                <span>Cost: {m.costPerSCU} aUEC/SCU</span>
+                <span>Speed: {m.relativeTime}/9</span>
+                <span>Cost: {m.relativeCost}/3</span>
               </div>
             </div>
           ))}

@@ -17,6 +17,7 @@ interface User {
   avatarUrl?: string;
   bio?: string;
   role: string;
+  isAdmin?: boolean;
 }
 
 interface AuthContextType {

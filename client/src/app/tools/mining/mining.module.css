@@ -1,0 +1,640 @@
+/* Tab bar */
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 0.6rem 1.2rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab:hover {
+  color: var(--text-primary);
+}
+
+.tabActive {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+
+/* Equipment layout */
+.equipmentGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+  .equipmentGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Laser quick stats */
+.laserStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--bg-primary);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.laserStat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 100px;
+}
+
+.laserStatLabel {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.laserStatValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Gadgets */
+.gadgetSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .gadgetSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gadgetGroupTitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+
+.gadgetList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.gadgetItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.gadgetItem:hover {
+  border-color: var(--accent);
+}
+
+.gadgetItem input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+
+.gadgetInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.gadgetName {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.gadgetDesc {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+/* ==============================
+   Rock Scanner (in-game style)
+   ============================== */
+
+.scannerPanel {
+  background: #1a1a2e;
+  border: 1px solid #2a2a44;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.scannerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+}
+
+.scannerTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #e0e0e0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.scannerSummary {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.scannerSummaryLine {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.scannerSummaryValue {
+  color: #e0e0e0;
+  font-weight: 600;
+}
+
+.scannerSummaryHighlight {
+  color: #facc15;
+  font-weight: 700;
+}
+
+/* Scanner warning bar */
+.scannerWarning {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(250, 204, 21, 0.08);
+  border: 1px solid rgba(250, 204, 21, 0.25);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #facc15;
+  margin-bottom: 1.25rem;
+}
+
+/* Properties section */
+.scannerSectionLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #c89b3c;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+}
+
+.propsGrid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.propLabel {
+  font-size: 0.85rem;
+  color: #999;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.propInput {
+  padding: 0.35rem 0.6rem;
+  background: #12121f;
+  border: 1px solid #2a2a44;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  text-align: right;
+  outline: none;
+  width: 100%;
+}
+
+.propInput:focus {
+  border-color: #c89b3c;
+}
+
+.propSelect {
+  composes: propInput;
+  text-align: left;
+  cursor: pointer;
+}
+
+.propUnit {
+  font-size: 0.8rem;
+  color: #666;
+  min-width: 1.5rem;
+}
+
+/* Ore grid */
+.oreGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .oreGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.oreBtn {
+  padding: 0.4rem 0;
+  background: #12121f;
+  border: 1px solid #2a2a44;
+  border-radius: 4px;
+  color: #888;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.oreBtn:hover {
+  border-color: #555;
+  color: #ccc;
+}
+
+.oreBtnSelected {
+  background: #c89b3c;
+  border-color: #c89b3c;
+  color: #1a1a2e;
+}
+
+.oreBtnAll {
+  background: #2a2a44;
+  border-color: #444;
+  color: #ccc;
+}
+
+.oreBtnNone {
+  background: #2a2a44;
+  border-color: #444;
+  color: #ccc;
+}
+
+/* Composition sliders */
+.compSliders {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.compSliderRow {
+  display: grid;
+  grid-template-columns: 50px 1fr 80px;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.compSliderLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  text-transform: uppercase;
+}
+
+.compSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: #2a2a44;
+  border-radius: 2px;
+  outline: none;
+}
+
+.compSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #c0c0c0;
+  cursor: pointer;
+  border: 2px solid #888;
+}
+
+.compSlider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #c0c0c0;
+  cursor: pointer;
+  border: 2px solid #888;
+}
+
+.compPctInput {
+  padding: 0.3rem 0.5rem;
+  background: #12121f;
+  border: 1px solid #2a2a44;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 0.85rem;
+  text-align: right;
+  outline: none;
+  width: 100%;
+}
+
+.compPctInput:focus {
+  border-color: #c89b3c;
+}
+
+.compPctUnit {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.compTotal {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.compTotalOver {
+  composes: compTotal;
+  color: #f87171;
+  font-weight: 600;
+}
+
+/* Cluster stats table */
+.clusterTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.clusterTable th {
+  text-align: right;
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid #2a2a44;
+  color: #888;
+  font-weight: 500;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.clusterTable th:first-child {
+  text-align: left;
+}
+
+.clusterTable td {
+  padding: 0.4rem 0.75rem;
+  text-align: right;
+  color: #e0e0e0;
+  border-bottom: 1px solid #1e1e33;
+}
+
+.clusterTable td:first-child {
+  text-align: left;
+}
+
+.clusterOreName {
+  font-weight: 600;
+  color: #c0c0c0;
+}
+
+.clusterTotal td {
+  border-top: 1px solid #444;
+  font-weight: 700;
+  color: #e0e0e0;
+}
+
+/* Enough ore for box */
+.enoughOre {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.65rem 0.85rem;
+  background: #12121f;
+  border: 1px solid #2a2a44;
+  border-radius: 6px;
+  width: fit-content;
+}
+
+.enoughOreTitle {
+  font-size: 0.8rem;
+  color: #999;
+  margin-bottom: 0.15rem;
+}
+
+.enoughOreLine {
+  font-size: 0.85rem;
+  color: #e0e0e0;
+  font-weight: 500;
+}
+
+/* Viability grid */
+.viabilityGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+  .viabilityGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.viabilityStat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.75rem;
+  background: var(--bg-primary);
+  border-radius: 8px;
+}
+
+.viabilityLabel {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.viabilityValue {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  width: fit-content;
+}
+
+.badgeGreen {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+}
+
+.badgeYellow {
+  background: rgba(250, 204, 21, 0.15);
+  color: #facc15;
+}
+
+.badgeOrange {
+  background: rgba(251, 146, 60, 0.15);
+  color: #fb923c;
+}
+
+.badgeRed {
+  background: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+}
+
+.badgePurple {
+  background: rgba(192, 132, 252, 0.15);
+  color: #c084fc;
+}
+
+/* Recommendation box */
+.recommendation {
+  padding: 0.75rem 1rem;
+  background: rgba(74, 158, 255, 0.06);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* Help text */
+.helpText {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+/* Analysis result */
+.analysisResult {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.analysisGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+  .analysisGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.analysisStat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.75rem;
+  background: var(--bg-primary);
+  border-radius: 8px;
+}
+
+.analysisLabel {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.analysisValue {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Laser comparison highlight */
+.highlightRow {
+  background: rgba(74, 158, 255, 0.08) !important;
+}
+
+.highlightRow td:first-child {
+  border-left: 3px solid var(--accent);
+}
+
+.laserMfr {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Sliders (kept for potential reuse) */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
+}

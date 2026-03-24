@@ -16,6 +16,12 @@ import { recruitmentRouter } from "./routes/recruitment.js";
 import { orgGuidesRouter } from "./routes/org-guides.js";
 import { orgAnnouncementsRouter } from "./routes/org-announcements.js";
 import { orgActivityRouter } from "./routes/org-activity.js";
+import { adminRouter } from "./routes/admin.js";
+import { reportsRouter } from "./routes/reports.js";
+import { suggestionsRouter } from "./routes/suggestions.js";
+import { craftRecipesRouter } from "./routes/craft-recipes.js";
+import { missionRecipesRouter } from "./routes/mission-recipes.js";
+import { gameDataRouter } from "./routes/game-data.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -39,6 +45,12 @@ app.use("/api/recruitment", recruitmentRouter);
 app.use("/api/orgs/:orgId/guides", orgGuidesRouter);
 app.use("/api/orgs/:orgId/announcements", orgAnnouncementsRouter);
 app.use("/api/orgs/:orgId/activity", orgActivityRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api/reports", reportsRouter);
+app.use("/api/suggestions", suggestionsRouter);
+app.use("/api/craft-recipes", craftRecipesRouter);
+app.use("/api/mission-recipes", missionRecipesRouter);
+app.use("/api/game-data", gameDataRouter);
 
 app.listen(PORT, () => {
   console.log(`[server] Running on http://localhost:${PORT}`);

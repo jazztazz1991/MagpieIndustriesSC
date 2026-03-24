@@ -312,6 +312,116 @@ export interface OrgActivityDTO {
   user: { id: string; username: string };
 }
 
+// ─── Report Types ───────────────────────────────────────────────────
+
+export type ReportType = "BUG" | "DATA_ISSUE";
+export type ReportStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
+
+export interface ReportDTO {
+  id: string;
+  title: string;
+  description: string;
+  type: ReportType;
+  status: ReportStatus;
+  pageUrl: string | null;
+  adminNotes: string | null;
+  createdAt: string;
+  updatedAt: string;
+  author: { id: string; username: string };
+}
+
+// ─── Suggestion Types ───────────────────────────────────────────────
+
+export type SuggestionStatus = "PENDING" | "UNDER_REVIEW" | "PLANNED" | "DECLINED";
+
+export interface SuggestionDTO {
+  id: string;
+  title: string;
+  description: string;
+  status: SuggestionStatus;
+  adminNotes: string | null;
+  voteCount: number;
+  hasVoted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  author: { id: string; username: string };
+}
+
+// ─── Craft Recipe Types ─────────────────────────────────────────────
+
+export interface CraftIngredientDTO {
+  id: string;
+  item: string;
+  quantity: number;
+}
+
+export interface CraftRecipeDTO {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string;
+  outputItem: string;
+  outputQty: number;
+  difficulty: string | null;
+  notes: string | null;
+  ingredients: CraftIngredientDTO[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ─── Mission Recipe Types ───────────────────────────────────────────
+
+export interface MissionObjectiveDTO {
+  id: string;
+  description: string;
+  sortOrder: number;
+  isOptional: boolean;
+}
+
+export interface MissionRewardDTO {
+  id: string;
+  rewardType: string;
+  description: string;
+  quantity: string | null;
+}
+
+export interface MissionRecipeDTO {
+  id: string;
+  name: string;
+  description: string | null;
+  missionType: string;
+  difficulty: string | null;
+  minPlayers: number;
+  maxPlayers: number | null;
+  estimatedPay: string | null;
+  location: string | null;
+  notes: string | null;
+  objectives: MissionObjectiveDTO[];
+  rewards: MissionRewardDTO[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ─── Admin Types ────────────────────────────────────────────────────
+
+export interface AdminUserDTO {
+  id: string;
+  username: string;
+  email: string;
+  isAdmin: boolean;
+  role: string;
+  createdAt: string;
+}
+
+export interface AdminStatsDTO {
+  userCount: number;
+  orgCount: number;
+  openReports: number;
+  pendingSuggestions: number;
+  craftRecipeCount: number;
+  missionRecipeCount: number;
+}
+
 // ─── Deprecated aliases (keep temporarily for backward compat) ───────
 // TODO: Remove these once all consumers use the DTO types above
 /** @deprecated Use FleetShipDTO */

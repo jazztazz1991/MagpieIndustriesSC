@@ -38,7 +38,7 @@ const updateProfileSchema = z.object({
 
 // --- Response DTOs (no email, no raw DB objects) ---
 
-function toPublicUser(user: { id: string; username: string; rsiHandle: string | null; avatarUrl: string | null; bio: string | null; role: string }) {
+function toPublicUser(user: { id: string; username: string; rsiHandle: string | null; avatarUrl: string | null; bio: string | null; role: string; isAdmin: boolean }) {
   return {
     id: user.id,
     username: user.username,
@@ -46,10 +46,11 @@ function toPublicUser(user: { id: string; username: string; rsiHandle: string | 
     avatarUrl: user.avatarUrl,
     bio: user.bio,
     role: user.role,
+    isAdmin: user.isAdmin,
   };
 }
 
-function toProfileUser(user: { id: string; username: string; email: string; rsiHandle: string | null; avatarUrl: string | null; bio: string | null; role: string; createdAt: Date }) {
+function toProfileUser(user: { id: string; username: string; email: string; rsiHandle: string | null; avatarUrl: string | null; bio: string | null; role: string; isAdmin: boolean; createdAt: Date }) {
   return {
     id: user.id,
     username: user.username,
@@ -58,6 +59,7 @@ function toProfileUser(user: { id: string; username: string; email: string; rsiH
     avatarUrl: user.avatarUrl,
     bio: user.bio,
     role: user.role,
+    isAdmin: user.isAdmin,
     createdAt: user.createdAt,
   };
 }
@@ -235,6 +237,7 @@ authRouter.get("/me", requireAuth, async (req, res) => {
         avatarUrl: true,
         bio: true,
         role: true,
+        isAdmin: true,
         createdAt: true,
       },
     });
@@ -278,6 +281,7 @@ authRouter.patch("/me", requireAuth, async (req, res) => {
         avatarUrl: true,
         bio: true,
         role: true,
+        isAdmin: true,
         createdAt: true,
       },
     });

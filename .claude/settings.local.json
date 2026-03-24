@@ -38,7 +38,19 @@
       "Bash(taskkill //F //IM \"tsx.exe\")",
       "Bash(taskkill //F //IM \"node.exe\" //FI \"WINDOWTITLE eq tsx\")",
       "Bash(npx playwright:*)",
-      "Bash(timeout 8 npx tsx src/index.ts)"
+      "Bash(timeout 8 npx tsx src/index.ts)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(npx next:*)",
+      "Read(//c/Users/jazz_/.claude/projects/c--Users-jazz--Desktop-Web-Development-Projects-portfolioProjects-MagpieIndustriesSC/memory/**)",
+      "Bash(ls client/src/app/orgs/[slug]/)",
+      "Read(//c/Users/jazz_/.claude/projects/c--Users-jazz--Desktop-Web-Development-Projects-portfolioProjects-MagpieIndustriesSC/**)",
+      "Bash(python3 -c \":*)",
+      "Bash(node -e \":*)",
+      "Bash(npx ts-node:*)",
+      "Bash(npx tsx:*)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\jazz_\\Desktop\\Web Development Projects\\portfolioProjects\\MagpieIndustriesSC\\.claude"
     ]
   }
 }
