@@ -229,7 +229,12 @@ export function useGameData(): { data: GameData; loading: boolean; error: string
     setError(null);
     const res = await apiFetch<ApiGameData>("/api/game-data/all");
     if (res.success && res.data) {
-      setData(mapApiToGameData(res.data));
+      const mapped = mapApiToGameData(res.data);
+      // Only replace static data if API actually returned content
+      const hasData = mapped.ores.length > 0 && mapped.lasers.length > 0;
+      if (hasData) {
+        setData(mapped);
+      }
     } else {
       setError(res.error || "Failed to fetch game data");
       // Keep static fallback data
