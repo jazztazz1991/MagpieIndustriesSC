@@ -47,10 +47,31 @@
       "Bash(python3 -c \":*)",
       "Bash(node -e \":*)",
       "Bash(npx ts-node:*)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Read(//c/Program Files/Roberts Space Industries//**)",
+      "Read(//c/Games/**)",
+      "Read(//d/Games/**)",
+      "Read(//d/StarCitizen//**)",
+      "Read(//d//**)",
+      "Read(//d/Roberts Space Industries/**)",
+      "Bash(find /d/StarCitizen/StarCitizen/LIVE/ -maxdepth 2 -name *.xml -o -name *.json)",
+      "Bash(find /d/StarCitizen/StarCitizen/LIVE/user/ -maxdepth 3 -name *.xml -o -name *.cfg)",
+      "WebFetch(domain:scunpacked.com)",
+      "WebFetch(domain:api.scunpacked.com)",
+      "Read(//tmp/**)",
+      "Read(//c/Users/jazz_/AppData/Local/Temp/scunpacked-data/**)",
+      "Bash(find C:/Users/jazz_/AppData/Local/Temp/scunpacked-data -type f -name *mineablerock* ! -name *fps*)",
+      "Bash(find C:/Users/jazz_/AppData/Local/Temp/scunpacked-data -type f -name *mineable* ! -name *fps* ! -name *groundvehicle*)",
+      "Bash(find C:/Users/jazz_/AppData/Local/Temp/scunpacked-data -type f -name *mineable*)",
+      "Bash(find C:/Users/jazz_/AppData/Local/Temp/scunpacked-data -type f -name *deposit*)",
+      "Bash(node -e \"console.log\\(require\\(''os''\\).tmpdir\\(\\)\\)\")",
+      "Bash(node -e \"const fs=require\\(''fs''\\); const d=JSON.parse\\(fs.readFileSync\\(''C:\\\\\\\\Users\\\\\\\\jazz_\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\scunpacked-data\\\\\\\\items\\\\\\\\mining_modules_active_surge.json'',''utf8''\\)\\); const comps=d.Raw?.Entity?.Components||{}; const mod=comps.EntityComponentAttachableModifierParams; console.log\\(JSON.stringify\\(mod,null,2\\)\\)\")",
+      "Bash(node -e \"const fs=require\\(''fs''\\), p=require\\(''path''\\); const f=p.join\\(require\\(''os''\\).tmpdir\\(\\),''scunpacked-data'',''items'',''mining_modules_active_surge.json''\\); const d=JSON.parse\\(fs.readFileSync\\(f,''utf8''\\)\\); const comps=d.Raw?.Entity?.Components||{}; console.log\\(''Component keys:'', Object.keys\\(comps\\).join\\('', ''\\)\\); console.log\\(\\); console.log\\(''AttachableModifierParams:''\\); console.log\\(JSON.stringify\\(comps.EntityComponentAttachableModifierParams,null,2\\)\\)\")"
     ],
     "additionalDirectories": [
-      "c:\\Users\\jazz_\\Desktop\\Web Development Projects\\portfolioProjects\\MagpieIndustriesSC\\.claude"
+      "c:\\Users\\jazz_\\Desktop\\Web Development Projects\\portfolioProjects\\MagpieIndustriesSC\\.claude",
+      "c:\\Users\\jazz_\\Desktop\\Web Development Projects\\portfolioProjects\\MagpieIndustriesSC"
     ]
   }
 }

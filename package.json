@@ -9,13 +9,14 @@
     "shared"
   ],
   "scripts": {
-    "dev": "concurrently --names client,server --prefix-colors blue,green \"npm run dev:client\" \"npm run dev:server\"",
+    "dev": "npm run dev:client & npm run dev:server",
     "dev:client": "npm run dev --workspace=client",
     "dev:server": "npm run dev --workspace=server",
     "build": "npm run build --workspace=shared && npm run build --workspace=client && npm run build --workspace=server",
     "build:client": "npm run build --workspace=client",
     "build:server": "npm run build --workspace=server",
-    "lint": "npm run lint --workspace=client && npm run lint --workspace=server"
+    "lint": "npm run lint --workspace=client && npm run lint --workspace=server",
+    "sync:mining": "npx ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/sync-mining-data.ts"
   },
   "engines": {
     "node": ">=18.0.0"

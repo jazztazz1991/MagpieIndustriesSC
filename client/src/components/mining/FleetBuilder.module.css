@@ -1,0 +1,101 @@
+.fleetPanel {
+  background: var(--bg-secondary, #1e1e2e);
+  border: 1px solid var(--border, #2a2a44);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.fleetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--border, #2a2a44);
+}
+
+.fleetHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.fleetTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e0);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.fleetSummary {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+  white-space: nowrap;
+}
+
+.addShipBtn {
+  padding: 0.35rem 0.8rem;
+  background: var(--accent, #7c5cbf);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.addShipBtn:hover {
+  opacity: 0.85;
+}
+
+/* Fleet ship list */
+.fleetList {
+  display: flex;
+  flex-direction: column;
+}
+
+.shipEntry {
+  border-bottom: 1px solid var(--border, #2a2a44);
+}
+
+.shipEntry:last-child {
+  border-bottom: none;
+}
+
+.shipLabel {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent, #7c5cbf);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.removeShipBtn {
+  padding: 0.2rem 0.5rem;
+  background: none;
+  color: #f87171;
+  border: 1px solid #f87171;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.removeShipBtn:hover {
+  background: rgba(248, 113, 113, 0.1);
+}
+
+@media (max-width: 640px) {
+  .fleetHeader {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .fleetSummary {
+    font-size: 0.7rem;
+  }
+}

@@ -9,6 +9,8 @@ import {
   analyzeRock,
   compareLasersForRock,
 } from "@/domain/mining";
+import FleetBuilder from "@/components/mining/FleetBuilder";
+import type { Loadout, ResolvedHead } from "@/components/mining/LoadoutBuilder";
 import shared from "../tools.module.css";
 import ms from "./mining.module.css";
 
@@ -27,7 +29,7 @@ const TABS: { key: Tab; label: string }[] = [
 ];
 
 function formatPctMod(value: number): string {
-  if (value === 0) return "—";
+  if (value === 0) return "\u2014";
   return value > 0 ? `+${value}%` : `${value}%`;
 }
 
@@ -43,20 +45,17 @@ export default function MiningCalculator() {
 
   const [activeTab, setActiveTab] = useState<Tab>("scanner");
 
-  // Equipment
-  const [shipName, setShipName] = useState("");
-  const [laserName, setLaserName] = useState("");
-  const [activeModuleNames, setActiveModuleNames] = useState<string[]>([]);
-  const [passiveModuleNames, setPassiveModuleNames] = useState<string[]>([]);
+  // Fleet state (from FleetBuilder)
+  const [fleetLoadouts, setFleetLoadouts] = useState<Loadout[]>([]);
+  const [resolvedHeads, setResolvedHeads] = useState<ResolvedHead[]>([]);
 
-  // Initialize defaults once data loads
-  const defaultShip = miningShips[0]?.name ?? "";
-  const defaultLaser = miningLasers.find((l) => l.size === 1)?.name ?? miningLasers[0]?.name ?? "";
-  const effectiveShipName = shipName || defaultShip;
-  const effectiveLaserName = laserName || defaultLaser;
+  const handleFleetChange = useCallback((loadouts: Loadout[], allResolved: ResolvedHead[]) => {
+    setFleetLoadouts(loadouts);
+    setResolvedHeads(allResolved);
+  }, []);
 
-  const ship = miningShips.find((s) => s.name === effectiveShipName) ?? miningShips[0];
-  const laser = miningLasers.find((l) => l.name === effectiveLaserName) ?? miningLasers[0];
+  const primaryLoadout = fleetLoadouts[0] ?? null;
+  const ship = miningShips.find((s) => s.name === primaryLoadout?.shipName) ?? miningShips[0];
 
   // Scanner properties
   const [rockClass, setRockClass] = useState<string>("");
@@ -76,7 +75,11 @@ export default function MiningCalculator() {
 
   // Profit calculator state
   const [totalSCU, setTotalSCU] = useState(0);
-  const effectiveTotalSCU = totalSCU || ship?.cargoSCU || 32;
+  const fleetCargoSCU = fleetLoadouts.reduce((sum, l) => {
+    const s = miningShips.find((sh) => sh.name === l.shipName);
+    return sum + (s?.cargoSCU ?? 0);
+  }, 0);
+  const effectiveTotalSCU = totalSCU || fleetCargoSCU || 32;
   const [minValuePerSCU, setMinValuePerSCU] = useState(5000);
 
   // Build composition from scanner state
@@ -95,15 +98,11 @@ export default function MiningCalculator() {
   // Ore toggle
   const toggleOre = useCallback((abbr: string) => {
     setSelectedAbbrevs((prev) => {
-      if (prev.includes(abbr)) {
-        return prev.filter((a) => a !== abbr);
-      }
+      if (prev.includes(abbr)) return prev.filter((a) => a !== abbr);
       return [...prev, abbr];
     });
     setOrePcts((prev) => {
-      if (prev[abbr] === undefined) {
-        return { ...prev, [abbr]: 10 };
-      }
+      if (prev[abbr] === undefined) return { ...prev, [abbr]: 10 };
       return prev;
     });
   }, []);
@@ -120,57 +119,73 @@ export default function MiningCalculator() {
     });
   };
 
-  const selectNoOres = () => {
-    setSelectedAbbrevs([]);
-  };
+  const selectNoOres = () => setSelectedAbbrevs([]);
 
   const updateOrePct = (abbr: string, pct: number) => {
     setOrePcts((prev) => ({ ...prev, [abbr]: pct }));
   };
 
-  const handleShipChange = (name: string) => {
-    setShipName(name);
-    const newShip = miningShips.find((s) => s.name === name);
-    if (newShip) setTotalSCU(newShip.cargoSCU);
-  };
-
-  const toggleModule = (name: string, type: "active" | "passive") => {
-    const setter = type === "active" ? setActiveModuleNames : setPassiveModuleNames;
-    setter((prev) =>
-      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
+  // --- Multi-head viability ---
+  const perHeadViability = useMemo(() => {
+    return resolvedHeads.map((head) =>
+      assessRockViability(rockMass, rockInstability, rockResistance, head.laser, head.activeModules, head.passiveModules)
     );
-  };
+  }, [rockMass, rockInstability, rockResistance, resolvedHeads]);
 
-  // --- Calculations ---
+  const combinedViability = useMemo(() => {
+    if (perHeadViability.length === 0) return null;
+    const combinedPower = perHeadViability.reduce((sum, v) => sum + v.effectivePower, 0);
+    const avgInstability = perHeadViability.reduce((sum, v) => sum + v.effectiveInstability, 0) / perHeadViability.length;
+    const avgResistance = perHeadViability.reduce((sum, v) => sum + v.effectiveResistance, 0) / perHeadViability.length;
+    // Combined canCrack: total power from all heads must exceed the fracture threshold
+    const fractureThreshold = rockMass * (rockResistance / 100);
+    const canCrack = combinedPower > fractureThreshold;
 
-  const selectedActiveModules = useMemo(
-    () => activeModules.filter((m) => activeModuleNames.includes(m.name)),
-    [activeModuleNames, activeModules]
-  );
-  const selectedPassiveModules = useMemo(
-    () => passiveModules.filter((m) => passiveModuleNames.includes(m.name)),
-    [passiveModuleNames, passiveModules]
-  );
+    let crackDifficulty: "easy" | "moderate" | "hard" | "extreme" | "impossible";
+    if (avgResistance <= 0) crackDifficulty = "easy";
+    else if (avgResistance < 30) crackDifficulty = "easy";
+    else if (avgResistance < 50) crackDifficulty = "moderate";
+    else if (avgResistance < 75) crackDifficulty = "hard";
+    else if (avgResistance < 100) crackDifficulty = "extreme";
+    else crackDifficulty = "impossible";
 
-  const viability = useMemo(
-    () => laser ? assessRockViability(rockInstability, rockResistance, laser, selectedActiveModules, selectedPassiveModules) : null,
-    [rockInstability, rockResistance, laser, selectedActiveModules, selectedPassiveModules]
-  );
+    let instabilityRisk: "safe" | "manageable" | "dangerous" | "deadly";
+    if (avgInstability < 150) instabilityRisk = "safe";
+    else if (avgInstability < 400) instabilityRisk = "manageable";
+    else if (avgInstability < 700) instabilityRisk = "dangerous";
+    else instabilityRisk = "deadly";
+
+    return {
+      combinedPower: Math.round(combinedPower * 100) / 100,
+      fractureThreshold: Math.round(fractureThreshold * 100) / 100,
+      avgInstability: Math.round(avgInstability * 100) / 100,
+      avgResistance: Math.round(avgResistance * 100) / 100,
+      canCrack,
+      crackDifficulty,
+      instabilityRisk,
+    };
+  }, [perHeadViability, rockMass, rockResistance]);
 
   const rockAnalysis = useMemo(
     () => analyzeRock(composition, rockSCU, minValuePerSCU),
     [composition, rockSCU, minValuePerSCU]
   );
 
+  // Use first head's laser for comparison tab
+  const primaryLaser = resolvedHeads[0]?.laser ?? miningLasers[0];
+  const primaryActiveModules = resolvedHeads[0]?.activeModules ?? [];
+  const primaryPassiveModules = resolvedHeads[0]?.passiveModules ?? [];
+
   const laserComparisons = useMemo(
-    () => laser ? compareLasersForRock(
+    () => primaryLaser ? compareLasersForRock(
+      rockMass,
       rockInstability,
       rockResistance,
-      miningLasers.filter((l) => l.size === laser.size),
-      selectedActiveModules,
-      selectedPassiveModules
+      miningLasers.filter((l) => l.size === primaryLaser.size),
+      primaryActiveModules,
+      primaryPassiveModules
     ) : [],
-    [rockInstability, rockResistance, laser, miningLasers, selectedActiveModules, selectedPassiveModules]
+    [rockMass, rockInstability, rockResistance, primaryLaser, miningLasers, primaryActiveModules, primaryPassiveModules]
   );
 
   const profitResults = useMemo(
@@ -182,7 +197,6 @@ export default function MiningCalculator() {
 
   // Profit tab composition handlers
   const [profitComposition, setProfitComposition] = useState<CompositionEntry[]>([]);
-  // Initialize profit composition when ores load
   const initProfitComp = profitComposition.length === 0 && ores.length > 0;
   if (initProfitComp) {
     setProfitComposition([{ ore: ores[0], percentage: 30 }]);
@@ -230,7 +244,7 @@ export default function MiningCalculator() {
 
   const scannerValue = rockAnalysis.totalValue;
 
-  if (gameDataLoading || !laser || !ship) {
+  if (gameDataLoading) {
     return (
       <div className={shared.page}>
         <h1 className={shared.title}>Mining Calculator</h1>
@@ -246,129 +260,14 @@ export default function MiningCalculator() {
         Configure your equipment, scan rocks, and calculate profits.
       </p>
 
-      {/* ========== Equipment Loadout ========== */}
-      <div className={shared.panel}>
-        <h2 className={shared.panelTitle}>Equipment Loadout</h2>
-
-        <div className={ms.equipmentGrid}>
-          <label className={shared.field}>
-            <span>Ship</span>
-            <select
-              value={effectiveShipName}
-              onChange={(e) => handleShipChange(e.target.value)}
-              className={shared.select}
-            >
-              {miningShips.map((s) => (
-                <option key={s.name} value={s.name}>
-                  {s.name} — {s.cargoSCU} SCU
-                  {s.miningTurrets > 1 ? ` (${s.miningTurrets} turrets)` : ""}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className={shared.field}>
-            <span>Mining Laser</span>
-            <select
-              value={effectiveLaserName}
-              onChange={(e) => setLaserName(e.target.value)}
-              className={shared.select}
-            >
-              {[0, 1, 2].map((size) => (
-                <optgroup key={size} label={`Size ${size}`}>
-                  {miningLasers
-                    .filter((l) => l.size === size)
-                    .map((l) => (
-                      <option key={l.name} value={l.name}>
-                        {l.name} — {l.maxPower} max power
-                      </option>
-                    ))}
-                </optgroup>
-              ))}
-            </select>
-          </label>
-        </div>
-
-        <div className={ms.laserStats}>
-          <div className={ms.laserStat}>
-            <span className={ms.laserStatLabel}>Max Power</span>
-            <span className={ms.laserStatValue}>{laser.maxPower.toLocaleString()}</span>
-          </div>
-          <div className={ms.laserStat}>
-            <span className={ms.laserStatLabel}>Extract Power</span>
-            <span className={ms.laserStatValue}>{laser.extractPower.toLocaleString()}</span>
-          </div>
-          <div className={ms.laserStat}>
-            <span className={ms.laserStatLabel}>Range</span>
-            <span className={ms.laserStatValue}>{laser.optimumRange}–{laser.maxRange}m</span>
-          </div>
-          <div className={ms.laserStat}>
-            <span className={ms.laserStatLabel}>Resistance</span>
-            <span className={ms.laserStatValue}>{formatPctMod(laser.resistance)}</span>
-          </div>
-          <div className={ms.laserStat}>
-            <span className={ms.laserStatLabel}>Instability</span>
-            <span className={ms.laserStatValue}>{formatPctMod(laser.instability)}</span>
-          </div>
-          <div className={ms.laserStat}>
-            <span className={ms.laserStatLabel}>Module Slots</span>
-            <span className={ms.laserStatValue}>{laser.moduleSlots}</span>
-          </div>
-        </div>
-
-        <div className={ms.gadgetSection}>
-          <div>
-            <h3 className={ms.gadgetGroupTitle}>Active Modules</h3>
-            <div className={ms.gadgetList}>
-              {activeModules.map((m) => (
-                <label key={m.name} className={ms.gadgetItem}>
-                  <input
-                    type="checkbox"
-                    checked={activeModuleNames.includes(m.name)}
-                    onChange={() => toggleModule(m.name, "active")}
-                  />
-                  <div className={ms.gadgetInfo}>
-                    <span className={ms.gadgetName}>
-                      {m.name}
-                      <span className={ms.gadgetDesc}> ({m.duration}s / {m.uses} uses)</span>
-                    </span>
-                    <span className={ms.gadgetDesc}>
-                      {m.miningLaserPower !== 0 && `Pwr ${m.miningLaserPower}%`}
-                      {m.laserInstability !== 0 && ` Inst ${formatPctMod(m.laserInstability)}`}
-                      {m.resistance !== 0 && ` Res ${formatPctMod(m.resistance)}`}
-                    </span>
-                  </div>
-                </label>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h3 className={ms.gadgetGroupTitle}>Passive Modules</h3>
-            <div className={ms.gadgetList}>
-              {passiveModules.map((m) => (
-                <label key={m.name} className={ms.gadgetItem}>
-                  <input
-                    type="checkbox"
-                    checked={passiveModuleNames.includes(m.name)}
-                    onChange={() => toggleModule(m.name, "passive")}
-                  />
-                  <div className={ms.gadgetInfo}>
-                    <span className={ms.gadgetName}>{m.name}</span>
-                    <span className={ms.gadgetDesc}>
-                      {m.miningLaserPower !== 0 && `Pwr ${m.miningLaserPower}%`}
-                      {m.laserInstability !== 0 && ` Inst ${formatPctMod(m.laserInstability)}`}
-                      {m.resistance !== 0 && ` Res ${formatPctMod(m.resistance)}`}
-                      {m.optimalChargeWindow !== 0 && ` Win ${formatPctMod(m.optimalChargeWindow)}`}
-                      {m.extractionLaserPower !== 0 && ` Ext ${m.extractionLaserPower}%`}
-                      {m.inertMaterials !== 0 && ` Inert ${formatPctMod(m.inertMaterials)}`}
-                    </span>
-                  </div>
-                </label>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* ========== Fleet Loadout ========== */}
+      <FleetBuilder
+        ships={miningShips}
+        lasers={miningLasers}
+        activeModules={activeModules}
+        passiveModules={passiveModules}
+        onFleetChange={handleFleetChange}
+      />
 
       {/* ========== Tab Navigation ========== */}
       <div className={ms.tabs}>
@@ -577,43 +476,86 @@ export default function MiningCalculator() {
             </div>
           </div>
 
-          {/* Viability Assessment */}
-          {viability && (
+          {/* Viability Assessment — Combined + Per-Head */}
+          {combinedViability && (
             <div className={shared.panel}>
               <h2 className={shared.panelTitle}>Viability Assessment</h2>
+
+              {/* Combined summary */}
+              <div className={ms.viabilityCombinedLabel}>
+                Combined ({resolvedHeads.length} head{resolvedHeads.length !== 1 ? "s" : ""})
+              </div>
               <div className={ms.viabilityGrid}>
                 <div className={ms.viabilityStat}>
                   <span className={ms.viabilityLabel}>Can Crack?</span>
-                  <span className={`${ms.badge} ${viability.canCrack ? ms.badgeGreen : ms.badgeRed}`}>
-                    {viability.canCrack ? "YES" : "NO"}
+                  <span className={`${ms.badge} ${combinedViability.canCrack ? ms.badgeGreen : ms.badgeRed}`}>
+                    {combinedViability.canCrack ? "YES" : "NO"}
+                  </span>
+                </div>
+                <div className={ms.viabilityStat}>
+                  <span className={ms.viabilityLabel}>Power Needed</span>
+                  <span className={ms.viabilityValue}>{combinedViability.fractureThreshold.toLocaleString()}</span>
+                </div>
+                <div className={ms.viabilityStat}>
+                  <span className={ms.viabilityLabel}>Fleet Power</span>
+                  <span className={`${ms.viabilityValue} ${combinedViability.canCrack ? ms.powerSufficient : ms.powerInsufficient}`}>
+                    {combinedViability.combinedPower.toLocaleString()}
                   </span>
                 </div>
                 <div className={ms.viabilityStat}>
                   <span className={ms.viabilityLabel}>Crack Difficulty</span>
-                  <span className={`${ms.badge} ${difficultyColor(viability.crackDifficulty)}`}>
-                    {viability.crackDifficulty.toUpperCase()}
+                  <span className={`${ms.badge} ${difficultyColor(combinedViability.crackDifficulty)}`}>
+                    {combinedViability.crackDifficulty.toUpperCase()}
                   </span>
                 </div>
                 <div className={ms.viabilityStat}>
                   <span className={ms.viabilityLabel}>Instability Risk</span>
-                  <span className={`${ms.badge} ${riskColor(viability.instabilityRisk)}`}>
-                    {viability.instabilityRisk.toUpperCase()}
+                  <span className={`${ms.badge} ${riskColor(combinedViability.instabilityRisk)}`}>
+                    {combinedViability.instabilityRisk.toUpperCase()}
                   </span>
                 </div>
                 <div className={ms.viabilityStat}>
-                  <span className={ms.viabilityLabel}>Effective Power</span>
-                  <span className={ms.viabilityValue}>{viability.effectivePower.toLocaleString()}</span>
-                </div>
-                <div className={ms.viabilityStat}>
-                  <span className={ms.viabilityLabel}>Effective Instability</span>
-                  <span className={ms.viabilityValue}>{viability.effectiveInstability}</span>
-                </div>
-                <div className={ms.viabilityStat}>
-                  <span className={ms.viabilityLabel}>Effective Resistance</span>
-                  <span className={ms.viabilityValue}>{viability.effectiveResistance}%</span>
+                  <span className={ms.viabilityLabel}>Avg Resistance</span>
+                  <span className={ms.viabilityValue}>{combinedViability.avgResistance}%</span>
                 </div>
               </div>
-              <div className={ms.recommendation}>{viability.recommendation}</div>
+
+              {/* Per-head breakdown (only show if >1 head) */}
+              {resolvedHeads.length > 1 && (
+                <>
+                  <div className={ms.perHeadDivider} />
+                  <div className={ms.viabilityCombinedLabel}>Per-Head Breakdown</div>
+                  <div className={ms.perHeadGrid}>
+                    {resolvedHeads.map((head, i) => {
+                      const v = perHeadViability[i];
+                      if (!v) return null;
+                      return (
+                        <div key={i} className={ms.perHeadCard}>
+                          <div className={ms.perHeadTitle}>
+                            Head {i + 1}: {head.laser.name}
+                          </div>
+                          <div className={ms.perHeadStats}>
+                            <span>
+                              <span className={`${ms.badge} ${v.canCrack ? ms.badgeGreen : ms.badgeRed}`}>
+                                {v.canCrack ? "CAN CRACK" : "NO CRACK"}
+                              </span>
+                            </span>
+                            <span>Power: <span className={v.canCrack ? ms.powerSufficient : ms.powerInsufficient}>{v.effectivePower.toLocaleString()}</span> / {v.fractureThreshold.toLocaleString()} needed</span>
+                            <span>Instability: {v.effectiveInstability}</span>
+                            <span>Resistance: {v.effectiveResistance}%</span>
+                          </div>
+                          <div className={ms.perHeadRec}>{v.recommendation}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+
+              {/* Single-head recommendation */}
+              {resolvedHeads.length === 1 && perHeadViability[0] && (
+                <div className={ms.recommendation}>{perHeadViability[0].recommendation}</div>
+              )}
             </div>
           )}
         </>
@@ -725,13 +667,13 @@ export default function MiningCalculator() {
       )}
 
       {/* ========== Compare Lasers ========== */}
-      {activeTab === "lasers" && (
+      {activeTab === "lasers" && primaryLaser && (
         <div className={shared.panel}>
           <h2 className={shared.panelTitle}>
-            Size {laser.size} Laser Ranking — Instability {rockInstability} / Resistance {rockResistance}%
+            Size {primaryLaser.size} Laser Ranking — Instability {rockInstability} / Resistance {rockResistance}%
           </h2>
           <p className={ms.helpText}>
-            Ranked by composite score for the current rock. Comparing size {laser.size} lasers. Adjust values in Rock Scanner tab.
+            Ranked by composite score for the current rock. Comparing size {primaryLaser.size} lasers (Head 1). Adjust values in Rock Scanner tab.
           </p>
           <div className={shared.tableWrap}>
             <table className={shared.table}>
@@ -750,7 +692,7 @@ export default function MiningCalculator() {
                 {laserComparisons.map((lc, i) => (
                   <tr
                     key={lc.laser.name}
-                    className={lc.laser.name === effectiveLaserName ? ms.highlightRow : undefined}
+                    className={lc.laser.name === primaryLaser.name ? ms.highlightRow : undefined}
                   >
                     <td>{i + 1}</td>
                     <td>

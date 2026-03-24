@@ -21,6 +21,7 @@ export function calculateMiningProfit(
 
 export interface RockViability {
   canCrack: boolean;
+  fractureThreshold: number;
   effectivePower: number;
   effectiveInstability: number;
   effectiveResistance: number;
@@ -30,6 +31,7 @@ export interface RockViability {
 }
 
 export function assessRockViability(
+  rockMass: number,
   rockInstability: number,
   rockResistance: number,
   laser: MiningLaser,
@@ -58,10 +60,11 @@ export function assessRockViability(
   const effectiveInstability = rockInstability * (1 + instabilityPctMod / 100);
   const effectiveResistance = rockResistance * (1 + resistancePctMod / 100);
 
-  // Can crack if effective power exceeds half of effective resistance
-  // (resistance is a percentage 0-100, power is raw units 0-4000+)
-  // We compare power against resistance as a fraction of power needed
-  const canCrack = effectivePower > 0 && effectiveResistance < 100;
+  // Can crack: laser power must exceed the fracture threshold (mass * raw resistance).
+  // The laser's resistance modifier affects mining difficulty but not the fundamental
+  // power check — raw rock resistance determines the fracture energy needed.
+  const fractureThreshold = rockMass * (rockResistance / 100);
+  const canCrack = effectivePower > fractureThreshold;
 
   let crackDifficulty: RockViability["crackDifficulty"];
   if (effectiveResistance <= 0) crackDifficulty = "easy";
@@ -92,6 +95,7 @@ export function assessRockViability(
 
   return {
     canCrack,
+    fractureThreshold: Math.round(fractureThreshold * 100) / 100,
     effectivePower: Math.round(effectivePower * 100) / 100,
     effectiveInstability: Math.round(effectiveInstability * 100) / 100,
     effectiveResistance: Math.round(effectiveResistance * 100) / 100,
@@ -148,6 +152,7 @@ export interface LaserComparison {
 }
 
 export function compareLasersForRock(
+  rockMass: number,
   rockInstability: number,
   rockResistance: number,
   lasers: MiningLaser[],
@@ -156,7 +161,7 @@ export function compareLasersForRock(
 ): LaserComparison[] {
   return lasers
     .map((laser) => {
-      const viability = assessRockViability(rockInstability, rockResistance, laser, activeModules, passiveModules);
+      const viability = assessRockViability(rockMass, rockInstability, rockResistance, laser, activeModules, passiveModules);
       // Score: power contribution minus instability penalty
       const score = viability.effectivePower * 0.01 - viability.effectiveInstability * 0.05 + (viability.canCrack ? 50 : 0);
       return {

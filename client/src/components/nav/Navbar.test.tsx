@@ -46,23 +46,30 @@ describe("Navbar", () => {
     expect(screen.queryByText("Sign In")).not.toBeInTheDocument();
   });
 
-  it("renders all navigation links", () => {
+  it("renders dropdown toggle buttons for nav groups", () => {
     mockUseAuth.mockReturnValue({ user: null, logout: vi.fn() });
     render(<Navbar />);
 
-    expect(screen.getByText("Mining")).toBeInTheDocument();
+    expect(screen.getByText("Tools")).toBeInTheDocument();
+    expect(screen.getByText("Database")).toBeInTheDocument();
+    expect(screen.getByText("Guides")).toBeInTheDocument();
+    expect(screen.getByText("Community")).toBeInTheDocument();
+    expect(screen.getByText("Feedback")).toBeInTheDocument();
+  });
+
+  it("opens dropdown to show links when toggle is clicked", () => {
+    mockUseAuth.mockReturnValue({ user: null, logout: vi.fn() });
+    render(<Navbar />);
+
+    // Click Tools dropdown
+    fireEvent.click(screen.getByText("Tools"));
+
+    expect(screen.getByText("Mining Calculator")).toBeInTheDocument();
     expect(screen.getByText("Salvage")).toBeInTheDocument();
     expect(screen.getByText("Refinery")).toBeInTheDocument();
     expect(screen.getByText("Trade")).toBeInTheDocument();
     expect(screen.getByText("Loadout")).toBeInTheDocument();
     expect(screen.getByText("Profit")).toBeInTheDocument();
-    expect(screen.getByText("Ships")).toBeInTheDocument();
-    expect(screen.getByText("Wikelo")).toBeInTheDocument();
-    expect(screen.getByText("Locations")).toBeInTheDocument();
-    expect(screen.getByText("Guide")).toBeInTheDocument();
-    expect(screen.getByText("Community")).toBeInTheDocument();
-    expect(screen.getByText("Orgs")).toBeInTheDocument();
-    expect(screen.getByText("Recruit")).toBeInTheDocument();
   });
 
   it("renders the logo link to home", () => {
@@ -83,7 +90,7 @@ describe("Navbar", () => {
     expect(toggle).toHaveAttribute("aria-expanded", "false");
   });
 
-  it("opens mobile menu when hamburger is clicked", () => {
+  it("opens mobile menu with grouped links when hamburger is clicked", () => {
     mockUseAuth.mockReturnValue({ user: null, logout: vi.fn() });
     render(<Navbar />);
 
@@ -91,8 +98,11 @@ describe("Navbar", () => {
     fireEvent.click(toggle);
 
     expect(toggle).toHaveAttribute("aria-expanded", "true");
-    // Mobile menu links now appear (duplicating desktop links)
-    expect(screen.getAllByText("Mining")).toHaveLength(2);
+    // Mobile menu has group labels (text-transform uppercase is CSS-only)
+    expect(screen.getAllByText("Tools").length).toBeGreaterThanOrEqual(2); // dropdown toggle + mobile group label
+    expect(screen.getAllByText("Database").length).toBeGreaterThanOrEqual(2);
+    // Mobile menu has links
+    expect(screen.getByText("Mining Calculator")).toBeInTheDocument();
   });
 
   it("closes mobile menu when a link is clicked", () => {
@@ -101,14 +111,10 @@ describe("Navbar", () => {
 
     const toggle = screen.getByLabelText("Toggle navigation menu");
     fireEvent.click(toggle);
-    expect(screen.getAllByText("Mining")).toHaveLength(2);
 
-    // Click a mobile menu link (second instance)
-    const mobileLinks = screen.getAllByText("Mining");
-    fireEvent.click(mobileLinks[1]);
+    // Click a mobile link
+    fireEvent.click(screen.getByText("Salvage"));
 
-    // Mobile menu should close — back to 1 instance
-    expect(screen.getAllByText("Mining")).toHaveLength(1);
     expect(toggle).toHaveAttribute("aria-expanded", "false");
   });
 

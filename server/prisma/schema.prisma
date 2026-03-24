@@ -8,42 +8,37 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  username     String   @unique
-  email        String   @unique
-  passwordHash String?
-  rsiHandle    String?
-  avatarUrl    String?
-  bio          String?
-  role         Role     @default(REGISTERED)
-  isAdmin      Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
+  id                     String                @id @default(cuid())
+  username               String                @unique
+  email                  String                @unique
+  passwordHash           String?
+  rsiHandle              String?
+  avatarUrl              String?
+  bio                    String?
+  role                   Role                  @default(REGISTERED)
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  isAdmin                Boolean               @default(false)
   accounts               Account[]
-  friendRequestsSent     Friendship[]  @relation("friendRequestsSent")
-  friendRequestsReceived Friendship[]  @relation("friendRequestsReceived")
-  ownedGroups            Group[]       @relation("ownedGroups")
-  groupMemberships       GroupMember[]
-  createdEvents          Event[]       @relation("createdEvents")
-  eventRSVPs             EventRSVP[]
   activities             Activity[]
   comments               Comment[]
-
-  // Org relations
-  ownedOrgs              Org[]                  @relation("ownedOrgs")
-  orgMemberships         OrgMember[]
-  fleetShips             FleetShip[]            @relation("fleetShips")
-  createdOperations      Operation[]            @relation("createdOperations")
-  treasuryTransactions   TreasuryTransaction[]  @relation("treasuryTransactions")
+  eventRSVPs             EventRSVP[]
+  createdEvents          Event[]               @relation("createdEvents")
+  fleetShips             FleetShip[]           @relation("fleetShips")
+  friendRequestsReceived Friendship[]          @relation("friendRequestsReceived")
+  friendRequestsSent     Friendship[]          @relation("friendRequestsSent")
+  groupMemberships       GroupMember[]
+  ownedGroups            Group[]               @relation("ownedGroups")
   joinRequests           JoinRequest[]
-  authoredGuides         OrgGuide[]             @relation("authoredGuides")
-  authoredAnnouncements  OrgAnnouncement[]      @relation("authoredAnnouncements")
-
-  // Reports & Suggestions
-  reports                Report[]       @relation("reportAuthor")
-  suggestions            Suggestion[]   @relation("suggestionAuthor")
+  createdOperations      Operation[]           @relation("createdOperations")
+  authoredAnnouncements  OrgAnnouncement[]     @relation("authoredAnnouncements")
+  authoredGuides         OrgGuide[]            @relation("authoredGuides")
+  orgMemberships         OrgMember[]
+  ownedOrgs              Org[]                 @relation("ownedOrgs")
+  reports                Report[]              @relation("reportAuthor")
   suggestionVotes        SuggestionVote[]
+  suggestions            Suggestion[]          @relation("suggestionAuthor")
+  treasuryTransactions   TreasuryTransaction[] @relation("treasuryTransactions")
 
   @@map("users")
 }
@@ -51,13 +46,12 @@ model User {
 model Account {
   id                String  @id @default(cuid())
   userId            String
-  provider          String  // "discord" | "rsi"
+  provider          String
   providerAccountId String
   accessToken       String?
   refreshToken      String?
   expiresAt         Int?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -70,25 +64,23 @@ model Friendship {
   status      FriendStatus @default(PENDING)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
-
-  requester User @relation("friendRequestsSent", fields: [requesterId], references: [id], onDelete: Cascade)
-  addressee User @relation("friendRequestsReceived", fields: [addresseeId], references: [id], onDelete: Cascade)
+  addressee   User         @relation("friendRequestsReceived", fields: [addresseeId], references: [id], onDelete: Cascade)
+  requester   User         @relation("friendRequestsSent", fields: [requesterId], references: [id], onDelete: Cascade)
 
   @@unique([requesterId, addresseeId])
   @@map("friendships")
 }
 
 model Group {
-  id          String   @id @default(cuid())
+  id          String        @id @default(cuid())
   name        String
   description String?
   ownerId     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  owner   User          @relation("ownedGroups", fields: [ownerId], references: [id], onDelete: Cascade)
-  members GroupMember[]
-  events  Event[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  events      Event[]
+  members     GroupMember[]
+  owner       User          @relation("ownedGroups", fields: [ownerId], references: [id], onDelete: Cascade)
 
   @@map("groups")
 }
@@ -97,33 +89,31 @@ model GroupMember {
   id       String    @id @default(cuid())
   groupId  String
   userId   String
-  role     GroupRole  @default(MEMBER)
+  role     GroupRole @default(MEMBER)
   joinedAt DateTime  @default(now())
-
-  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group    Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([groupId, userId])
   @@map("group_members")
 }
 
 model Event {
-  id          String    @id @default(cuid())
+  id          String      @id @default(cuid())
   groupId     String?
-  orgId       String?
   creatorId   String
   title       String
   description String?
-  eventType   String    // "mining", "salvage", "combat", "trade", "social", "other"
+  eventType   String
   startsAt    DateTime
   endsAt      DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  group     Group?      @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  org       Org?        @relation("orgEvents", fields: [orgId], references: [id], onDelete: Cascade)
-  creator   User        @relation("createdEvents", fields: [creatorId], references: [id], onDelete: Cascade)
-  attendees EventRSVP[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orgId       String?
+  attendees   EventRSVP[]
+  creator     User        @relation("createdEvents", fields: [creatorId], references: [id], onDelete: Cascade)
+  group       Group?      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  org         Org?        @relation("orgEvents", fields: [orgId], references: [id], onDelete: Cascade)
 
   @@map("events")
 }
@@ -133,9 +123,8 @@ model EventRSVP {
   eventId String
   userId  String
   status  RSVPStatus @default(GOING)
-
-  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event   Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([eventId, userId])
   @@map("event_rsvps")
@@ -144,14 +133,13 @@ model EventRSVP {
 model Activity {
   id        String   @id @default(cuid())
   userId    String
-  orgId     String?
-  type      String   // "friend_added", "group_joined", "group_created", "event_created", "comment_posted", "org_*"
+  type      String
   targetId  String?
   metadata  Json?
   createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  org  Org? @relation("orgActivities", fields: [orgId], references: [id], onDelete: Cascade)
+  orgId     String?
+  org       Org?     @relation("orgActivities", fields: [orgId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
   @@index([orgId, createdAt])
@@ -165,90 +153,81 @@ model Comment {
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([guidePath, createdAt])
   @@map("comments")
 }
 
-// --- Org Models ---
-
 model Org {
-  id          String    @id @default(cuid())
-  name        String    @unique
-  slug        String    @unique
-  description String?
-  spectrumId  String?   // RSI Spectrum org ID
-  logoUrl     String?
-  bannerUrl   String?
-  isPublic    Boolean   @default(true)
-  motd        String?   // Message of the day
-  ownerId     String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  owner            User                  @relation("ownedOrgs", fields: [ownerId], references: [id], onDelete: Cascade)
+  id               String                @id @default(cuid())
+  name             String                @unique
+  slug             String                @unique
+  description      String?
+  spectrumId       String?
+  logoUrl          String?
+  bannerUrl        String?
+  isPublic         Boolean               @default(true)
+  ownerId          String
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  motd             String?
+  orgActivities    Activity[]            @relation("orgActivities")
+  orgEvents        Event[]               @relation("orgEvents")
+  fleetShips       FleetShip[]
+  joinRequests     JoinRequest[]
+  operations       Operation[]
+  announcements    OrgAnnouncement[]
+  guides           OrgGuide[]
   members          OrgMember[]
   roles            OrgRole[]
-  fleetShips       FleetShip[]
-  operations       Operation[]
-  transactions     TreasuryTransaction[]
+  owner            User                  @relation("ownedOrgs", fields: [ownerId], references: [id], onDelete: Cascade)
   recruitmentPosts RecruitmentPost[]
-  orgEvents        Event[]               @relation("orgEvents")
-  joinRequests     JoinRequest[]
-  guides           OrgGuide[]
-  announcements    OrgAnnouncement[]
-  orgActivities    Activity[]             @relation("orgActivities")
+  transactions     TreasuryTransaction[]
 
   @@map("orgs")
 }
 
 model OrgMember {
-  id       String   @id @default(cuid())
-  orgId    String
-  userId   String
-  roleId   String?
-  joinedAt DateTime @default(now())
-
-  org  Org      @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  user User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role OrgRole? @relation(fields: [roleId], references: [id], onDelete: SetNull)
-
+  id              String           @id @default(cuid())
+  orgId           String
+  userId          String
+  roleId          String?
+  joinedAt        DateTime         @default(now())
   crewAssignments CrewAssignment[]
+  org             Org              @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  role            OrgRole?         @relation(fields: [roleId], references: [id])
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([orgId, userId])
   @@map("org_members")
 }
 
 model OrgRole {
-  id          String   @id @default(cuid())
+  id          String      @id @default(cuid())
   orgId       String
   name        String
-  rank        Int      @default(0) // higher = more authority
-  permissions Json     @default("[]") // string array of permission keys
-  createdAt   DateTime @default(now())
-
-  org     Org         @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  members OrgMember[]
+  rank        Int         @default(0)
+  permissions Json        @default("[]")
+  createdAt   DateTime    @default(now())
+  members     OrgMember[]
+  org         Org         @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
   @@unique([orgId, name])
   @@map("org_roles")
 }
 
 model FleetShip {
-  id        String   @id @default(cuid())
-  orgId     String
-  ownerId   String   // the org member who owns this ship
-  shipId    String   // references static ship data key
-  shipName  String   // display name (e.g. "Aurora MR")
-  nickname  String?  // custom name the owner gave it
-  status    ShipStatus @default(ACTIVE)
-  createdAt DateTime @default(now())
-
-  org   Org  @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  owner User @relation("fleetShips", fields: [ownerId], references: [id], onDelete: Cascade)
-
+  id             String          @id @default(cuid())
+  orgId          String
+  ownerId        String
+  shipId         String
+  shipName       String
+  nickname       String?
+  status         ShipStatus      @default(ACTIVE)
+  createdAt      DateTime        @default(now())
+  org            Org             @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  owner          User            @relation("fleetShips", fields: [ownerId], references: [id], onDelete: Cascade)
   operationShips OperationShip[]
 
   @@map("fleet_ships")
@@ -260,44 +239,39 @@ model Operation {
   creatorId     String
   title         String
   description   String?
-  operationType String          // "mining", "salvage", "cargo", "combat", "security", "mixed"
+  operationType String
   status        OperationStatus @default(PLANNING)
   startsAt      DateTime?
   endsAt        DateTime?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
-
-  org     Org  @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  creator User @relation("createdOperations", fields: [creatorId], references: [id], onDelete: Cascade)
-
-  ships OperationShip[]
+  ships         OperationShip[]
+  creator       User            @relation("createdOperations", fields: [creatorId], references: [id], onDelete: Cascade)
+  org           Org             @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
   @@map("operations")
 }
 
 model OperationShip {
-  id          String @id @default(cuid())
-  operationId String
-  fleetShipId String
-
-  operation Operation @relation(fields: [operationId], references: [id], onDelete: Cascade)
-  fleetShip FleetShip @relation(fields: [fleetShipId], references: [id], onDelete: Cascade)
-
+  id              String           @id @default(cuid())
+  operationId     String
+  fleetShipId     String
   crewAssignments CrewAssignment[]
+  fleetShip       FleetShip        @relation(fields: [fleetShipId], references: [id], onDelete: Cascade)
+  operation       Operation        @relation(fields: [operationId], references: [id], onDelete: Cascade)
 
   @@unique([operationId, fleetShipId])
   @@map("operation_ships")
 }
 
 model CrewAssignment {
-  id              String @id @default(cuid())
+  id              String        @id @default(cuid())
   operationShipId String
   orgMemberId     String
-  position        String // "Captain", "Gunner", "Mining Lead", etc.
-  createdAt       DateTime @default(now())
-
-  operationShip OperationShip @relation(fields: [operationShipId], references: [id], onDelete: Cascade)
-  orgMember     OrgMember     @relation(fields: [orgMemberId], references: [id], onDelete: Cascade)
+  position        String
+  createdAt       DateTime      @default(now())
+  operationShip   OperationShip @relation(fields: [operationShipId], references: [id], onDelete: Cascade)
+  orgMember       OrgMember     @relation(fields: [orgMemberId], references: [id], onDelete: Cascade)
 
   @@unique([operationShipId, orgMemberId])
   @@map("crew_assignments")
@@ -306,30 +280,28 @@ model CrewAssignment {
 model TreasuryTransaction {
   id          String          @id @default(cuid())
   orgId       String
-  userId      String          // who recorded the transaction
+  userId      String
   type        TransactionType
-  amount      Int             // in aUEC
+  amount      Int
   description String?
   createdAt   DateTime        @default(now())
-
-  org  Org  @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  user User @relation("treasuryTransactions", fields: [userId], references: [id], onDelete: Cascade)
+  org         Org             @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user        User            @relation("treasuryTransactions", fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([orgId, createdAt])
   @@map("treasury_transactions")
 }
 
 model RecruitmentPost {
-  id          String   @id @default(cuid())
-  orgId       String
-  title       String
-  description String
+  id           String   @id @default(cuid())
+  orgId        String
+  title        String
+  description  String
   requirements String?
-  isOpen      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  org Org @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  isOpen       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  org          Org      @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
   @@map("recruitment_posts")
 }
@@ -342,12 +314,292 @@ model JoinRequest {
   status    JoinRequestStatus @default(PENDING)
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
-
-  org  Org  @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  org       Org               @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([orgId, userId])
   @@map("join_requests")
+}
+
+model OrgGuide {
+  id        String        @id @default(cuid())
+  orgId     String
+  authorId  String
+  title     String
+  content   String
+  category  GuideCategory @default(GENERAL)
+  sortOrder Int           @default(0)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  author    User          @relation("authoredGuides", fields: [authorId], references: [id], onDelete: Cascade)
+  org       Org           @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId, category, sortOrder])
+  @@map("org_guides")
+}
+
+model OrgAnnouncement {
+  id        String   @id @default(cuid())
+  orgId     String
+  authorId  String
+  title     String
+  content   String
+  isPinned  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User     @relation("authoredAnnouncements", fields: [authorId], references: [id], onDelete: Cascade)
+  org       Org      @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId, createdAt])
+  @@map("org_announcements")
+}
+
+model Report {
+  id          String       @id @default(cuid())
+  authorId    String
+  type        ReportType
+  status      ReportStatus @default(OPEN)
+  title       String
+  description String
+  pageUrl     String?
+  adminNotes  String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  author      User         @relation("reportAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@map("reports")
+}
+
+model Suggestion {
+  id          String           @id @default(cuid())
+  authorId    String
+  title       String
+  description String
+  status      SuggestionStatus @default(PENDING)
+  adminNotes  String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  votes       SuggestionVote[]
+  author      User             @relation("suggestionAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@map("suggestions")
+}
+
+model SuggestionVote {
+  id           String     @id @default(cuid())
+  suggestionId String
+  userId       String
+  createdAt    DateTime   @default(now())
+  suggestion   Suggestion @relation(fields: [suggestionId], references: [id], onDelete: Cascade)
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([suggestionId, userId])
+  @@map("suggestion_votes")
+}
+
+model CraftRecipe {
+  id          String            @id @default(cuid())
+  name        String
+  description String?
+  category    String
+  outputItem  String
+  outputQty   Int               @default(1)
+  difficulty  String?
+  notes       String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  ingredients CraftIngredient[]
+
+  @@index([category])
+  @@map("craft_recipes")
+}
+
+model CraftIngredient {
+  id       String      @id @default(cuid())
+  recipeId String
+  item     String
+  quantity Int         @default(1)
+  recipe   CraftRecipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("craft_ingredients")
+}
+
+model MissionRecipe {
+  id           String             @id @default(cuid())
+  name         String
+  description  String?
+  missionType  String
+  difficulty   String?
+  minPlayers   Int                @default(1)
+  maxPlayers   Int?
+  estimatedPay String?
+  location     String?
+  notes        String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  objectives   MissionObjective[]
+  rewards      MissionReward[]
+
+  @@index([missionType])
+  @@map("mission_recipes")
+}
+
+model MissionObjective {
+  id          String        @id @default(cuid())
+  missionId   String
+  description String
+  sortOrder   Int           @default(0)
+  isOptional  Boolean       @default(false)
+  mission     MissionRecipe @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@map("mission_objectives")
+}
+
+model MissionReward {
+  id          String        @id @default(cuid())
+  missionId   String
+  rewardType  String
+  description String
+  quantity    String?
+  mission     MissionRecipe @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@map("mission_rewards")
+}
+
+model GameOre {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  abbrev      String   @unique
+  type        OreType
+  valuePerSCU Int
+  instability Float
+  resistance  Float
+  description String
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("game_ores")
+}
+
+model GameMiningLaser {
+  id                  String   @id @default(cuid())
+  name                String   @unique
+  size                Int
+  price               Int
+  optimumRange        Int
+  maxRange            Int
+  minPower            Int
+  minPowerPct         Float
+  maxPower            Int
+  extractPower        Int
+  moduleSlots         Int
+  resistance          Float
+  instability         Float
+  optimalChargeRate   Float
+  optimalChargeWindow Float
+  inertMaterials      Float
+  description         String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([size])
+  @@map("game_mining_lasers")
+}
+
+model GameMiningModule {
+  id                   String         @id @default(cuid())
+  name                 String         @unique
+  category             ModuleCategory
+  price                Int
+  duration             Int            @default(0)
+  uses                 Int            @default(0)
+  miningLaserPower     Float          @default(0)
+  laserInstability     Float          @default(0)
+  resistance           Float          @default(0)
+  optimalChargeWindow  Float          @default(0)
+  optimalChargeRate    Float          @default(0)
+  overchargeRate       Float          @default(0)
+  shatterDamage        Float          @default(0)
+  extractionLaserPower Float          @default(0)
+  inertMaterials       Float          @default(0)
+  clusterModifier      Float          @default(0)
+  description          String
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+
+  @@index([category])
+  @@map("game_mining_modules")
+}
+
+model GameMiningShip {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  manufacturer  String
+  size          String
+  cargoSCU      Float
+  miningTurrets Int
+  crewMin       Int
+  crewMax       Int
+  isVehicle     Boolean  @default(false)
+  description   String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("game_mining_ships")
+}
+
+model GameRockSignature {
+  id           String   @id @default(cuid())
+  name         String   @unique
+  baseRU       Int
+  maxMultiples Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("game_rock_signatures")
+}
+
+model GameRefineryMethod {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  yieldMultiplier Float
+  relativeTime    Int
+  relativeCost    Int
+  description     String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("game_refinery_methods")
+}
+
+model GameRefineryStation {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  location  String
+  bonuses   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("game_refinery_stations")
+}
+
+model GameMiningLocation {
+  id         String   @id @default(cuid())
+  name       String   @unique
+  type       String
+  parentBody String
+  gravity    String
+  atmosphere Boolean
+  danger     String
+  ores       Json
+  notes      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("game_mining_locations")
 }
 
 enum JoinRequestStatus {
@@ -410,175 +662,6 @@ enum GuideCategory {
   GENERAL
 }
 
-// --- Org Info Models ---
-
-model OrgGuide {
-  id        String        @id @default(cuid())
-  orgId     String
-  authorId  String
-  title     String
-  content   String        // Markdown content
-  category  GuideCategory @default(GENERAL)
-  sortOrder Int           @default(0)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-
-  org    Org  @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  author User @relation("authoredGuides", fields: [authorId], references: [id], onDelete: Cascade)
-
-  @@index([orgId, category, sortOrder])
-  @@map("org_guides")
-}
-
-model OrgAnnouncement {
-  id        String   @id @default(cuid())
-  orgId     String
-  authorId  String
-  title     String
-  content   String
-  isPinned  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  org    Org  @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  author User @relation("authoredAnnouncements", fields: [authorId], references: [id], onDelete: Cascade)
-
-  @@index([orgId, createdAt])
-  @@map("org_announcements")
-}
-
-// --- Reports ---
-
-model Report {
-  id          String       @id @default(cuid())
-  authorId    String
-  type        ReportType
-  status      ReportStatus @default(OPEN)
-  title       String
-  description String
-  pageUrl     String?      // page where the report was filed
-  adminNotes  String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-
-  author User @relation("reportAuthor", fields: [authorId], references: [id], onDelete: Cascade)
-
-  @@index([status, createdAt])
-  @@map("reports")
-}
-
-// --- Suggestions ---
-
-model Suggestion {
-  id          String           @id @default(cuid())
-  authorId    String
-  title       String
-  description String
-  status      SuggestionStatus @default(PENDING)
-  adminNotes  String?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-
-  author User             @relation("suggestionAuthor", fields: [authorId], references: [id], onDelete: Cascade)
-  votes  SuggestionVote[]
-
-  @@index([status, createdAt])
-  @@map("suggestions")
-}
-
-model SuggestionVote {
-  id           String   @id @default(cuid())
-  suggestionId String
-  userId       String
-  createdAt    DateTime @default(now())
-
-  suggestion Suggestion @relation(fields: [suggestionId], references: [id], onDelete: Cascade)
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([suggestionId, userId])
-  @@map("suggestion_votes")
-}
-
-// --- Craft Recipes ---
-
-model CraftRecipe {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  category    String   // "weapons", "armor", "components", "consumables", "misc"
-  outputItem  String   // what the recipe produces
-  outputQty   Int      @default(1)
-  difficulty  String?  // "easy", "medium", "hard", "expert"
-  notes       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  ingredients CraftIngredient[]
-
-  @@index([category])
-  @@map("craft_recipes")
-}
-
-model CraftIngredient {
-  id       String @id @default(cuid())
-  recipeId String
-  item     String // ingredient name
-  quantity Int    @default(1)
-
-  recipe CraftRecipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-
-  @@map("craft_ingredients")
-}
-
-// --- Mission Recipes ---
-
-model MissionRecipe {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  missionType String   // "bounty", "delivery", "mining", "salvage", "investigation", "mercenary"
-  difficulty  String?  // "easy", "medium", "hard", "expert"
-  minPlayers  Int      @default(1)
-  maxPlayers  Int?
-  estimatedPay String? // aUEC range e.g. "15000-25000"
-  location    String?
-  notes       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  objectives MissionObjective[]
-  rewards    MissionReward[]
-
-  @@index([missionType])
-  @@map("mission_recipes")
-}
-
-model MissionObjective {
-  id          String @id @default(cuid())
-  missionId   String
-  description String
-  sortOrder   Int    @default(0)
-  isOptional  Boolean @default(false)
-
-  mission MissionRecipe @relation(fields: [missionId], references: [id], onDelete: Cascade)
-
-  @@map("mission_objectives")
-}
-
-model MissionReward {
-  id          String @id @default(cuid())
-  missionId   String
-  rewardType  String // "aUEC", "item", "reputation", "unlock"
-  description String
-  quantity    String? // flexible: "15000", "1x Armor Set", etc.
-
-  mission MissionRecipe @relation(fields: [missionId], references: [id], onDelete: Cascade)
-
-  @@map("mission_rewards")
-}
-
-// --- New Enums ---
-
 enum ReportType {
   BUG
   DATA_ISSUE
@@ -598,10 +681,6 @@ enum SuggestionStatus {
   DECLINED
 }
 
-// =============================================
-// Game Data (admin-editable, public-readable)
-// =============================================
-
 enum ModuleCategory {
   ACTIVE
   PASSIVE
@@ -612,138 +691,4 @@ enum OreType {
   ROCK
   GEM
   METAL
-}
-
-model GameOre {
-  id          String  @id @default(cuid())
-  name        String  @unique
-  abbrev      String  @unique // 4-letter scanner abbreviation
-  type        OreType
-  valuePerSCU Int
-  instability Float   // raw scanner instability (0-1000+)
-  resistance  Float   // percentage (0-100)
-  description String
-  sortOrder   Int     @default(0) // position in scanner grid
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("game_ores")
-}
-
-model GameMiningLaser {
-  id                 String @id @default(cuid())
-  name               String @unique
-  size               Int    // 0, 1, or 2
-  price              Int
-  optimumRange       Int
-  maxRange           Int
-  minPower           Int
-  minPowerPct        Float
-  maxPower           Int
-  extractPower       Int
-  moduleSlots        Int
-  resistance         Float  // percentage modifier
-  instability        Float  // percentage modifier
-  optimalChargeRate  Float
-  optimalChargeWindow Float
-  inertMaterials     Float
-  description        String
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-
-  @@index([size])
-  @@map("game_mining_lasers")
-}
-
-model GameMiningModule {
-  id                   String         @id @default(cuid())
-  name                 String         @unique
-  category             ModuleCategory
-  price                Int
-  duration             Int            @default(0)  // seconds, 0 for passive/gadget
-  uses                 Int            @default(0)  // 0 for passive/gadget
-  miningLaserPower     Float          @default(0)
-  laserInstability     Float          @default(0)
-  resistance           Float          @default(0)
-  optimalChargeWindow  Float          @default(0)
-  optimalChargeRate    Float          @default(0)
-  overchargeRate       Float          @default(0)
-  shatterDamage        Float          @default(0)
-  extractionLaserPower Float          @default(0)
-  inertMaterials       Float          @default(0)
-  clusterModifier      Float          @default(0)
-  description          String
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
-
-  @@index([category])
-  @@map("game_mining_modules")
-}
-
-model GameMiningShip {
-  id             String  @id @default(cuid())
-  name           String  @unique
-  manufacturer   String
-  size           String  // "small" | "medium"
-  cargoSCU       Float
-  miningTurrets  Int
-  crewMin        Int
-  crewMax        Int
-  isVehicle      Boolean @default(false)
-  description    String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@map("game_mining_ships")
-}
-
-model GameRockSignature {
-  id           String @id @default(cuid())
-  name         String @unique
-  baseRU       Int    // rock units per multiple
-  maxMultiples Int    // max number of multiples
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  @@map("game_rock_signatures")
-}
-
-model GameRefineryMethod {
-  id              String @id @default(cuid())
-  name            String @unique
-  yieldMultiplier Float  // 0.60, 0.73, 0.85
-  relativeTime    Int    // 1-9
-  relativeCost    Int    // 1-3
-  description     String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  @@map("game_refinery_methods")
-}
-
-model GameRefineryStation {
-  id        String @id @default(cuid())
-  name      String @unique
-  location  String
-  bonuses   Json   // Record<string, number> — ore name -> percentage bonus
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("game_refinery_stations")
-}
-
-model GameMiningLocation {
-  id         String  @id @default(cuid())
-  name       String  @unique
-  type       String  // "moon" | "planet" | "asteroid_belt" | "station_adjacent"
-  parentBody String
-  gravity    String  // "none" | "low" | "medium" | "high"
-  atmosphere Boolean
-  danger     String  // "low" | "medium" | "high"
-  ores       Json    // string[] of ore names
-  notes      String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@map("game_mining_locations")
 }

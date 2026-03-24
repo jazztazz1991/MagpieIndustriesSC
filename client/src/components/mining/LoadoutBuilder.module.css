@@ -1,0 +1,247 @@
+.loadoutPanel {
+  background: var(--bg-secondary, #1e1e2e);
+  border: 1px solid var(--border, #2a2a44);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+/* Header (always visible, clickable to collapse) */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  user-select: none;
+  gap: 1rem;
+}
+
+.header:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.collapseIcon {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent, #7c5cbf);
+  width: 1.25rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e0);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.collapsedSummary {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.loadoutSelect {
+  padding: 0.3rem 0.5rem;
+  background: var(--bg-primary, #12121f);
+  border: 1px solid var(--border, #2a2a44);
+  border-radius: 4px;
+  color: var(--text-primary, #e0e0e0);
+  font-size: 0.8rem;
+  max-width: 200px;
+}
+
+.saveBtn {
+  padding: 0.3rem 0.7rem;
+  background: var(--accent, #7c5cbf);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.saveBtn:hover {
+  opacity: 0.85;
+}
+
+.deleteBtn {
+  padding: 0.3rem 0.5rem;
+  background: none;
+  color: #f87171;
+  border: 1px solid #f87171;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  background: rgba(248, 113, 113, 0.1);
+}
+
+/* Body (collapsible) */
+.body {
+  padding: 0 1.25rem 1.25rem;
+}
+
+/* Loadout name */
+.nameRow {
+  margin-bottom: 0.75rem;
+}
+
+.loadoutName {
+  font-size: 0.9rem;
+  color: var(--text-primary, #e0e0e0);
+  cursor: pointer;
+}
+
+.editHint {
+  font-size: 0.7rem;
+  color: var(--text-secondary, #666);
+}
+
+.renameWrap {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.renameInput {
+  padding: 0.3rem 0.6rem;
+  background: var(--bg-primary, #12121f);
+  border: 1px solid var(--accent, #7c5cbf);
+  border-radius: 4px;
+  color: var(--text-primary, #e0e0e0);
+  font-size: 0.85rem;
+  flex: 1;
+}
+
+.renameDone {
+  padding: 0.3rem 0.6rem;
+  background: var(--accent, #7c5cbf);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+/* Ship row */
+.shipRow {
+  margin-bottom: 1rem;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary, #8888a0);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.3rem;
+}
+
+.select {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg-primary, #12121f);
+  border: 1px solid var(--border, #2a2a44);
+  border-radius: 6px;
+  color: var(--text-primary, #e0e0e0);
+  font-size: 0.85rem;
+}
+
+.select:focus {
+  border-color: var(--accent, #7c5cbf);
+  outline: none;
+}
+
+/* Heads grid */
+.headsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.headCard {
+  background: var(--bg-primary, #12121f);
+  border: 1px solid var(--border, #2a2a44);
+  border-radius: 8px;
+  padding: 0.85rem;
+}
+
+.headTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent, #7c5cbf);
+  margin-bottom: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.headStats {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-secondary, #8888a0);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Module slots */
+.moduleSlots {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.moduleSelect {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  background: var(--bg-secondary, #1e1e2e);
+  border: 1px solid var(--border, #2a2a44);
+  border-radius: 4px;
+  color: var(--text-primary, #e0e0e0);
+  font-size: 0.8rem;
+}
+
+.moduleSelect:focus {
+  border-color: var(--accent, #7c5cbf);
+  outline: none;
+}
+
+@media (max-width: 640px) {
+  .headsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .headerRight {
+    flex-wrap: wrap;
+  }
+
+  .loadoutSelect {
+    max-width: 140px;
+  }
+}

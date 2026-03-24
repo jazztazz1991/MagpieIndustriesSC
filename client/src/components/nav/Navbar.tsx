@@ -1,9 +1,105 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import styles from "./Navbar.module.css";
+
+interface DropdownItem {
+  label: string;
+  href: string;
+}
+
+interface NavGroup {
+  label: string;
+  items: DropdownItem[];
+}
+
+const NAV_GROUPS: NavGroup[] = [
+  {
+    label: "Tools",
+    items: [
+      { label: "Mining Calculator", href: "/tools/mining" },
+      { label: "Where to Mine", href: "/tools/mining-locations" },
+      { label: "Salvage", href: "/tools/salvage" },
+      { label: "Refinery", href: "/tools/refinery" },
+      { label: "Trade", href: "/tools/trade" },
+      { label: "Loadout", href: "/tools/loadout" },
+      { label: "Profit", href: "/tools/profit" },
+    ],
+  },
+  {
+    label: "Database",
+    items: [
+      { label: "Ships", href: "/ships" },
+      { label: "Locations", href: "/locations" },
+      { label: "Wikelo", href: "/guides/wikelo" },
+    ],
+  },
+  {
+    label: "Guides",
+    items: [
+      { label: "Beginner Guide", href: "/guides/beginner" },
+    ],
+  },
+  {
+    label: "Community",
+    items: [
+      { label: "Friends", href: "/community/friends" },
+      { label: "Orgs", href: "/orgs" },
+      { label: "Recruitment", href: "/recruitment" },
+    ],
+  },
+  {
+    label: "Feedback",
+    items: [
+      { label: "Suggestions", href: "/suggestions" },
+      { label: "Bug Reports", href: "/reports" },
+    ],
+  },
+];
+
+function Dropdown({ group }: { group: NavGroup }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    if (open) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+  return (
+    <div className={styles.dropdown} ref={ref}>
+      <button
+        className={styles.dropdownToggle}
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+      >
+        {group.label}
+        <span className={styles.chevron} aria-hidden="true" />
+      </button>
+      {open && (
+        <div className={styles.dropdownMenu}>
+          {group.items.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={styles.dropdownItem}
+              onClick={() => setOpen(false)}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -19,23 +115,10 @@ export default function Navbar() {
         </Link>
 
         <div className={styles.links}>
-          <Link href="/tools/mining">Mining</Link>
-          <Link href="/tools/mining-locations">Where to Mine</Link>
-          <Link href="/tools/salvage">Salvage</Link>
-          <Link href="/tools/refinery">Refinery</Link>
-          <Link href="/tools/trade">Trade</Link>
-          <Link href="/tools/loadout">Loadout</Link>
-          <Link href="/tools/profit">Profit</Link>
-          <Link href="/ships">Ships</Link>
-          <Link href="/guides/wikelo">Wikelo</Link>
-          <Link href="/locations">Locations</Link>
-          <Link href="/guides/beginner">Guide</Link>
-          <Link href="/community/friends">Community</Link>
-          <Link href="/orgs">Orgs</Link>
-          <Link href="/recruitment">Recruit</Link>
-          <Link href="/suggestions">Suggest</Link>
-          <Link href="/reports">Reports</Link>
-          {user?.isAdmin && <Link href="/admin">Admin</Link>}
+          {NAV_GROUPS.map((group) => (
+            <Dropdown key={group.label} group={group} />
+          ))}
+          {user?.isAdmin && <Link href="/admin" className={styles.adminLink}>Admin</Link>}
         </div>
 
         <button
@@ -91,23 +174,21 @@ export default function Navbar() {
 
       {menuOpen && (
         <div className={`${styles.mobileMenu} ${styles.mobileMenuOpen}`}>
-          <Link href="/tools/mining" onClick={closeMenu}>Mining</Link>
-          <Link href="/tools/mining-locations" onClick={closeMenu}>Where to Mine</Link>
-          <Link href="/tools/salvage" onClick={closeMenu}>Salvage</Link>
-          <Link href="/tools/refinery" onClick={closeMenu}>Refinery</Link>
-          <Link href="/tools/trade" onClick={closeMenu}>Trade</Link>
-          <Link href="/tools/loadout" onClick={closeMenu}>Loadout</Link>
-          <Link href="/tools/profit" onClick={closeMenu}>Profit</Link>
-          <Link href="/ships" onClick={closeMenu}>Ships</Link>
-          <Link href="/guides/wikelo" onClick={closeMenu}>Wikelo</Link>
-          <Link href="/locations" onClick={closeMenu}>Locations</Link>
-          <Link href="/guides/beginner" onClick={closeMenu}>Guide</Link>
-          <Link href="/community/friends" onClick={closeMenu}>Community</Link>
-          <Link href="/orgs" onClick={closeMenu}>Orgs</Link>
-          <Link href="/recruitment" onClick={closeMenu}>Recruit</Link>
-          <Link href="/suggestions" onClick={closeMenu}>Suggest</Link>
-          <Link href="/reports" onClick={closeMenu}>Reports</Link>
-          {user?.isAdmin && <Link href="/admin" onClick={closeMenu}>Admin</Link>}
+          {NAV_GROUPS.map((group) => (
+            <div key={group.label} className={styles.mobileGroup}>
+              <div className={styles.mobileGroupLabel}>{group.label}</div>
+              {group.items.map((item) => (
+                <Link key={item.href} href={item.href} onClick={closeMenu}>
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          ))}
+          {user?.isAdmin && (
+            <div className={styles.mobileGroup}>
+              <Link href="/admin" onClick={closeMenu}>Admin</Link>
+            </div>
+          )}
 
           <div className={styles.mobileAuth}>
             {user ? (
