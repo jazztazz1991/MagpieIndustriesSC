@@ -204,7 +204,7 @@ export default function AdminDashboardPage() {
                   <td>{u.isAdmin && <span className={styles.adminBadge}>ADMIN</span>}</td>
                   <td>{new Date(u.createdAt).toLocaleDateString()}</td>
                   <td>
-                    {u.id !== user.id && (
+                    {u.id !== user.id && user.isSuperAdmin && (
                       <button className={styles.toggleBtn} onClick={() => toggleAdmin(u.id, !u.isAdmin)}>
                         {u.isAdmin ? "Remove Admin" : "Make Admin"}
                       </button>

@@ -1,0 +1,181 @@
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toolbar h2 {
+  margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.addButton {
+  padding: 0.4rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  color: var(--accent);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.addButton:hover {
+  background: rgba(74, 158, 255, 0.08);
+}
+
+.addRow {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.addRow label {
+  margin-bottom: 0;
+}
+
+.addRow label:first-child {
+  flex: 2;
+  min-width: 140px;
+}
+
+.addRow label:nth-child(5) {
+  flex: 2;
+  min-width: 140px;
+}
+
+.numInput {
+  width: 80px;
+  text-align: right;
+}
+
+.saveBtn {
+  padding: 0.35rem 0.65rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.saveBtn:hover {
+  opacity: 0.9;
+}
+
+.cancelBtn {
+  padding: 0.35rem 0.65rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.cancelBtn:hover {
+  border-color: var(--text-secondary);
+}
+
+.editBtn {
+  padding: 0.3rem 0.55rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.editBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.deleteBtn {
+  padding: 0.3rem 0.55rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+.actions {
+  display: flex;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.dateCell {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable:hover {
+  color: var(--accent);
+}
+
+.cellInput {
+  width: 100%;
+  min-width: 80px;
+}
+
+.cellNum {
+  width: 70px;
+  text-align: right;
+}
+
+.errorBanner {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid #ff6b6b;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ff6b6b;
+  font-size: 0.9rem;
+}
+
+.dismissBtn {
+  background: none;
+  border: none;
+  color: #ff6b6b;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .addRow {
+    flex-direction: column;
+  }
+
+  .addRow input,
+  .numInput {
+    width: 100%;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}

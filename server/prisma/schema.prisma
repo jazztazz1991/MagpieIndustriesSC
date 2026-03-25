@@ -19,6 +19,7 @@ model User {
   createdAt              DateTime              @default(now())
   updatedAt              DateTime              @updatedAt
   isAdmin                Boolean               @default(false)
+  isSuperAdmin           Boolean               @default(false)
   accounts               Account[]
   activities             Activity[]
   comments               Comment[]
@@ -39,6 +40,7 @@ model User {
   suggestionVotes        SuggestionVote[]
   suggestions            Suggestion[]          @relation("suggestionAuthor")
   treasuryTransactions   TreasuryTransaction[] @relation("treasuryTransactions")
+  inventoryNotes         InventoryNote[]
 
   @@map("users")
 }
@@ -397,6 +399,22 @@ model SuggestionVote {
 
   @@unique([suggestionId, userId])
   @@map("suggestion_votes")
+}
+
+model InventoryNote {
+  id         String   @id @default(cuid())
+  userId     String
+  itemName   String
+  totalCount Int      @default(0)
+  sellCount  Int      @default(0)
+  keepCount  Int      @default(0)
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("inventory_notes")
 }
 
 model CraftRecipe {

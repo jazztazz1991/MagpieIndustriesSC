@@ -18,6 +18,7 @@ interface User {
   bio?: string;
   role: string;
   isAdmin?: boolean;
+  isSuperAdmin?: boolean;
 }
 
 interface AuthContextType {

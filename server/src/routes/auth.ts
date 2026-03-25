@@ -50,7 +50,7 @@ function toPublicUser(user: { id: string; username: string; rsiHandle: string | 
   };
 }
 
-function toProfileUser(user: { id: string; username: string; email: string; rsiHandle: string | null; avatarUrl: string | null; bio: string | null; role: string; isAdmin: boolean; createdAt: Date }) {
+function toProfileUser(user: { id: string; username: string; email: string; rsiHandle: string | null; avatarUrl: string | null; bio: string | null; role: string; isAdmin: boolean; isSuperAdmin: boolean; createdAt: Date }) {
   return {
     id: user.id,
     username: user.username,
@@ -60,6 +60,7 @@ function toProfileUser(user: { id: string; username: string; email: string; rsiH
     bio: user.bio,
     role: user.role,
     isAdmin: user.isAdmin,
+    isSuperAdmin: user.isSuperAdmin,
     createdAt: user.createdAt,
   };
 }
@@ -238,6 +239,7 @@ authRouter.get("/me", requireAuth, async (req, res) => {
         bio: true,
         role: true,
         isAdmin: true,
+        isSuperAdmin: true,
         createdAt: true,
       },
     });
@@ -282,6 +284,7 @@ authRouter.patch("/me", requireAuth, async (req, res) => {
         bio: true,
         role: true,
         isAdmin: true,
+        isSuperAdmin: true,
         createdAt: true,
       },
     });

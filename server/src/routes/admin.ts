@@ -82,10 +82,21 @@ adminRouter.get("/users", async (req, res) => {
 
 const toggleAdminSchema = z.object({ isAdmin: z.boolean() });
 
-// PATCH /api/admin/users/:userId
+// PATCH /api/admin/users/:userId — super admin only
 adminRouter.patch("/users/:userId", async (req, res) => {
   try {
     const { userId: requesterId } = (req as unknown as Request & { user: AuthPayload }).user;
+
+    const requester = await prisma.user.findUnique({
+      where: { id: requesterId },
+      select: { isSuperAdmin: true },
+    });
+
+    if (!requester?.isSuperAdmin) {
+      res.status(403).json({ success: false, error: "Super admin access required" });
+      return;
+    }
+
     const targetId = req.params.userId as string;
 
     if (targetId === requesterId) {

@@ -26,6 +26,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Trade", href: "/tools/trade" },
       { label: "Loadout", href: "/tools/loadout" },
       { label: "Profit", href: "/tools/profit" },
+      { label: "Notepad", href: "/tools/notepad" },
     ],
   },
   {

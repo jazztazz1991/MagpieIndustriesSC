@@ -1,3 +1,6 @@
+// Auto-generated from scunpacked-data — 4.6.0-LIVE.11218823
+// Run: npx ts-node --compiler-options '{"module":"commonjs"}' scripts/sync-mining-data.ts
+
 export interface MiningShip {
   name: string;
   manufacturer: string;
@@ -7,11 +10,20 @@ export interface MiningShip {
   description: string;
   crewMin: number;
   crewMax: number;
-  miningBags?: number; // for ROC
   isVehicle?: boolean;
 }
 
 export const miningShips: MiningShip[] = [
+  {
+    name: "MOLE",
+    manufacturer: "ARGO",
+    size: "medium",
+    cargoSCU: 96,
+    miningTurrets: 3,
+    crewMin: 1,
+    crewMax: 5,
+    description: "",
+  },
   {
     name: "Prospector",
     manufacturer: "MISC",
@@ -20,38 +32,28 @@ export const miningShips: MiningShip[] = [
     miningTurrets: 1,
     crewMin: 1,
     crewMax: 1,
-    description: "Solo mining ship. One size 1 mining laser. 32 SCU ore capacity. The workhorse of solo miners.",
-  },
-  {
-    name: "MOLE",
-    manufacturer: "ARGO",
-    size: "medium",
-    cargoSCU: 96,
-    miningTurrets: 3,
-    crewMin: 1,
-    crewMax: 4,
-    description: "Multi-crew mining ship. Three size 1 mining lasers. 96 SCU across 3 saddle bags (32 each). Best with a full crew.",
+    description: "",
   },
   {
     name: "ROC",
     manufacturer: "Greycat Industrial",
     size: "small",
-    cargoSCU: 0.8,
+    cargoSCU: 1.2,
     miningTurrets: 1,
     crewMin: 1,
     crewMax: 1,
     isVehicle: true,
-    description: "Ground mining vehicle for hand-mineable gems (Hadanite, Dolivine, Aphorite). Fits in Cutlass Black, Nomad, etc.",
+    description: "",
   },
   {
     name: "ROC-DS",
     manufacturer: "Greycat Industrial",
     size: "small",
-    cargoSCU: 1.6,
+    cargoSCU: 3.4,
     miningTurrets: 2,
     crewMin: 1,
     crewMax: 2,
     isVehicle: true,
-    description: "Dual-seat ROC variant with two mining arms and double storage. Requires a larger cargo hold.",
+    description: "",
   },
 ];

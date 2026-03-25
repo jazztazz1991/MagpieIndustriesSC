@@ -22,6 +22,7 @@ import { suggestionsRouter } from "./routes/suggestions.js";
 import { craftRecipesRouter } from "./routes/craft-recipes.js";
 import { missionRecipesRouter } from "./routes/mission-recipes.js";
 import { gameDataRouter } from "./routes/game-data.js";
+import { inventoryNotesRouter } from "./routes/inventory-notes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -51,6 +52,7 @@ app.use("/api/suggestions", suggestionsRouter);
 app.use("/api/craft-recipes", craftRecipesRouter);
 app.use("/api/mission-recipes", missionRecipesRouter);
 app.use("/api/game-data", gameDataRouter);
+app.use("/api/inventory-notes", inventoryNotesRouter);
 
 app.listen(PORT, () => {
   console.log(`[server] Running on http://localhost:${PORT}`);
