@@ -8,7 +8,8 @@ services:
     buildCommand: |
       npm install --include=dev
       npm run build --workspace=shared
-      cd server && npx prisma generate && npx prisma migrate deploy && npx tsx prisma/seed-game-data.ts && npm run build
+      npx esbuild server/prisma/seed-game-data.ts --bundle --platform=node --format=esm --outfile=server/prisma/seed-game-data.mjs --external:@prisma/client
+      cd server && npx prisma generate && npx prisma migrate deploy && node prisma/seed-game-data.mjs && npm run build
     startCommand: node server/dist/index.js
     envVars:
       - key: NODE_ENV

@@ -3,3 +3,6 @@ node_modules
 .env
 
 /src/generated/prisma
+
+# Build artifact from esbuild seed bundling
+prisma/seed-game-data.mjs
