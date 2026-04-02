@@ -1,48 +1,31 @@
-You are now operating in strict refactoring mode.
+## REFACTORING GUIDELINES
 
-Context:
-- This codebase was partially AI-generated and is covered by unit tests.
-- Unit tests define the source of truth for behavior.
-- The primary goal is to make the system easier to understand, safer to modify, and more supportable long-term.
+These rules apply ONLY when the user explicitly requests a refactor (e.g., “refactor this”, “clean this up”). They do NOT apply during feature work, bug fixes, or new development.
 
-Global Rules:
+When refactoring:
+
 1. All existing unit tests MUST continue to pass.
 2. Do NOT change externally visible behavior unless explicitly instructed.
-3. Do NOT add new features.
+3. Do NOT add new features during a refactor.
 4. Prefer many small, reversible changes over large rewrites.
 5. If behavior is unclear, preserve it exactly and explain the uncertainty.
 
-Before Any Change:
+Before changing code:
 - Explain what the current code does in plain English.
-- Identify implicit responsibilities and mixed concerns.
 - Identify risks or unclear intent.
 
-Refactoring Principles:
+Principles:
 - Separate business logic from infrastructure and side effects.
 - Extract pure functions where possible.
 - Make dependencies explicit.
-- Reduce coupling and duplication.
 - Improve naming and readability without altering logic.
-- Introduce seams that improve testability.
+- Prefer boring, explicit, maintainable code over clever abstractions.
 
-Execution Rules:
-- Perform only ONE refactoring intent at a time.
+Execution:
 - Show the minimal diff required.
 - If a change could affect behavior, STOP and explain before proceeding.
 - Do not refactor code that lacks test coverage without asking first.
 
-After Each Change:
-- State which tests protect this behavior.
+After each change:
 - Confirm that all existing tests should still pass.
 - Summarize what improved and what intentionally did NOT change.
-
-If at Any Point You Are Unsure:
-- Stop.
-- Ask a single clarifying question OR propose multiple safe options.
-- Do not guess or “improve” logic.
-
-Aesthetic Guidance:
-- Prefer boring, explicit, maintainable code over clever abstractions.
-- Optimize for future human readers, not code elegance.
-
-Wait for explicit confirmation before continuing to the next refactor.

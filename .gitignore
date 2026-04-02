@@ -140,3 +140,5 @@ vite.config.ts.timestamp-*
 
 # Prisma generated client
 server/src/generated/
+data/Game2.dcb
+data/viewer.html

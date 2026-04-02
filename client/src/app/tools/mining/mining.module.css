@@ -671,6 +671,120 @@
   border-radius: 0 4px 4px 0;
 }
 
+/* Composition rows (quality-aware) */
+.compRows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.compRowHeader {
+  display: grid;
+  grid-template-columns: 1fr 80px 120px 36px;
+  gap: 0.5rem;
+  padding: 0 0.25rem 0.25rem;
+  font-size: 0.7rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.compRowOreHeader { }
+.compRowPctHeader { text-align: right; }
+.compRowQualHeader { text-align: right; }
+.compRowActHeader { }
+
+.compRow {
+  display: grid;
+  grid-template-columns: 1fr 80px 120px 36px;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.compRowOre {
+  padding: 0.35rem 0.5rem;
+  background: #12121f;
+  border: 1px solid #2a2a44;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 0.85rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.compRowOre:focus { border-color: #c89b3c; }
+
+.compRowPct {
+  padding: 0.35rem 0.5rem;
+  background: #12121f;
+  border: 1px solid #2a2a44;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 0.85rem;
+  text-align: right;
+  outline: none;
+}
+
+.compRowPct:focus { border-color: #c89b3c; }
+
+.compRowQual {
+  padding: 0.35rem 0.5rem;
+  background: #12121f;
+  border: 1px solid #2a2a44;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 0.85rem;
+  text-align: right;
+  outline: none;
+}
+
+.compRowQual:focus { border-color: #c89b3c; }
+
+.compRowRemove {
+  background: none;
+  border: 1px solid #2a2a44;
+  border-radius: 4px;
+  color: #666;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.compRowRemove:hover {
+  color: #f87171;
+  border-color: #f87171;
+}
+
+.compRowFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.5rem;
+}
+
+.compAddBtn {
+  padding: 0.35rem 0.75rem;
+  background: #2a2a44;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #ccc;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.compAddBtn:hover {
+  background: #3a3a55;
+}
+
+/* Quality color coding */
+.qualityRed { color: #f87171; }
+.qualityYellow { color: #facc15; }
+.qualityGreen { color: #4ade80; }
+.qualityBlue { color: #60a5fa; }
+
 /* Sliders (kept for potential reuse) */
 .slider {
   -webkit-appearance: none;

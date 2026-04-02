@@ -21,11 +21,9 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: "Mining Calculator", href: "/tools/mining" },
       { label: "Where to Mine", href: "/tools/mining-locations" },
-      { label: "Salvage", href: "/tools/salvage" },
       { label: "Refinery", href: "/tools/refinery" },
-      { label: "Trade", href: "/tools/trade" },
       { label: "Loadout", href: "/tools/loadout" },
-      { label: "Profit", href: "/tools/profit" },
+      { label: "Ship Compare", href: "/tools/ship-compare" },
       { label: "Notepad", href: "/tools/notepad" },
     ],
   },

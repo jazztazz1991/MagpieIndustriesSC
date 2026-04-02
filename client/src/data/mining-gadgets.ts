@@ -1,5 +1,5 @@
-// Auto-generated from scunpacked-data — 4.6.0-LIVE.11218823
-// Run: npx ts-node --compiler-options '{"module":"commonjs"}' scripts/sync-mining-data.ts
+// Auto-generated from Data.p4k — sc-alpha-4.7.0-4.7.175.49567
+// Run: npm run sync:generate
 
 export interface MiningModule {
   name: string;

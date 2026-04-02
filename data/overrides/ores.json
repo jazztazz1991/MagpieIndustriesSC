@@ -1,0 +1,331 @@
+{
+  "_comment": "Override data for ores not available in DataForge. Keyed by DataForge filename (without extension). Names updated for 4.7.0.",
+  "quantainium_raw": {
+    "name": "Quantanium",
+    "abbrev": "QUAN",
+    "type": "rock",
+    "rarity": "legendary",
+    "valuePerSCU": 88000,
+    "description": "Extremely volatile and valuable. Must be refined quickly before it destabilizes."
+  },
+  "savrilium_ore": {
+    "name": "Savrilium",
+    "abbrev": "SAVR",
+    "type": "rock",
+    "rarity": "legendary",
+    "valuePerSCU": 6800,
+    "description": "Legendary-tier mineral. Extremely high instability and resistance."
+  },
+  "sileron_ore": {
+    "name": "Stileron",
+    "abbrev": "STIL",
+    "type": "rock",
+    "rarity": "legendary",
+    "valuePerSCU": 7800,
+    "description": "Legendary-tier mineral with very high instability."
+  },
+  "bexalite_raw": {
+    "name": "Bexalite",
+    "abbrev": "BEX",
+    "type": "rock",
+    "rarity": "rare",
+    "valuePerSCU": 64000,
+    "description": "Rare and hard to crack, but very profitable."
+  },
+  "taranite_raw": {
+    "name": "Taranite",
+    "abbrev": "TARA",
+    "type": "rock",
+    "rarity": "rare",
+    "valuePerSCU": 52000,
+    "description": "High-value mineral found on moons and asteroids."
+  },
+  "laranite_raw": {
+    "name": "Laranite",
+    "abbrev": "LARA",
+    "type": "metal",
+    "rarity": "uncommon",
+    "valuePerSCU": 28000,
+    "description": "Reliable high-value metal. A staple for experienced miners."
+  },
+  "agricium_ore": {
+    "name": "Agricium",
+    "abbrev": "AGRI",
+    "type": "metal",
+    "rarity": "uncommon",
+    "valuePerSCU": 25000,
+    "description": "Valuable metal used in advanced electronics manufacturing."
+  },
+  "hephaestanite_raw": {
+    "name": "Hephaestanite",
+    "abbrev": "HEPH",
+    "type": "rock",
+    "rarity": "common",
+    "valuePerSCU": 15000,
+    "description": "Common-tier mineral with good value."
+  },
+  "borase_ore": {
+    "name": "Borase",
+    "abbrev": "BORS",
+    "type": "rock",
+    "rarity": "rare",
+    "valuePerSCU": 13000,
+    "description": "Decent mid-tier mineral. Commonly found alongside higher-value ores."
+  },
+  "riccite_ore": {
+    "name": "Riccite",
+    "abbrev": "RICC",
+    "type": "rock",
+    "rarity": "epic",
+    "valuePerSCU": 9200,
+    "description": "Epic-tier mineral with moderate instability."
+  },
+  "ouratite_raw": {
+    "name": "Ouratite",
+    "abbrev": "OURA",
+    "type": "rock",
+    "rarity": "epic",
+    "valuePerSCU": 8500,
+    "description": "Epic-tier mineral. High instability but valuable."
+  },
+  "lindinium_ore": {
+    "name": "Lindinium",
+    "abbrev": "LIND",
+    "type": "rock",
+    "rarity": "epic",
+    "valuePerSCU": 5500,
+    "description": "Epic-tier mineral with extreme instability and resistance."
+  },
+  "aslarite_raw": {
+    "name": "Aslarite",
+    "abbrev": "ASLA",
+    "type": "rock",
+    "rarity": "uncommon",
+    "valuePerSCU": 5000,
+    "description": "Uncommon mineral with high instability."
+  },
+  "torite_ore": {
+    "name": "Torite",
+    "abbrev": "TORI",
+    "type": "rock",
+    "rarity": "uncommon",
+    "valuePerSCU": 4800,
+    "description": "Uncommon mineral. Moderate value for low effort."
+  },
+  "titanium_ore": {
+    "name": "Titanium",
+    "abbrev": "TITA",
+    "type": "metal",
+    "rarity": "uncommon",
+    "valuePerSCU": 8100,
+    "description": "Strong industrial metal with steady demand."
+  },
+  "diamond_raw": {
+    "name": "Diamond",
+    "abbrev": "DIAM",
+    "type": "gem",
+    "rarity": "rare",
+    "valuePerSCU": 6900,
+    "description": "Precious gemstone found in rocky deposits."
+  },
+  "gold_ore": {
+    "name": "Gold",
+    "abbrev": "GOLD",
+    "type": "metal",
+    "rarity": "rare",
+    "valuePerSCU": 6500,
+    "description": "Classic precious metal. Stable and moderately profitable."
+  },
+  "copper_ore": {
+    "name": "Copper",
+    "abbrev": "COPP",
+    "type": "metal",
+    "rarity": "common",
+    "valuePerSCU": 6100,
+    "description": "Common industrial metal. Easy to mine, low profit margin."
+  },
+  "beryl_raw": {
+    "name": "Beryl",
+    "abbrev": "BERL",
+    "type": "gem",
+    "rarity": "rare",
+    "valuePerSCU": 4300,
+    "description": "Common gemstone mineral with decent returns."
+  },
+  "tungsten_ore": {
+    "name": "Tungsten",
+    "abbrev": "TUNG",
+    "type": "metal",
+    "rarity": "uncommon",
+    "valuePerSCU": 3900,
+    "description": "Dense industrial metal used in weapon manufacturing."
+  },
+  "quartz_raw": {
+    "name": "Quartz",
+    "abbrev": "QUAR",
+    "type": "gem",
+    "rarity": "common",
+    "valuePerSCU": 3200,
+    "description": "Abundant crystalline mineral. Low value but easy to extract."
+  },
+  "corundum_raw": {
+    "name": "Corundum",
+    "abbrev": "CORU",
+    "type": "gem",
+    "rarity": "common",
+    "valuePerSCU": 2600,
+    "description": "Low-value gemstone. Common filler material in deposits."
+  },
+  "iron_ore": {
+    "name": "Iron",
+    "abbrev": "IRON",
+    "type": "metal",
+    "rarity": "common",
+    "valuePerSCU": 1800,
+    "description": "Abundant base metal. Very common filler in most rock types."
+  },
+  "tin_ore": {
+    "name": "Tin",
+    "abbrev": "TIN",
+    "type": "metal",
+    "rarity": "common",
+    "valuePerSCU": 1600,
+    "description": "Soft common metal. Low value, very easy to mine."
+  },
+  "aluminium_ore": {
+    "name": "Aluminium",
+    "abbrev": "ALUM",
+    "type": "metal",
+    "rarity": "common",
+    "valuePerSCU": 1300,
+    "description": "Abundant and cheap. Often found as filler in rock deposits."
+  },
+  "ice_raw": {
+    "name": "Ice",
+    "abbrev": "ICE",
+    "type": "rock",
+    "rarity": "common",
+    "valuePerSCU": 200,
+    "description": "Frozen water. Nearly worthless but extremely easy to extract."
+  },
+  "silicon_raw": {
+    "name": "Silicon",
+    "abbrev": "SILI",
+    "type": "rock",
+    "rarity": "common",
+    "valuePerSCU": 300,
+    "description": "Common rock material. Essentially worthless filler."
+  },
+  "minableelement_fps_hadanite": {
+    "name": "Hadanite",
+    "abbrev": "HADA",
+    "type": "gem",
+    "valuePerSCU": 27500,
+    "miningType": "fps",
+    "description": "Hand-mineable pink crystal found on cave floors. No ship laser needed."
+  },
+  "minableelement_fps_aphorite": {
+    "name": "Aphorite",
+    "abbrev": "APHO",
+    "type": "gem",
+    "valuePerSCU": 15200,
+    "miningType": "fps",
+    "description": "Hand-mineable crystal found in caves."
+  },
+  "minableelement_fps_dolivine": {
+    "name": "Dolivine",
+    "abbrev": "DOLI",
+    "type": "gem",
+    "valuePerSCU": 13000,
+    "miningType": "fps",
+    "description": "Hand-mineable green crystal."
+  },
+  "minableelement_fps_carinite": {
+    "name": "Carinite",
+    "abbrev": "CARI",
+    "type": "rock",
+    "valuePerSCU": 0,
+    "miningType": "fps",
+    "description": "Hand-mineable deposit found on cave walls."
+  },
+  "minableelement_fps_janalite": {
+    "name": "Janalite",
+    "abbrev": "JANA",
+    "type": "rock",
+    "valuePerSCU": 0,
+    "miningType": "fps",
+    "description": "Hand-mineable mineral deposit."
+  },
+  "minableelement_fps_saldynium": {
+    "name": "Saldynium",
+    "abbrev": "SALD",
+    "type": "rock",
+    "valuePerSCU": 0,
+    "miningType": "fps",
+    "description": "Hand-mineable mineral deposit."
+  },
+  "minableelement_fps_flowstone": {
+    "name": "Flowstone",
+    "abbrev": "FLOW",
+    "type": "rock",
+    "valuePerSCU": 0,
+    "miningType": "fps",
+    "description": "Hand-mineable mineral deposit."
+  },
+  "minableelement_fps_sadaryx": {
+    "name": "Sadaryx",
+    "abbrev": "SADA",
+    "type": "rock",
+    "valuePerSCU": 0,
+    "miningType": "fps",
+    "description": "Hand-mineable mineral deposit."
+  },
+  "minableelement_fps_carinitepure": {
+    "name": "Carinite (Pure)",
+    "abbrev": "CARP",
+    "type": "rock",
+    "valuePerSCU": 0,
+    "miningType": "fps",
+    "description": "Pure hand-mineable carinite deposit."
+  },
+  "minableelement_fps_vlklimpet": {
+    "name": "Valakkar Limpet",
+    "abbrev": "VLKL",
+    "type": "rock",
+    "valuePerSCU": 0,
+    "miningType": "fps",
+    "description": "Hand-mineable creature-related deposit."
+  },
+  "minableelement_groundvehicle_beradom": {
+    "name": "Beradom",
+    "abbrev": "BERA",
+    "type": "rock",
+    "valuePerSCU": 0,
+    "miningType": "ground",
+    "description": "Ground-vehicle mineable deposit."
+  },
+  "minableelement_groundvehicle_carinite": {
+    "name": "Carinite (Ground)",
+    "abbrev": "CARI",
+    "type": "rock",
+    "valuePerSCU": 0,
+    "miningType": "ground",
+    "description": "Ground-vehicle mineable deposit."
+  },
+  "minableelement_groundvehicle_feynmaline": {
+    "name": "Feynmaline",
+    "abbrev": "FEYN",
+    "type": "rock",
+    "valuePerSCU": 0,
+    "miningType": "ground",
+    "description": "Ground-vehicle mineable deposit."
+  },
+  "minableelement_groundvehicle_glacosite": {
+    "name": "Glacosite",
+    "abbrev": "GLAC",
+    "type": "rock",
+    "valuePerSCU": 0,
+    "miningType": "ground",
+    "description": "Ground-vehicle mineable deposit."
+  }
+}

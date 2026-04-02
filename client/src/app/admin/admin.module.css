@@ -271,3 +271,155 @@
   margin-bottom: 1rem;
   flex-wrap: wrap;
 }
+
+/* Spoiler — hides sensitive text until clicked */
+.spoiler {
+  background: var(--text-secondary, #8888a0);
+  color: transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, color 0.15s;
+  padding: 0 0.15rem;
+}
+
+.spoiler:hover {
+  background: var(--text-secondary, #8888a0);
+  opacity: 0.8;
+}
+
+.spoilerRevealed {
+  background: transparent;
+  color: inherit;
+  cursor: default;
+  user-select: text;
+}
+
+/* Back link */
+.backLink {
+  color: var(--accent, #4a9eff);
+  font-size: 0.85rem;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+/* Override badge */
+.overrideBadge {
+  background: #3a3a1e;
+  color: #e0c050;
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  font-weight: 600;
+  margin-left: 0.35rem;
+  vertical-align: middle;
+}
+
+.revertBtn {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #e05050;
+  background: transparent;
+  color: #e05050;
+  cursor: pointer;
+  font-size: 0.7rem;
+}
+
+.revertBtn:hover {
+  background: #3a1e1e;
+}
+
+/* Data browser sub-tabs */
+.subTabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.subTab {
+  padding: 0.35rem 0.75rem;
+  background: var(--bg-secondary, #12121a);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 4px;
+  color: var(--text-secondary, #8888a0);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.subTab:hover {
+  border-color: var(--accent, #4a9eff);
+  color: var(--text-primary, #e0e0e8);
+}
+
+.subTabActive {
+  border-color: var(--accent, #4a9eff);
+  color: var(--accent, #4a9eff);
+  background: rgba(74, 158, 255, 0.08);
+}
+
+.itemCount {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8888a0);
+  margin-bottom: 0.75rem;
+}
+
+/* Edit modal overlay */
+.editOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.editModal {
+  background: var(--bg-primary, #0a0a14);
+  border: 1px solid var(--border, #1e1e2e);
+  border-radius: 8px;
+  padding: 1.5rem;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.editTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e8);
+  margin-bottom: 1rem;
+}
+
+.editField {
+  margin-bottom: 0.75rem;
+}
+
+.editLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #8888a0);
+  margin-bottom: 0.15rem;
+}
+
+.editInput {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg-darker, #1a1a2e);
+  border: 1px solid var(--border, #333);
+  color: var(--text-primary, #e0e0e0);
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.editActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}

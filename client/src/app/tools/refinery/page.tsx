@@ -2,18 +2,22 @@
 
 import { useState, useMemo } from "react";
 import type { Ore } from "@/data/mining";
-import { useGameData } from "@/hooks/useGameData";
+import { ores as staticOres } from "@/data/mining";
+import { refineryMethods as staticRefineryMethods } from "@/data/refinery";
+import { useWithOverrides } from "@/hooks/useOverrides";
 import { calculateRefineryOutput } from "@/domain/refinery";
+import { qualityMultiplier } from "@/domain/mining";
 import styles from "../tools.module.css";
 
 interface OreEntry {
   ore: Ore;
   scu: number;
+  quality: number;
 }
 
 export default function RefineryOptimizer() {
-  const { data: gameData, loading: gameDataLoading } = useGameData();
-  const { ores, refineryMethods } = gameData;
+  const { data: ores } = useWithOverrides("ore", staticOres, (o) => o.name);
+  const { data: refineryMethods } = useWithOverrides("refinery_method", staticRefineryMethods, (m) => m.name);
 
   const valuableOres = useMemo(() => ores.filter((o) => o.valuePerSCU > 0), [ores]);
 
@@ -21,14 +25,14 @@ export default function RefineryOptimizer() {
   // Initialize batch when ores load
   const initBatch = batch.length === 0 && valuableOres.length > 0;
   if (initBatch) {
-    setBatch([{ ore: valuableOres[0], scu: 32 }]);
+    setBatch([{ ore: valuableOres[0], scu: 32, quality: 500 }]);
   }
 
   const addOre = () => {
     const unused = valuableOres.find(
       (o) => !batch.some((b) => b.ore.name === o.name)
     );
-    if (unused) setBatch([...batch, { ore: unused, scu: 8 }]);
+    if (unused) setBatch([...batch, { ore: unused, scu: 8, quality: 500 }]);
   };
 
   const removeOre = (index: number) => {
@@ -48,15 +52,25 @@ export default function RefineryOptimizer() {
     setBatch(updated);
   };
 
+  const updateQuality = (index: number, quality: number) => {
+    const updated = [...batch];
+    updated[index] = { ...updated[index], quality };
+    setBatch(updated);
+  };
+
   // Calculate totals per method across all ores in the batch
   const comparisons = useMemo(
     () =>
       refineryMethods.map((method) => {
-        const perOre = batch.map((entry) => ({
-          ore: entry.ore.name,
-          scu: entry.scu,
-          result: calculateRefineryOutput(entry.scu, entry.ore.valuePerSCU, method),
-        }));
+        const perOre = batch.map((entry) => {
+          const adjustedValue = entry.ore.valuePerSCU * qualityMultiplier(entry.quality);
+          return {
+            ore: entry.ore.name,
+            scu: entry.scu,
+            quality: entry.quality,
+            result: calculateRefineryOutput(entry.scu, adjustedValue, method),
+          };
+        });
 
         const totalOutputSCU = perOre.reduce((s, p) => s + p.result.outputSCU, 0);
         const totalGross = perOre.reduce((s, p) => s + p.result.grossValue, 0);
@@ -73,15 +87,6 @@ export default function RefineryOptimizer() {
   const bestProfit = Math.max(...comparisons.map((c) => c.totalProfit));
   const bestEfficiency = Math.max(...comparisons.map((c) => c.profitPerMinute));
   const totalInputSCU = batch.reduce((s, b) => s + b.scu, 0);
-
-  if (gameDataLoading) {
-    return (
-      <div className={styles.page}>
-        <h1 className={styles.title}>Refinery Optimizer</h1>
-        <p className={styles.subtitle}>Loading game data...</p>
-      </div>
-    );
-  }
 
   return (
     <div className={styles.page}>
@@ -119,6 +124,18 @@ export default function RefineryOptimizer() {
                 aria-label={`SCU for ${entry.ore.name}`}
               />
               <span className={styles.pctLabel}>SCU</span>
+              <input
+                type="number"
+                value={entry.quality}
+                onChange={(e) => updateQuality(i, Number(e.target.value))}
+                min={0}
+                max={1000}
+                step={1}
+                className={styles.pctInput}
+                style={{ width: "80px" }}
+                aria-label={`Quality for ${entry.ore.name}`}
+              />
+              <span className={styles.pctLabel}>RAW</span>
               <button
                 onClick={() => removeOre(i)}
                 className={styles.removeBtn}

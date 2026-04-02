@@ -1,5 +1,5 @@
-// Auto-generated from scunpacked-data — 4.6.0-LIVE.11218823
-// Run: npx ts-node --compiler-options '{"module":"commonjs"}' scripts/sync-mining-data.ts
+// Auto-generated from Data.p4k — sc-alpha-4.7.0-4.7.175.49567
+// Run: npm run sync:generate
 
 export interface MiningShip {
   name: string;
@@ -14,6 +14,16 @@ export interface MiningShip {
 }
 
 export const miningShips: MiningShip[] = [
+  {
+    name: "Golem",
+    manufacturer: "Drake",
+    size: "small",
+    cargoSCU: 12,
+    miningTurrets: 1,
+    crewMin: 1,
+    crewMax: 1,
+    description: "",
+  },
   {
     name: "MOLE",
     manufacturer: "ARGO",
@@ -50,7 +60,7 @@ export const miningShips: MiningShip[] = [
     manufacturer: "Greycat Industrial",
     size: "small",
     cargoSCU: 3.4,
-    miningTurrets: 2,
+    miningTurrets: 1,
     crewMin: 1,
     crewMax: 2,
     isVehicle: true,

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { gatheringItems } from "@/data/wikelo";
+import { gatheringItems as staticGatheringItems } from "@/data/wikelo";
+import { useWithOverrides } from "@/hooks/useOverrides";
 import styles from "../../guides.module.css";
 
 const categoryColors: Record<string, string> = {
@@ -16,6 +17,7 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function ItemGathering() {
+  const { data: gatheringItems } = useWithOverrides("wikelo_gathering_item", staticGatheringItems, (g) => g.name);
   const [filterCategory, setFilterCategory] = useState("all");
 
   const filtered =

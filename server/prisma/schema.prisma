@@ -620,6 +620,18 @@ model GameMiningLocation {
   @@map("game_mining_locations")
 }
 
+model GameDataOverride {
+  id        String   @id @default(cuid())
+  category  String
+  itemKey   String
+  overrides Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([category, itemKey])
+  @@map("game_data_overrides")
+}
+
 enum JoinRequestStatus {
   PENDING
   APPROVED

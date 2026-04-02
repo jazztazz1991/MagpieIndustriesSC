@@ -14,12 +14,10 @@ interface SearchResult {
 
 const pages: SearchResult[] = [
   { name: "Mining Calculator", path: "/tools/mining", category: "Tools" },
-  { name: "Salvage Calculator", path: "/tools/salvage", category: "Tools" },
   { name: "Refinery Optimizer", path: "/tools/refinery", category: "Tools" },
-  { name: "Trade Route Planner", path: "/tools/trade", category: "Tools" },
   { name: "Loadout Planner", path: "/tools/loadout", category: "Tools" },
   { name: "Ship Database", path: "/ships", category: "Ships" },
-  { name: "Ship Comparison", path: "/ships/compare", category: "Ships" },
+  { name: "Ship Comparison", path: "/tools/ship-compare", category: "Tools" },
   { name: "Locations Database", path: "/locations", category: "Locations" },
   { name: "Beginner's Guide", path: "/guides/beginner", category: "Guides" },
   { name: "Wikelo Guide", path: "/guides/wikelo", category: "Guides" },

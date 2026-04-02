@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useGameData } from "@/hooks/useGameData";
+import { ores as staticOres } from "@/data/mining";
+import { miningLocations as staticLocations } from "@/data/mining-locations";
+import { useWithOverrides } from "@/hooks/useOverrides";
 import shared from "../tools.module.css";
 
 type View = "locations" | "by-ore";
@@ -20,8 +22,8 @@ const gravityLabel: Record<string, string> = {
 };
 
 export default function MiningLocationsPage() {
-  const { data: gameData, loading: gameDataLoading } = useGameData();
-  const { ores, locations: miningLocations } = gameData;
+  const { data: ores } = useWithOverrides("ore", staticOres, (o) => o.name);
+  const { data: miningLocations } = useWithOverrides("mining_location", staticLocations, (l) => l.name);
 
   const [view, setView] = useState<View>("locations");
   const [filterParent, setFilterParent] = useState("all");
@@ -46,7 +48,7 @@ export default function MiningLocationsPage() {
     return miningLocations.filter((loc) => {
       if (filterParent !== "all" && loc.parentBody !== filterParent) return false;
       if (filterDanger !== "all" && loc.danger !== filterDanger) return false;
-      if (filterOre !== "all" && !loc.ores.includes(filterOre)) return false;
+      if (filterOre !== "all" && !loc.ores.includes(filterOre) && !loc.fpsOres.includes(filterOre)) return false;
       if (search && !loc.name.toLowerCase().includes(search.toLowerCase())) return false;
       return true;
     });
@@ -55,20 +57,21 @@ export default function MiningLocationsPage() {
   const locationsForOre = (oreName: string) =>
     miningLocations.filter((loc) => loc.ores.includes(oreName));
 
-  if (gameDataLoading) {
-    return (
-      <div className={shared.page}>
-        <h1 className={shared.title}>Where to Mine</h1>
-        <p className={shared.subtitle}>Loading game data...</p>
-      </div>
-    );
-  }
+  const fpsLocationsForOre = (oreName: string) =>
+    miningLocations.filter((loc) => loc.fpsOres.includes(oreName));
+
+  // All unique FPS ore names for the By Ore table
+  const allFpsOreNames = useMemo(() => {
+    const names = new Set<string>();
+    miningLocations.forEach((loc) => loc.fpsOres.forEach((o) => names.add(o)));
+    return [...names].sort();
+  }, [miningLocations]);
 
   return (
     <div className={shared.page}>
       <h1 className={shared.title}>Where to Mine</h1>
       <p className={shared.subtitle}>
-        Mining locations across the Stanton system with ore availability, danger ratings, and tips.
+        Mining locations across Stanton, Pyro, and Nyx with ore availability, danger ratings, and tips.
       </p>
 
       {/* View toggle */}
@@ -173,29 +176,60 @@ export default function MiningLocationsPage() {
                   {loc.notes}
                 </p>
 
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem" }}>
-                  {loc.ores.map((oreName) => {
-                    const ore = ores.find((o) => o.name === oreName);
-                    const isHighValue = ore && ore.valuePerSCU >= 20000;
-                    return (
-                      <span
-                        key={oreName}
-                        style={{
-                          fontSize: "0.7rem",
-                          padding: "0.15rem 0.45rem",
-                          borderRadius: "3px",
-                          background: isHighValue
-                            ? "rgba(74, 158, 255, 0.15)"
-                            : "rgba(255, 255, 255, 0.06)",
-                          color: isHighValue ? "var(--accent)" : "var(--text-secondary)",
-                          fontWeight: isHighValue ? 600 : 400,
-                        }}
-                      >
-                        {oreName}
-                      </span>
-                    );
-                  })}
-                </div>
+                {loc.ores.length > 0 && (
+                  <>
+                    <div style={{ fontSize: "0.65rem", color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: "0.25rem" }}>
+                      Ship Mining
+                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginBottom: "0.5rem" }}>
+                      {loc.ores.map((oreName) => {
+                        const ore = ores.find((o) => o.name === oreName);
+                        const isHighValue = ore && ore.valuePerSCU >= 20000;
+                        return (
+                          <span
+                            key={oreName}
+                            style={{
+                              fontSize: "0.7rem",
+                              padding: "0.15rem 0.45rem",
+                              borderRadius: "3px",
+                              background: isHighValue
+                                ? "rgba(74, 158, 255, 0.15)"
+                                : "rgba(255, 255, 255, 0.06)",
+                              color: isHighValue ? "var(--accent)" : "var(--text-secondary)",
+                              fontWeight: isHighValue ? 600 : 400,
+                            }}
+                          >
+                            {oreName}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+
+                {loc.fpsOres.length > 0 && (
+                  <>
+                    <div style={{ fontSize: "0.65rem", color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: "0.25rem" }}>
+                      FPS / Hand Mining
+                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem" }}>
+                      {loc.fpsOres.map((oreName) => (
+                        <span
+                          key={oreName}
+                          style={{
+                            fontSize: "0.7rem",
+                            padding: "0.15rem 0.45rem",
+                            borderRadius: "3px",
+                            background: "rgba(74, 222, 128, 0.1)",
+                            color: "#4ade80",
+                          }}
+                        >
+                          {oreName}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             ))}
           </div>
@@ -251,6 +285,40 @@ export default function MiningLocationsPage() {
                             ))}
                           </div>
                         )}
+                      </td>
+                    </tr>
+                  );
+                })}
+                {/* FPS-only ores (not in ship mining ore list) */}
+                {allFpsOreNames.map((oreName) => {
+                  // Skip if already shown in ship ores above
+                  if (mineableOres.some((o) => o.name === oreName)) return null;
+                  const locs = fpsLocationsForOre(oreName);
+                  return (
+                    <tr key={oreName}>
+                      <td>
+                        <strong>{oreName}</strong>
+                        <br />
+                        <span className={shared.tag} style={{ background: "rgba(74, 222, 128, 0.1)", color: "#4ade80" }}>fps</span>
+                      </td>
+                      <td style={{ color: "var(--text-secondary)" }}>—</td>
+                      <td>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem" }}>
+                          {locs.map((loc) => (
+                            <span
+                              key={loc.name}
+                              style={{
+                                fontSize: "0.75rem",
+                                padding: "0.15rem 0.45rem",
+                                borderRadius: "3px",
+                                background: "rgba(74, 222, 128, 0.06)",
+                                color: "#4ade80",
+                              }}
+                            >
+                              {loc.name}
+                            </span>
+                          ))}
+                        </div>
                       </td>
                     </tr>
                   );

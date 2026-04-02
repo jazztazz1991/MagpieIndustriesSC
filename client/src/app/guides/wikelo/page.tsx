@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { contracts, type ReputationTier, type ContractCategory } from "@/data/wikelo";
+import { contracts as staticContracts, type ReputationTier, type ContractCategory } from "@/data/wikelo";
+import { useWithOverrides } from "@/hooks/useOverrides";
 import styles from "../guides.module.css";
 import CommentSection from "@/components/comments/CommentSection";
 
@@ -23,6 +24,7 @@ const categoryTag: Record<ContractCategory, string> = {
 };
 
 export default function WikeloContractCatalog() {
+  const { data: contracts } = useWithOverrides("wikelo_contract", staticContracts, (c) => c.id);
   const [filterTier, setFilterTier] = useState<string>("all");
   const [filterCategory, setFilterCategory] = useState<string>("all");
 

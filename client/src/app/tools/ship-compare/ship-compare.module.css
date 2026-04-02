@@ -1,0 +1,138 @@
+.selectorRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.selectorGroup {
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.selectorLabel {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+
+.addShipBtn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  color: var(--accent);
+  font-size: 0.85rem;
+  cursor: pointer;
+  align-self: flex-end;
+  height: 36px;
+}
+
+.addShipBtn:hover {
+  border-color: var(--accent);
+}
+
+.addShipBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.comparisonTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.comparisonTable th {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 2px solid var(--border);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.comparisonTable td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.statLabel {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 500;
+}
+
+.best {
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.sizeTag {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(74, 158, 255, 0.1);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+.shipHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.removeShipBtn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+
+.removeShipBtn:hover {
+  color: #ff6b6b;
+}
+
+.mfrRow {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.roleRow {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.nullValue {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.filterRow {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.filterLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

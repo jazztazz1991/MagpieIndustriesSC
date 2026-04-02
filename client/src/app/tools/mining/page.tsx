@@ -1,10 +1,16 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import type { Ore } from "@/data/mining";
-import { useGameData } from "@/hooks/useGameData";
+import { ores as staticOres, scannerOreOrder, rockClasses } from "@/data/mining";
+import { miningLasers as staticLasers } from "@/data/mining-lasers";
+import { activeModules as staticActiveModules, passiveModules as staticPassiveModules } from "@/data/mining-gadgets";
+import { miningShips as staticMiningShips } from "@/data/mining-ships";
+import { useWithOverrides } from "@/hooks/useOverrides";
 import {
   calculateMiningProfit,
+  calculateMiningProfitWithQuality,
+  qualityMultiplier,
   assessRockViability,
   analyzeRock,
   compareLasersForRock,
@@ -14,19 +20,27 @@ import type { Loadout, ResolvedHead } from "@/components/mining/LoadoutBuilder";
 import shared from "../tools.module.css";
 import ms from "./mining.module.css";
 
-type Tab = "scanner" | "profit" | "lasers" | "reference";
+type Tab = "scanner" | "lasers" | "reference";
 
 interface CompositionEntry {
   ore: Ore;
   percentage: number;
+  quality: number;
 }
 
 const TABS: { key: Tab; label: string }[] = [
   { key: "scanner", label: "Rock Scanner" },
-  { key: "profit", label: "Profit Calculator" },
   { key: "lasers", label: "Compare Lasers" },
   { key: "reference", label: "Ore Reference" },
 ];
+
+function qualityColor(q: number): string {
+  if (q < 250) return ms.qualityRed;
+  if (q < 500) return ms.qualityYellow;
+  if (q === 500) return "";
+  if (q <= 750) return ms.qualityGreen;
+  return ms.qualityBlue;
+}
 
 function formatPctMod(value: number): string {
   if (value === 0) return "\u2014";
@@ -40,8 +54,11 @@ function formatCompact(value: number): string {
 }
 
 export default function MiningCalculator() {
-  const { data: gameData, loading: gameDataLoading } = useGameData();
-  const { ores, scannerOreOrder, rockClasses, lasers: miningLasers, activeModules, passiveModules, ships: miningShips } = gameData;
+  const { data: ores } = useWithOverrides("ore", staticOres, (o) => o.name);
+  const { data: miningLasers } = useWithOverrides("mining_laser", staticLasers, (l) => l.name);
+  const { data: activeModules } = useWithOverrides("mining_module", staticActiveModules, (m) => m.name);
+  const { data: passiveModules } = useWithOverrides("mining_module", staticPassiveModules, (m) => m.name);
+  const { data: miningShips } = useWithOverrides("mining_ship", staticMiningShips, (s) => s.name);
 
   const [activeTab, setActiveTab] = useState<Tab>("scanner");
 
@@ -57,72 +74,87 @@ export default function MiningCalculator() {
   const primaryLoadout = fleetLoadouts[0] ?? null;
   const ship = miningShips.find((s) => s.name === primaryLoadout?.shipName) ?? miningShips[0];
 
-  // Scanner properties
-  const [rockClass, setRockClass] = useState<string>("");
+  // Scanner properties — persisted to localStorage
+  const STORAGE_KEY = "magpie_rock_scan";
+
+  function loadSavedScan() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch { return null; }
+  }
+
+  const saved = useMemo(() => loadSavedScan(), []);
+
+  const [rockClass, setRockClass] = useState<string>(saved?.rockClass ?? "");
   const effectiveRockClass = rockClass || rockClasses[0] || "";
-  const [rockMass, setRockMass] = useState(53819);
-  const [rockInstability, setRockInstability] = useState(413.82);
-  const [rockResistance, setRockResistance] = useState(60);
-  const [rockSCU, setRockSCU] = useState(143.30);
+  const [rockMass, setRockMass] = useState(saved?.rockMass ?? 53819);
+  const [rockInstability, setRockInstability] = useState(saved?.rockInstability ?? 413.82);
+  const [rockResistance, setRockResistance] = useState(saved?.rockResistance ?? 60);
+  const [rockSCU, setRockSCU] = useState(saved?.rockSCU ?? 143.30);
 
-  // Composition
-  const [selectedAbbrevs, setSelectedAbbrevs] = useState<string[]>(["QUAN", "TITA", "INER"]);
-  const [orePcts, setOrePcts] = useState<Record<string, number>>({
-    QUAN: 44.37,
-    TITA: 46.73,
-    INER: 9.0,
-  });
+  // Composition — row-based, same ore can appear at different qualities
+  function restoreComposition(): CompositionEntry[] {
+    if (saved?.composition && Array.isArray(saved.composition)) {
+      return saved.composition.map((row: { oreName: string; percentage: number; quality: number }) => {
+        const ore = ores.find((o) => o.name === row.oreName) ?? ores[0];
+        return { ore, percentage: row.percentage, quality: row.quality };
+      });
+    }
+    return [
+      { ore: ores.find((o) => o.abbrev === "QUAN") ?? ores[0], percentage: 50, quality: 500 },
+      { ore: ores.find((o) => o.name === "Inert Material") ?? ores[ores.length - 1], percentage: 50, quality: 0 },
+    ];
+  }
 
-  // Profit calculator state
-  const [totalSCU, setTotalSCU] = useState(0);
-  const fleetCargoSCU = fleetLoadouts.reduce((sum, l) => {
-    const s = miningShips.find((sh) => sh.name === l.shipName);
-    return sum + (s?.cargoSCU ?? 0);
-  }, 0);
-  const effectiveTotalSCU = totalSCU || fleetCargoSCU || 32;
-  const [minValuePerSCU, setMinValuePerSCU] = useState(5000);
+  const [compositionRows, setCompositionRows] = useState<CompositionEntry[]>(restoreComposition);
 
-  // Build composition from scanner state
-  const composition: CompositionEntry[] = useMemo(() => {
-    return selectedAbbrevs
-      .map((abbr) => {
-        const ore = ores.find((o) => o.abbrev === abbr);
-        if (!ore) return null;
-        return { ore, percentage: orePcts[abbr] ?? 0 };
-      })
-      .filter((e): e is CompositionEntry => e !== null);
-  }, [selectedAbbrevs, orePcts, ores]);
+  const [minValuePerSCU, setMinValuePerSCU] = useState(saved?.minValuePerSCU ?? 5000);
 
+  // Persist scan to localStorage on change
+  useEffect(() => {
+    const data = {
+      rockClass,
+      rockMass,
+      rockInstability,
+      rockResistance,
+      rockSCU,
+      minValuePerSCU,
+      composition: compositionRows.map((r) => ({
+        oreName: r.ore.name,
+        percentage: r.percentage,
+        quality: r.quality,
+      })),
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }, [rockClass, rockMass, rockInstability, rockResistance, rockSCU, minValuePerSCU, compositionRows]);
+
+  const composition = compositionRows;
   const totalPercentage = composition.reduce((sum, c) => sum + c.percentage, 0);
 
-  // Ore toggle
-  const toggleOre = useCallback((abbr: string) => {
-    setSelectedAbbrevs((prev) => {
-      if (prev.includes(abbr)) return prev.filter((a) => a !== abbr);
-      return [...prev, abbr];
-    });
-    setOrePcts((prev) => {
-      if (prev[abbr] === undefined) return { ...prev, [abbr]: 10 };
-      return prev;
-    });
-  }, []);
-
-  const selectAllOres = () => {
-    const all = scannerOreOrder.filter((a) => a !== "INER");
-    setSelectedAbbrevs([...all, "INER"]);
-    setOrePcts((prev) => {
-      const next = { ...prev };
-      for (const a of scannerOreOrder) {
-        if (next[a] === undefined) next[a] = 0;
-      }
-      return next;
-    });
+  const addCompositionRow = () => {
+    const defaultOre = ores.find((o) => o.abbrev === "QUAN") ?? ores[0];
+    setCompositionRows([...compositionRows, { ore: defaultOre, percentage: 10, quality: 500 }]);
   };
-
-  const selectNoOres = () => setSelectedAbbrevs([]);
-
-  const updateOrePct = (abbr: string, pct: number) => {
-    setOrePcts((prev) => ({ ...prev, [abbr]: pct }));
+  const removeCompositionRow = (i: number) => {
+    setCompositionRows(compositionRows.filter((_, idx) => idx !== i));
+  };
+  const updateRowOre = (i: number, name: string) => {
+    const ore = ores.find((o) => o.name === name)!;
+    const updated = [...compositionRows];
+    updated[i] = { ...updated[i], ore };
+    setCompositionRows(updated);
+  };
+  const updateRowPct = (i: number, pct: number) => {
+    const updated = [...compositionRows];
+    updated[i] = { ...updated[i], percentage: pct };
+    setCompositionRows(updated);
+  };
+  const updateRowQuality = (i: number, quality: number) => {
+    const updated = [...compositionRows];
+    updated[i] = { ...updated[i], quality };
+    setCompositionRows(updated);
   };
 
   // --- Multi-head viability ---
@@ -189,42 +221,11 @@ export default function MiningCalculator() {
   );
 
   const profitResults = useMemo(
-    () => calculateMiningProfit(composition, rockSCU),
+    () => calculateMiningProfitWithQuality(composition, rockSCU),
     [composition, rockSCU]
   );
 
   const totalValue = profitResults.reduce((sum, r) => sum + r.value, 0);
-
-  // Profit tab composition handlers
-  const [profitComposition, setProfitComposition] = useState<CompositionEntry[]>([]);
-  const initProfitComp = profitComposition.length === 0 && ores.length > 0;
-  if (initProfitComp) {
-    setProfitComposition([{ ore: ores[0], percentage: 30 }]);
-  }
-
-  const profitTotalPct = profitComposition.reduce((sum, c) => sum + c.percentage, 0);
-  const profitCalcResults = useMemo(
-    () => calculateMiningProfit(profitComposition, effectiveTotalSCU),
-    [profitComposition, effectiveTotalSCU]
-  );
-  const profitCalcTotal = profitCalcResults.reduce((sum, r) => sum + r.value, 0);
-
-  const addProfitOre = () => {
-    const unused = ores.find((o) => !profitComposition.some((c) => c.ore.name === o.name));
-    if (unused) setProfitComposition([...profitComposition, { ore: unused, percentage: 10 }]);
-  };
-  const removeProfitOre = (i: number) => setProfitComposition(profitComposition.filter((_, idx) => idx !== i));
-  const updateProfitOre = (i: number, name: string) => {
-    const ore = ores.find((o) => o.name === name)!;
-    const updated = [...profitComposition];
-    updated[i] = { ...updated[i], ore };
-    setProfitComposition(updated);
-  };
-  const updateProfitPct = (i: number, pct: number) => {
-    const updated = [...profitComposition];
-    updated[i] = { ...updated[i], percentage: pct };
-    setProfitComposition(updated);
-  };
 
   // Badge helpers
   const difficultyColor = (d: string) => {
@@ -243,15 +244,6 @@ export default function MiningCalculator() {
   };
 
   const scannerValue = rockAnalysis.totalValue;
-
-  if (gameDataLoading) {
-    return (
-      <div className={shared.page}>
-        <h1 className={shared.title}>Mining Calculator</h1>
-        <p className={shared.subtitle}>Loading game data...</p>
-      </div>
-    );
-  }
 
   return (
     <div className={shared.page}>
@@ -372,54 +364,64 @@ export default function MiningCalculator() {
                 <span className={ms.propUnit}>SCU</span>
               </div>
             </div>
-            <div className={ms.oreGrid}>
-              {scannerOreOrder.map((abbr) => (
-                <button
-                  key={abbr}
-                  className={`${ms.oreBtn} ${selectedAbbrevs.includes(abbr) ? ms.oreBtnSelected : ""}`}
-                  onClick={() => toggleOre(abbr)}
-                >
-                  {abbr}
-                </button>
-              ))}
-              <button className={ms.oreBtnAll} onClick={selectAllOres}>ALL</button>
-              <button className={ms.oreBtnNone} onClick={selectNoOres}>NONE</button>
-            </div>
 
-            {selectedAbbrevs.length > 0 && (
-              <div className={ms.compSliders}>
-                {selectedAbbrevs.map((abbr) => (
-                  <div key={abbr} className={ms.compSliderRow}>
-                    <span className={ms.compSliderLabel}>{abbr}</span>
-                    <input
-                      type="range"
-                      min={0}
-                      max={100}
-                      step={0.01}
-                      value={orePcts[abbr] ?? 0}
-                      onChange={(e) => updateOrePct(abbr, Number(e.target.value))}
-                      className={ms.compSlider}
-                    />
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                      <input
-                        type="number"
-                        value={orePcts[abbr] ?? 0}
-                        onChange={(e) => updateOrePct(abbr, Number(e.target.value))}
-                        min={0}
-                        max={100}
-                        step={0.01}
-                        className={ms.compPctInput}
-                        aria-label={`Percentage for ${abbr}`}
-                      />
-                      <span className={ms.compPctUnit}>%</span>
-                    </div>
-                  </div>
-                ))}
-                <div className={totalPercentage > 100 ? ms.compTotalOver : ms.compTotal}>
-                  Total: {totalPercentage.toFixed(2)}%
-                </div>
+            <div className={ms.compRows}>
+              <div className={ms.compRowHeader}>
+                <span className={ms.compRowOreHeader}>Ore</span>
+                <span className={ms.compRowPctHeader}>%</span>
+                <span className={ms.compRowQualHeader}>Quality (RAW)</span>
+                <span className={ms.compRowActHeader} />
               </div>
-            )}
+              {compositionRows.map((entry, i) => (
+                <div key={i} className={ms.compRow}>
+                  <select
+                    value={entry.ore.name}
+                    onChange={(e) => updateRowOre(i, e.target.value)}
+                    className={ms.compRowOre}
+                    aria-label={`Select ore ${i + 1}`}
+                  >
+                    {ores.map((o) => (
+                      <option key={o.name} value={o.name}>{o.name}</option>
+                    ))}
+                  </select>
+                  <input
+                    type="number"
+                    value={entry.percentage}
+                    onChange={(e) => updateRowPct(i, Number(e.target.value))}
+                    min={0}
+                    max={100}
+                    step={0.01}
+                    className={ms.compRowPct}
+                    aria-label={`Percentage for row ${i + 1}`}
+                  />
+                  <input
+                    type="number"
+                    value={entry.quality}
+                    onChange={(e) => updateRowQuality(i, Number(e.target.value))}
+                    min={0}
+                    max={1000}
+                    step={1}
+                    className={`${ms.compRowQual} ${qualityColor(entry.quality)}`}
+                    aria-label={`Quality for row ${i + 1}`}
+                  />
+                  <button
+                    onClick={() => removeCompositionRow(i)}
+                    className={ms.compRowRemove}
+                    aria-label={`Remove row ${i + 1}`}
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+              <div className={ms.compRowFooter}>
+                <button onClick={addCompositionRow} className={ms.compAddBtn}>
+                  + Add Ore
+                </button>
+                <span className={totalPercentage > 100 ? ms.compTotalOver : ms.compTotal}>
+                  Total: {totalPercentage.toFixed(2)}%
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Cluster Stats */}
@@ -429,31 +431,31 @@ export default function MiningCalculator() {
               <thead>
                 <tr>
                   <th />
+                  <th>Quality</th>
                   <th>SCU</th>
-                  <th>aUEC</th>
                 </tr>
               </thead>
               <tbody>
                 {profitResults
                   .filter((r) => r.scu > 0 && r.ore !== "Inert Material")
-                  .map((r) => (
-                    <tr key={r.ore}>
+                  .map((r, i) => (
+                    <tr key={i}>
                       <td className={ms.clusterOreName}>{r.ore}</td>
+                      <td className={qualityColor(r.quality)}>{r.quality}</td>
                       <td>{r.scu.toFixed(1)}</td>
-                      <td>{formatCompact(r.value)}</td>
                     </tr>
                   ))}
               </tbody>
               <tfoot>
                 <tr className={ms.clusterTotal}>
                   <td>Total</td>
+                  <td />
                   <td>
                     {profitResults
                       .filter((r) => r.ore !== "Inert Material")
                       .reduce((s, r) => s + r.scu, 0)
                       .toFixed(1)}
                   </td>
-                  <td>{formatCompact(totalValue)}</td>
                 </tr>
               </tfoot>
             </table>
@@ -559,111 +561,6 @@ export default function MiningCalculator() {
             </div>
           )}
         </>
-      )}
-
-      {/* ========== Profit Calculator ========== */}
-      {activeTab === "profit" && (
-        <div className={shared.grid}>
-          <div className={shared.panel}>
-            <h2 className={shared.panelTitle}>Rock Composition</h2>
-
-            <label htmlFor="cargo-scu" className={shared.field}>
-              <span>Cargo Capacity (SCU)</span>
-              <input
-                id="cargo-scu"
-                type="number"
-                value={effectiveTotalSCU}
-                onChange={(e) => setTotalSCU(Number(e.target.value))}
-                min={1}
-                className={shared.input}
-              />
-            </label>
-
-            <label htmlFor="min-value" className={shared.field}>
-              <span>Min Value Threshold (aUEC/SCU)</span>
-              <input
-                id="min-value"
-                type="number"
-                value={minValuePerSCU}
-                onChange={(e) => setMinValuePerSCU(Number(e.target.value))}
-                min={0}
-                className={shared.input}
-              />
-            </label>
-
-            <div className={shared.compositionList}>
-              {profitComposition.map((entry, i) => (
-                <div key={i} className={shared.compositionRow}>
-                  <select
-                    value={entry.ore.name}
-                    onChange={(e) => updateProfitOre(i, e.target.value)}
-                    className={shared.select}
-                    aria-label={`Select ore ${i + 1}`}
-                  >
-                    {ores.map((o) => (
-                      <option key={o.name} value={o.name}>{o.name}</option>
-                    ))}
-                  </select>
-                  <input
-                    type="number"
-                    value={entry.percentage}
-                    onChange={(e) => updateProfitPct(i, Number(e.target.value))}
-                    min={0}
-                    max={100}
-                    className={shared.pctInput}
-                    aria-label={`Percentage for ${entry.ore.name}`}
-                  />
-                  <span className={shared.pctLabel}>%</span>
-                  <button
-                    onClick={() => removeProfitOre(i)}
-                    className={shared.removeBtn}
-                    aria-label={`Remove ${entry.ore.name}`}
-                  >
-                    &times;
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <div className={shared.compositionFooter}>
-              <button onClick={addProfitOre} className={shared.addBtn} aria-label="Add ore to composition">
-                + Add Ore
-              </button>
-              <span className={profitTotalPct > 100 ? shared.overBudget : shared.budget}>
-                Total: {profitTotalPct}%
-              </span>
-            </div>
-          </div>
-
-          <div className={shared.panel}>
-            <h2 className={shared.panelTitle}>Profit Breakdown</h2>
-            <table className={shared.table}>
-              <thead>
-                <tr>
-                  <th>Ore</th>
-                  <th>SCU</th>
-                  <th>Value (aUEC)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {profitCalcResults.map((r) => (
-                  <tr key={r.ore}>
-                    <td>{r.ore}</td>
-                    <td>{r.scu}</td>
-                    <td>{r.value.toLocaleString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr className={shared.totalRow}>
-                  <td>Total</td>
-                  <td>{profitCalcResults.reduce((s, r) => s + r.scu, 0).toFixed(2)}</td>
-                  <td>{profitCalcTotal.toLocaleString()}</td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
       )}
 
       {/* ========== Compare Lasers ========== */}

@@ -49,6 +49,22 @@ interface SuggestionItem {
 
 type TabKey = "users" | "reports" | "suggestions" | "recipes";
 
+function Spoiler({ children }: { children: React.ReactNode }) {
+  const [revealed, setRevealed] = useState(false);
+  return (
+    <span
+      className={revealed ? styles.spoilerRevealed : styles.spoiler}
+      onClick={() => setRevealed((r) => !r)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setRevealed((r) => !r); }}
+      aria-label={revealed ? "Click to hide" : "Click to reveal"}
+    >
+      {children}
+    </span>
+  );
+}
+
 export default function AdminDashboardPage() {
   const { user, loading: authLoading } = useAuth();
   const [stats, setStats] = useState<AdminStats | null>(null);
@@ -199,7 +215,7 @@ export default function AdminDashboardPage() {
               {users.map((u) => (
                 <tr key={u.id}>
                   <td>{u.username}</td>
-                  <td>{u.email}</td>
+                  <td><Spoiler>{u.email}</Spoiler></td>
                   <td>{u.role}</td>
                   <td>{u.isAdmin && <span className={styles.adminBadge}>ADMIN</span>}</td>
                   <td>{new Date(u.createdAt).toLocaleDateString()}</td>
@@ -274,8 +290,8 @@ export default function AdminDashboardPage() {
             <Link href="/admin/mission-recipes" className={styles.saveBtn} style={{ textDecoration: "none", padding: "0.5rem 1rem" }}>
               Manage Mission Recipes
             </Link>
-            <Link href="/admin/game-data" className={styles.saveBtn} style={{ textDecoration: "none", padding: "0.5rem 1rem" }}>
-              Manage Game Data
+            <Link href="/admin/data-browser" className={styles.saveBtn} style={{ textDecoration: "none", padding: "0.5rem 1rem" }}>
+              Game Data Browser
             </Link>
           </div>
           {stats && (

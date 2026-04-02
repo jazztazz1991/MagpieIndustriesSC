@@ -30,14 +30,6 @@ export default function Home() {
         </div>
 
         <div className={styles.featureCard}>
-          <h3>Salvage Calculator</h3>
-          <p>
-            Estimate RMC yields and profit from ship wrecks of all sizes.
-          </p>
-          <Link href="/tools/salvage">Open Tool</Link>
-        </div>
-
-        <div className={styles.featureCard}>
           <h3>Refinery Optimizer</h3>
           <p>
             Compare all refinery methods side-by-side by yield, time, and net
@@ -56,14 +48,6 @@ export default function Home() {
         </div>
 
         <div className={styles.featureCard}>
-          <h3>Trade Route Planner</h3>
-          <p>
-            Find the most profitable commodity routes across the Stanton system.
-          </p>
-          <Link href="/tools/trade">Plan Routes</Link>
-        </div>
-
-        <div className={styles.featureCard}>
           <h3>Loadout Planner</h3>
           <p>
             Plan ship component loadouts and compare weapons, shields, and quantum drives.
@@ -72,11 +56,11 @@ export default function Home() {
         </div>
 
         <div className={styles.featureCard}>
-          <h3>Profit Simulator</h3>
+          <h3>Ship Comparison</h3>
           <p>
-            Calculate ROI on ships and activities. Compare mining, trading, salvage, and bounties.
+            Compare up to 4 ships side by side — cargo, speed, crew, and price stats highlighted.
           </p>
-          <Link href="/tools/profit">Simulate</Link>
+          <Link href="/tools/ship-compare">Compare Ships</Link>
         </div>
 
         <div className={styles.featureCard}>

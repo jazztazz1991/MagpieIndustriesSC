@@ -456,3 +456,64 @@ gameDataRouter.delete("/locations/:id", requireAuth, requireAdmin, async (req, r
     res.status(404).json({ success: false, error: "Not found" });
   }
 });
+
+// =============================================
+// Data Overrides — runtime patches over static TS data
+// =============================================
+
+const VALID_CATEGORIES = [
+  "weapon", "shield", "quantum_drive", "power_plant", "cooler",
+  "ship", "refinery_method", "refinery_station", "ore",
+  "mining_laser", "mining_module", "mining_gadget", "mining_ship",
+  "mining_location", "rock_signature",
+  "wikelo_contract", "wikelo_gathering_item", "wikelo_emporium",
+  "wikelo_favor_conversion", "wikelo_reputation_tier",
+] as const;
+
+function overrideDTO(o: { id: string; category: string; itemKey: string; overrides: unknown; updatedAt: Date }) {
+  return { id: o.id, category: o.category, itemKey: o.itemKey, overrides: o.overrides, updatedAt: o.updatedAt.toISOString() };
+}
+
+// Public: tools pages fetch active overrides to merge with static data
+gameDataRouter.get("/overrides", async (_req: Request, res: Response) => {
+  try {
+    const items = await prisma.gameDataOverride.findMany({
+      select: { id: true, category: true, itemKey: true, overrides: true, updatedAt: true },
+    });
+    res.json({ success: true, data: items.map(overrideDTO) });
+  } catch (err) {
+    console.error("overrides fetch error:", err);
+    res.status(500).json({ success: false, error: "Failed to fetch overrides" });
+  }
+});
+
+// Admin: upsert an override (create or update)
+const overrideSchema = z.object({
+  category: z.enum(VALID_CATEGORIES),
+  itemKey: z.string().min(1).max(200),
+  overrides: z.record(z.string(), z.union([z.number(), z.string()])),
+});
+
+gameDataRouter.put("/overrides", requireAuth, requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const data = overrideSchema.parse(req.body);
+    const item = await prisma.gameDataOverride.upsert({
+      where: { category_itemKey: { category: data.category, itemKey: data.itemKey } },
+      create: data,
+      update: { overrides: data.overrides },
+    });
+    res.json({ success: true, data: overrideDTO(item) });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err instanceof z.ZodError ? err.issues.map(i => i.message).join(", ") : "Invalid data" });
+  }
+});
+
+// Admin: delete an override (revert to static data)
+gameDataRouter.delete("/overrides/:id", requireAuth, requireAdmin, async (req: Request, res: Response) => {
+  try {
+    await prisma.gameDataOverride.delete({ where: { id: req.params.id as string } });
+    res.json({ success: true });
+  } catch {
+    res.status(404).json({ success: false, error: "Not found" });
+  }
+});

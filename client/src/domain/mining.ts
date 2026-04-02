@@ -2,6 +2,15 @@ import type { Ore } from "@/data/mining";
 import type { MiningLaser } from "@/data/mining-lasers";
 import type { MiningModule } from "@/data/mining-gadgets";
 
+// --- Quality System ---
+// Quality scale: 0-1000, where 500 = baseline shop quality (1.0x multiplier)
+// Linear scaling: value = baseValue × (quality / 500)
+
+export function qualityMultiplier(quality: number): number {
+  const clamped = Math.max(0, Math.min(1000, quality));
+  return clamped / 500;
+}
+
 // --- Profit Calculation ---
 
 export function calculateMiningProfit(
@@ -12,6 +21,24 @@ export function calculateMiningProfit(
     const scu = totalSCU * (percentage / 100);
     const value = scu * ore.valuePerSCU;
     return { ore: ore.name, scu: Math.round(scu * 100) / 100, value: Math.round(value) };
+  });
+}
+
+// Quality-aware profit calculation — same ore can appear multiple times at different qualities
+export function calculateMiningProfitWithQuality(
+  composition: { ore: Ore; percentage: number; quality?: number }[],
+  totalSCU: number
+): { ore: string; scu: number; value: number; quality: number }[] {
+  return composition.map(({ ore, percentage, quality }) => {
+    const q = quality ?? 500;
+    const scu = totalSCU * (percentage / 100);
+    const value = scu * ore.valuePerSCU * qualityMultiplier(q);
+    return {
+      ore: ore.name,
+      scu: Math.round(scu * 100) / 100,
+      value: Math.round(value),
+      quality: q,
+    };
   });
 }
 
@@ -116,13 +143,14 @@ export interface RockAnalysis {
 }
 
 export function analyzeRock(
-  composition: { ore: Ore; percentage: number }[],
+  composition: { ore: Ore; percentage: number; quality?: number }[],
   totalSCU: number,
   minimumValuePerSCU: number = 5000
 ): RockAnalysis {
-  const breakdown = composition.map(({ ore, percentage }) => {
+  const breakdown = composition.map(({ ore, percentage, quality }) => {
+    const q = quality ?? 500;
     const scu = totalSCU * (percentage / 100);
-    const value = scu * ore.valuePerSCU;
+    const value = scu * ore.valuePerSCU * qualityMultiplier(q);
     return { ore: ore.name, percentage, value: Math.round(value) };
   });
 

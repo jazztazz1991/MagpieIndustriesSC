@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { components, shipLoadouts } from "@/data/loadout";
+import { useState, useMemo, useCallback } from "react";
+import { components as staticComponents, shipLoadouts } from "@/data/loadout";
 import type { ShipComponent, ComponentType, ComponentSize } from "@/data/loadout";
 import { calculateLoadoutSummary } from "@/domain/loadout";
+import { useOverrides } from "@/hooks/useOverrides";
 import tools from "../tools.module.css";
 import styles from "./loadout.module.css";
 
@@ -15,8 +16,8 @@ const TYPE_LABELS: Record<ComponentType, string> = {
   cooler: "Cooler",
 };
 
-function getCompatibleComponents(type: ComponentType, size: ComponentSize): ShipComponent[] {
-  return components.filter((c) => c.type === type && c.size === size);
+function componentKey(c: ShipComponent): string {
+  return `${c.name}::${c.type}::${c.size}::${c.manufacturer}`;
 }
 
 interface SlotAssignment {
@@ -29,6 +30,29 @@ interface SlotAssignment {
 export default function LoadoutPage() {
   const [selectedShip, setSelectedShip] = useState("");
   const [assignments, setAssignments] = useState<SlotAssignment[]>([]);
+  const { applyOverrides } = useOverrides();
+
+  const components = useMemo(() => {
+    // Apply per-type overrides: each component type is its own override category
+    const byType = new Map<ComponentType, ShipComponent[]>();
+    for (const c of staticComponents) {
+      if (!byType.has(c.type)) byType.set(c.type, []);
+      byType.get(c.type)!.push(c);
+    }
+    const result: ShipComponent[] = [];
+    for (const [type, items] of byType) {
+      const overridden = applyOverrides(type, items, componentKey);
+      result.push(...overridden);
+    }
+    return result;
+  }, [applyOverrides]);
+
+  const getCompatibleComponents = useCallback(
+    (type: ComponentType, size: ComponentSize): ShipComponent[] => {
+      return components.filter((c) => c.type === type && c.size === size);
+    },
+    [components]
+  );
 
   const shipConfig = shipLoadouts.find((s) => s.shipName === selectedShip);
 
@@ -46,11 +70,17 @@ export default function LoadoutPage() {
     const newAssignments: SlotAssignment[] = [];
     for (const slot of config.slots) {
       for (let i = 0; i < slot.count; i++) {
+        const defaultName = slot.defaultItems?.[0] ?? "";
+        const defaultMatch = defaultName
+          ? components.find(
+              (c) => c.name === defaultName && c.type === slot.type && c.size === slot.size
+            )
+          : null;
         newAssignments.push({
           slotType: slot.type,
           slotSize: slot.size,
           slotIndex: i + 1,
-          selectedComponentName: "",
+          selectedComponentName: defaultMatch ? defaultMatch.name : "",
         });
       }
     }
@@ -140,7 +170,12 @@ export default function LoadoutPage() {
                         ))}
                       </select>
                       {selectedComp && (
-                        <div className={styles.componentInfo}>{selectedComp.description}</div>
+                        <div className={styles.componentInfo}>
+                          {Object.entries(selectedComp.stats)
+                            .filter(([k]) => !k.startsWith("_"))
+                            .map(([k, v]) => `${k}: ${v}`)
+                            .join(" | ")}
+                        </div>
                       )}
                     </div>
                   </div>

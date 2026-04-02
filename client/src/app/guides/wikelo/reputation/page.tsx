@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { reputationTiers } from "@/data/wikelo";
+import { reputationTiers as staticReputationTiers } from "@/data/wikelo";
+import { useWithOverrides } from "@/hooks/useOverrides";
 import styles from "../../guides.module.css";
 
 const tierColors = [styles.tagTier1, styles.tagTier2, styles.tagTier3];
 
 export default function ReputationGuide() {
+  const { data: reputationTiers } = useWithOverrides("wikelo_reputation_tier", staticReputationTiers, (t) => t.tier);
   return (
     <div className={styles.page}>
       <h1 className={styles.title}>Wikelo Reputation Guide</h1>

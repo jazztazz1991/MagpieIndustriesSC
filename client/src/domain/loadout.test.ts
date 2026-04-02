@@ -9,7 +9,6 @@ const weapon: ShipComponent = {
   manufacturer: "Apocalypse Arms",
   grade: "A",
   stats: { dps: 225, range: 2100, powerDraw: 2.5, speed: 2100 },
-  description: "Test weapon",
 };
 
 const shield: ShipComponent = {
@@ -19,7 +18,6 @@ const shield: ShipComponent = {
   manufacturer: "Seal Corp",
   grade: "A",
   stats: { shieldHP: 2400, regenRate: 120, powerDraw: 2.0 },
-  description: "Test shield",
 };
 
 const quantumDrive: ShipComponent = {
@@ -29,7 +27,6 @@ const quantumDrive: ShipComponent = {
   manufacturer: "RSI",
   grade: "A",
   stats: { quantumSpeed: 283, quantumRange: 108, spoolTime: 4.8, powerDraw: 2.5 },
-  description: "Test quantum drive",
 };
 
 const powerPlant: ShipComponent = {
@@ -39,7 +36,6 @@ const powerPlant: ShipComponent = {
   manufacturer: "APC",
   grade: "A",
   stats: { powerOutput: 15, powerDraw: 0 },
-  description: "Test power plant",
 };
 
 const cooler: ShipComponent = {
@@ -49,7 +45,6 @@ const cooler: ShipComponent = {
   manufacturer: "J-Span",
   grade: "A",
   stats: { coolingRate: 180000, powerDraw: 0.8 },
-  description: "Test cooler",
 };
 
 describe("calculatePowerDraw", () => {

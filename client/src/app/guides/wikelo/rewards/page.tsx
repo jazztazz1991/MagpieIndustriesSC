@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { contracts, type ContractCategory } from "@/data/wikelo";
+import { contracts as staticContracts, type ContractCategory } from "@/data/wikelo";
+import { useWithOverrides } from "@/hooks/useOverrides";
 import styles from "../../guides.module.css";
 
 const categoryTag: Record<ContractCategory, string> = {
@@ -15,6 +16,7 @@ const categoryTag: Record<ContractCategory, string> = {
 };
 
 export default function RewardDatabase() {
+  const { data: contracts } = useWithOverrides("wikelo_contract", staticContracts, (c) => c.id);
   const rewardEntries = contracts
     .filter((c) => c.active)
     .map((c) => ({

@@ -2,12 +2,12 @@ import { describe, it, expect } from "vitest";
 import { calculateRefineryOutput } from "./refinery";
 import type { RefineryMethod } from "@/data/refinery";
 
-// relativeTime 1-9 maps to multiplier: 0.3 + (t-1) * (2.2/8)
-// relativeCost 1-3 maps to costPerSCU: 80 + (c-1) * 60
+// Updated yield values from in-game verification (2026-03-31)
+// Time/cost use measured rates per CSCU
 
 const cormack: RefineryMethod = {
   name: "Cormack Method",
-  yieldMultiplier: 0.60,
+  yieldMultiplier: 0.31,
   relativeTime: 2,
   relativeCost: 2,
   description: "Low yield fast method",
@@ -15,7 +15,7 @@ const cormack: RefineryMethod = {
 
 const dinyx: RefineryMethod = {
   name: "Dinyx Solventation",
-  yieldMultiplier: 0.85,
+  yieldMultiplier: 0.44,
   relativeTime: 9,
   relativeCost: 1,
   description: "High yield slow method",
@@ -24,22 +24,21 @@ const dinyx: RefineryMethod = {
 describe("calculateRefineryOutput", () => {
   it("applies yield multiplier correctly", () => {
     const result = calculateRefineryOutput(10, 28000, cormack);
-    // 10 * 0.60 = 6.00 SCU
-    expect(result.outputSCU).toBe(6);
-    expect(result.grossValue).toBe(Math.round(6 * 28000));
+    // 10 * 0.31 = 3.10 SCU
+    expect(result.outputSCU).toBe(3.1);
+    expect(result.grossValue).toBe(Math.round(3.1 * 28000));
   });
 
   it("calculates processing cost from relativeCost", () => {
     const result = calculateRefineryOutput(10, 28000, cormack);
-    // relativeCost 2 -> 80 + (2-1)*60 = 140 aUEC/SCU
-    expect(result.processingCost).toBe(1400);
+    // relativeCost 2 -> 0.108 aUEC/CSCU -> 10 * 0.108 = 1 (rounded)
+    expect(result.processingCost).toBe(1);
   });
 
-  it("calculates time from relativeTime", () => {
-    const result = calculateRefineryOutput(10, 28000, cormack);
-    // relativeTime 2 -> 0.3 + (2-1) * 2.2/8 = 0.3 + 0.275 = 0.575
-    // 10 * 12 * 0.575 = 69.0
-    expect(result.timeMinutes).toBe(69);
+  it("calculates time from measured rates", () => {
+    const result = calculateRefineryOutput(896, 28000, cormack);
+    // relativeTime 2 -> 0.136 s/CSCU -> 896 * 0.136 / 60 = 2.0 min
+    expect(result.timeMinutes).toBeCloseTo(2.0, 0);
   });
 
   it("calculates net profit correctly", () => {
@@ -48,7 +47,7 @@ describe("calculateRefineryOutput", () => {
   });
 
   it("calculates profit per minute", () => {
-    const result = calculateRefineryOutput(10, 28000, cormack);
+    const result = calculateRefineryOutput(100, 28000, cormack);
     expect(result.profitPerMinute).toBe(Math.round(result.netProfit / result.timeMinutes));
   });
 

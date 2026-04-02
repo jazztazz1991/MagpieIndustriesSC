@@ -3,11 +3,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import {
-  gatheringItems,
-  contracts,
-  favorConversions,
+  gatheringItems as staticGatheringItems,
+  contracts as staticContracts,
+  favorConversions as staticFavorConversions,
   type GatheringItem,
 } from "@/data/wikelo";
+import { useWithOverrides } from "@/hooks/useOverrides";
 import {
   getContractProgress,
   calculateFavorsFromInventory,
@@ -29,24 +30,21 @@ const categories: GatheringItem["category"][] = [
   "commodity",
 ];
 
-/** Map the FavorConversion data shape into the flat shape the domain function expects. */
-function buildFavorConversionList(): {
-  item: string;
-  quantity: number;
-  favorsEarned: number;
-}[] {
-  return favorConversions
-    .filter((fc) => fc.output.item === "Wikelo Favor")
-    .map((fc) => ({
-      item: fc.input[0].item,
-      quantity: fc.input[0].quantity,
-      favorsEarned: fc.output.quantity,
-    }));
-}
-
-const flatFavorConversions = buildFavorConversionList();
-
 export default function WikeloTrackerPage() {
+  const { data: gatheringItems } = useWithOverrides("wikelo_gathering_item", staticGatheringItems, (g) => g.name);
+  const { data: contracts } = useWithOverrides("wikelo_contract", staticContracts, (c) => c.id);
+  const { data: favorConversions } = useWithOverrides("wikelo_favor_conversion", staticFavorConversions, (f) => f.name);
+
+  const flatFavorConversions = useMemo(() =>
+    favorConversions
+      .filter((fc) => fc.output.item === "Wikelo Favor")
+      .map((fc) => ({
+        item: fc.input[0].item,
+        quantity: fc.input[0].quantity,
+        favorsEarned: fc.output.quantity,
+      })),
+    [favorConversions]
+  );
   /* ---- state ---- */
   const [inventory, setInventory] = useState<TrackerInventory>({});
   const [search, setSearch] = useState("");

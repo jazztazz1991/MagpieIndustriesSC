@@ -65,11 +65,9 @@ describe("Navbar", () => {
     fireEvent.click(screen.getByText("Tools"));
 
     expect(screen.getByText("Mining Calculator")).toBeInTheDocument();
-    expect(screen.getByText("Salvage")).toBeInTheDocument();
     expect(screen.getByText("Refinery")).toBeInTheDocument();
-    expect(screen.getByText("Trade")).toBeInTheDocument();
     expect(screen.getByText("Loadout")).toBeInTheDocument();
-    expect(screen.getByText("Profit")).toBeInTheDocument();
+    expect(screen.getByText("Ship Compare")).toBeInTheDocument();
   });
 
   it("renders the logo link to home", () => {
@@ -113,7 +111,7 @@ describe("Navbar", () => {
     fireEvent.click(toggle);
 
     // Click a mobile link
-    fireEvent.click(screen.getByText("Salvage"));
+    fireEvent.click(screen.getByText("Refinery"));
 
     expect(toggle).toHaveAttribute("aria-expanded", "false");
   });

@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { emporiums } from "@/data/wikelo";
+import { emporiums as staticEmporiums } from "@/data/wikelo";
+import { useWithOverrides } from "@/hooks/useOverrides";
 import styles from "../../guides.module.css";
 
 export default function EmporiumGuides() {
+  const { data: emporiums } = useWithOverrides("wikelo_emporium", staticEmporiums, (e) => e.name);
   return (
     <div className={styles.page}>
       <h1 className={styles.title}>Emporium Location Guides</h1>

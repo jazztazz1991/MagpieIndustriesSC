@@ -16,12 +16,17 @@
     "build:client": "npm run build --workspace=client",
     "build:server": "npm run build --workspace=server",
     "lint": "npm run lint --workspace=client && npm run lint --workspace=server",
-    "sync:mining": "npx ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/sync-mining-data.ts"
+    "sync:extract": "bash scripts/extract-gamedata.sh",
+    "sync:generate": "npx ts-node --project scripts/tsconfig.json scripts/generate-data.ts",
+    "sync:gamedata": "npm run sync:extract && npm run sync:generate",
+    "seed": "npx esbuild server/prisma/seed-game-data.ts --bundle --platform=node --format=esm --outfile=server/prisma/seed-game-data.mjs --external:@prisma/client && cd server && node prisma/seed-game-data.mjs",
+    "data:view": "npx ts-node --project scripts/tsconfig.json scripts/data-viewer.ts && start data/viewer.html"
   },
   "engines": {
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "fast-xml-parser": "^5.5.9"
   }
 }

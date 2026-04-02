@@ -1,0 +1,3207 @@
+{
+  "_comment": "Ship data with editorial content. Keys match DataForge entity filenames. Crew, cargo, prices, speed, role, description are all override data.",
+  "rsi_aurora_gs_mr": {
+    "name": "Aurora MR",
+    "manufacturer": "RSI",
+    "role": "Starter / Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 6,
+    "buyPriceAUEC": 186000,
+    "pledgeUSD": 30,
+    "speed": {
+      "scm": 195,
+      "max": 1236
+    },
+    "description": "RSI's entry-level ship. Versatile starter with basic cargo and combat capability."
+  },
+  "rsi_aurora_gs_ln": {
+    "name": "Aurora LN",
+    "manufacturer": "RSI",
+    "role": "Starter / Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 6,
+    "buyPriceAUEC": 261200,
+    "pledgeUSD": 40,
+    "speed": {
+      "scm": 190,
+      "max": 1236
+    },
+    "description": "Combat-oriented Aurora with extra weapons. The fighter of the Aurora line."
+  },
+  "rsi_aurora_gs_es": {
+    "name": "Aurora ES",
+    "manufacturer": "RSI",
+    "role": "Starter / Exploration",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 6,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 25,
+    "speed": {
+      "scm": 195,
+      "max": 1236
+    },
+    "description": "Budget exploration variant of the Aurora. Extended fuel range."
+  },
+  "rsi_aurora_gs_lx": {
+    "name": "Aurora LX",
+    "manufacturer": "RSI",
+    "role": "Starter / Touring",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 6,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 35,
+    "speed": {
+      "scm": 195,
+      "max": 1236
+    },
+    "description": "Luxury variant of the Aurora with upgraded interior and components."
+  },
+  "rsi_aurora_gs_cl": {
+    "name": "Aurora CL",
+    "manufacturer": "RSI",
+    "role": "Starter / Light Freight",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 6,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 45,
+    "speed": {
+      "scm": 195,
+      "max": 1236
+    },
+    "description": "Commerce variant of the Aurora. Designed for hauling and trade runs."
+  },
+  "cnou_mustang_alpha": {
+    "name": "Mustang Alpha",
+    "manufacturer": "Consolidated Outland",
+    "role": "Starter / Light Freight",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 6,
+    "buyPriceAUEC": 180000,
+    "pledgeUSD": 30,
+    "speed": {
+      "scm": 210,
+      "max": 1362
+    },
+    "description": "Fast and agile starter ship from Consolidated Outland."
+  },
+  "cnou_mustang_beta": {
+    "name": "Mustang Beta",
+    "manufacturer": "Consolidated Outland",
+    "role": "Starter / Pathfinder",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 40,
+    "speed": {
+      "scm": 205,
+      "max": 1340
+    },
+    "description": "Exploration variant with a small living space. Good for solo pathfinding."
+  },
+  "cnou_mustang_gamma": {
+    "name": "Mustang Gamma",
+    "manufacturer": "Consolidated Outland",
+    "role": "Racing",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 55,
+    "speed": {
+      "scm": 220,
+      "max": 1380
+    },
+    "description": "Racing variant of the Mustang with enhanced engines."
+  },
+  "cnou_mustang_delta": {
+    "name": "Mustang Delta",
+    "manufacturer": "Consolidated Outland",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 65,
+    "speed": {
+      "scm": 215,
+      "max": 1370
+    },
+    "description": "Combat Mustang with rocket pods and upgraded weapons."
+  },
+  "cnou_nomad": {
+    "name": "Nomad",
+    "manufacturer": "Consolidated Outland",
+    "role": "Starter / Light Freight",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 24,
+    "buyPriceAUEC": 952500,
+    "pledgeUSD": 80,
+    "speed": {
+      "scm": 185,
+      "max": 1200
+    },
+    "description": "All-in-one starter with living quarters and an external cargo bed."
+  },
+  "aegs_avenger_titan": {
+    "name": "Avenger Titan",
+    "manufacturer": "Aegis",
+    "role": "Light Fighter / Freight",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 12,
+    "buyPriceAUEC": 785400,
+    "pledgeUSD": 60,
+    "speed": {
+      "scm": 230,
+      "max": 1280
+    },
+    "description": "Best-in-class starter upgrade. Great mix of cargo, combat, and speed."
+  },
+  "aegs_avenger_stalker": {
+    "name": "Avenger Stalker",
+    "manufacturer": "Aegis",
+    "role": "Bounty Hunter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 884600,
+    "pledgeUSD": 70,
+    "speed": {
+      "scm": 230,
+      "max": 1280
+    },
+    "description": "Bounty hunting variant with prisoner pods instead of cargo."
+  },
+  "aegs_avenger_warlock": {
+    "name": "Avenger Warlock",
+    "manufacturer": "Aegis",
+    "role": "EMP / Interdiction",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 1177200,
+    "pledgeUSD": 85,
+    "speed": {
+      "scm": 230,
+      "max": 1280
+    },
+    "description": "Electronic warfare Avenger with a powerful EMP generator."
+  },
+  "orig_100i": {
+    "name": "100i",
+    "manufacturer": "Origin",
+    "role": "Starter / Pathfinder",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 2,
+    "buyPriceAUEC": 502600,
+    "pledgeUSD": 50,
+    "speed": {
+      "scm": 210,
+      "max": 1290
+    },
+    "description": "Origin's luxury starter. Clean design with a small living space."
+  },
+  "orig_125a": {
+    "name": "125a",
+    "manufacturer": "Origin",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 2,
+    "buyPriceAUEC": 574700,
+    "pledgeUSD": 55,
+    "speed": {
+      "scm": 215,
+      "max": 1300
+    },
+    "description": "Combat variant of the 100 series with upgraded weapons."
+  },
+  "orig_135c": {
+    "name": "135c",
+    "manufacturer": "Origin",
+    "role": "Light Freight",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 12,
+    "buyPriceAUEC": 574700,
+    "pledgeUSD": 65,
+    "speed": {
+      "scm": 200,
+      "max": 1280
+    },
+    "description": "Cargo variant of the 100 series with expanded hold."
+  },
+  "orig_300i": {
+    "name": "300i",
+    "manufacturer": "Origin",
+    "role": "Touring / Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 8,
+    "buyPriceAUEC": 632000,
+    "pledgeUSD": 65,
+    "speed": {
+      "scm": 220,
+      "max": 1300
+    },
+    "description": "Origin's luxury touring ship with solid combat performance."
+  },
+  "orig_315p": {
+    "name": "315p",
+    "manufacturer": "Origin",
+    "role": "Pathfinder / Explorer",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 12,
+    "buyPriceAUEC": 740000,
+    "pledgeUSD": 75,
+    "speed": {
+      "scm": 215,
+      "max": 1290
+    },
+    "description": "Exploration variant with a tractor beam and extended fuel range."
+  },
+  "orig_325a": {
+    "name": "325a",
+    "manufacturer": "Origin",
+    "role": "Interceptor / Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 4,
+    "buyPriceAUEC": 835000,
+    "pledgeUSD": 75,
+    "speed": {
+      "scm": 225,
+      "max": 1310
+    },
+    "description": "Combat variant of the 300 series with upgraded weapons and a missile bay."
+  },
+  "orig_350r": {
+    "name": "350r",
+    "manufacturer": "Origin",
+    "role": "Racing / Interceptor",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 125,
+    "speed": {
+      "scm": 255,
+      "max": 1400
+    },
+    "description": "The fastest of the 300 series. Built for racing and pursuit."
+  },
+  "orig_85x": {
+    "name": "85X",
+    "manufacturer": "Origin",
+    "role": "Touring / Snub",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 50,
+    "speed": {
+      "scm": 230,
+      "max": 1350
+    },
+    "description": "Luxury two-seater snub craft. Originally designed for the 890 Jump."
+  },
+  "orig_m50": {
+    "name": "M50",
+    "manufacturer": "Origin",
+    "role": "Racing / Interceptor",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 100,
+    "speed": {
+      "scm": 265,
+      "max": 1430
+    },
+    "description": "Origin's premier racing ship. Extremely fast and nimble."
+  },
+  "anvl_arrow": {
+    "name": "Arrow",
+    "manufacturer": "Anvil",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 904400,
+    "pledgeUSD": 80,
+    "speed": {
+      "scm": 245,
+      "max": 1375
+    },
+    "description": "Nimble light fighter with excellent maneuverability. Pure combat ship."
+  },
+  "anvl_c8_pisces": {
+    "name": "C8 Pisces",
+    "manufacturer": "Anvil",
+    "role": "Snub / Pathfinder",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 4,
+    "buyPriceAUEC": 406800,
+    "pledgeUSD": 40,
+    "speed": {
+      "scm": 200,
+      "max": 1250
+    },
+    "description": "Compact shuttle designed for the Carrack. Good starter alternative."
+  },
+  "anvl_c8x_pisces_expedition": {
+    "name": "C8X Pisces Expedition",
+    "manufacturer": "Anvil",
+    "role": "Snub / Pathfinder",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 4,
+    "buyPriceAUEC": 406800,
+    "pledgeUSD": 45,
+    "speed": {
+      "scm": 200,
+      "max": 1250
+    },
+    "description": "Upgraded Pisces with better weapons. The standalone version."
+  },
+  "anvl_hawk": {
+    "name": "Hawk",
+    "manufacturer": "Anvil",
+    "role": "Light Fighter / Bounty Hunter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 1271700,
+    "pledgeUSD": 90,
+    "speed": {
+      "scm": 240,
+      "max": 1350
+    },
+    "description": "Bounty hunter's light fighter with EMP and prisoner pod."
+  },
+  "anvl_gladiator": {
+    "name": "Gladiator",
+    "manufacturer": "Anvil",
+    "role": "Bomber / Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 1649700,
+    "pledgeUSD": 165,
+    "speed": {
+      "scm": 200,
+      "max": 1200
+    },
+    "description": "Two-seat torpedo bomber. Deadly anti-capital punch in a small frame."
+  },
+  "aegs_gladius": {
+    "name": "Gladius",
+    "manufacturer": "Aegis",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 1106100,
+    "pledgeUSD": 90,
+    "speed": {
+      "scm": 235,
+      "max": 1320
+    },
+    "description": "The UEE Navy's primary light fighter. Proven and reliable."
+  },
+  "aegs_gladius_valiant": {
+    "name": "Gladius Valiant",
+    "manufacturer": "Aegis",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 110,
+    "speed": {
+      "scm": 235,
+      "max": 1320
+    },
+    "description": "Special edition Gladius with unique livery and upgraded components."
+  },
+  "aegs_sabre": {
+    "name": "Sabre",
+    "manufacturer": "Aegis",
+    "role": "Stealth Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 2163000,
+    "pledgeUSD": 170,
+    "speed": {
+      "scm": 225,
+      "max": 1260
+    },
+    "description": "Stealth-focused medium fighter with four weapon hardpoints."
+  },
+  "aegs_sabre_firebird": {
+    "name": "Sabre Firebird",
+    "manufacturer": "Aegis",
+    "role": "Stealth Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 185,
+    "speed": {
+      "scm": 225,
+      "max": 1260
+    },
+    "description": "Variant Sabre with different default loadout and unique paint."
+  },
+  "aegs_sabre_raven": {
+    "name": "Sabre Raven",
+    "manufacturer": "Aegis",
+    "role": "Stealth / EMP",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 235,
+      "max": 1280
+    },
+    "description": "Intel-exclusive EMP variant. Trades firepower for electronic warfare."
+  },
+  "aegs_eclipse": {
+    "name": "Eclipse",
+    "manufacturer": "Aegis",
+    "role": "Stealth Bomber",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 3095300,
+    "pledgeUSD": 300,
+    "speed": {
+      "scm": 210,
+      "max": 1230
+    },
+    "description": "Stealth torpedo bomber. Delivers devastating first strikes from the shadows."
+  },
+  "drak_buccaneer": {
+    "name": "Buccaneer",
+    "manufacturer": "Drake",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 1152700,
+    "pledgeUSD": 110,
+    "speed": {
+      "scm": 235,
+      "max": 1340
+    },
+    "description": "Drake's dedicated fighter. Glass cannon with heavy firepower for its size."
+  },
+  "drak_herald": {
+    "name": "Herald",
+    "manufacturer": "Drake",
+    "role": "Data Runner",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 2,
+    "buyPriceAUEC": 1094400,
+    "pledgeUSD": 85,
+    "speed": {
+      "scm": 230,
+      "max": 1350
+    },
+    "description": "Extremely fast data runner. Gets in, grabs data, gets out."
+  },
+  "drak_cutter": {
+    "name": "Cutter",
+    "manufacturer": "Drake",
+    "role": "Starter / Pathfinder",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 6,
+    "buyPriceAUEC": 164000,
+    "pledgeUSD": 25,
+    "speed": {
+      "scm": 190,
+      "max": 1220
+    },
+    "description": "Drake's budget starter. Simple, cheap, and functional."
+  },
+  "drak_cutter_rambler": {
+    "name": "Cutter Rambler",
+    "manufacturer": "Drake",
+    "role": "Starter / Exploration",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 4,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 35,
+    "speed": {
+      "scm": 185,
+      "max": 1210
+    },
+    "description": "Exploration variant of the Cutter with tractor beam and scanning."
+  },
+  "drak_cutter_scout": {
+    "name": "Cutter Scout",
+    "manufacturer": "Drake",
+    "role": "Starter / Scout",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 2,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 35,
+    "speed": {
+      "scm": 195,
+      "max": 1230
+    },
+    "description": "Scouting variant with enhanced sensors and scanning equipment."
+  },
+  "banu_defender": {
+    "name": "Defender",
+    "manufacturer": "Banu",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 2822200,
+    "pledgeUSD": 200,
+    "speed": {
+      "scm": 225,
+      "max": 1300
+    },
+    "description": "Banu medium fighter designed to escort Merchantman convoys."
+  },
+  "espr_talon": {
+    "name": "Talon",
+    "manufacturer": "Esperia",
+    "role": "Light Fighter / Stealth",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 120,
+    "speed": {
+      "scm": 240,
+      "max": 1360
+    },
+    "description": "Human-built recreation of the Tevarin Talon. Agile ambush fighter."
+  },
+  "espr_talon_shrike": {
+    "name": "Talon Shrike",
+    "manufacturer": "Esperia",
+    "role": "Light Fighter / Missile Boat",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 120,
+    "speed": {
+      "scm": 240,
+      "max": 1360
+    },
+    "description": "Missile-focused Talon variant. Trades guns for a heavier missile load."
+  },
+  "krig_p52_merlin": {
+    "name": "P-52 Merlin",
+    "manufacturer": "Kruger",
+    "role": "Snub Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 316600,
+    "pledgeUSD": 30,
+    "speed": {
+      "scm": 250,
+      "max": 1400
+    },
+    "description": "Snub fighter designed for the Constellation. No quantum drive."
+  },
+  "krig_p72_archimedes": {
+    "name": "P-72 Archimedes",
+    "manufacturer": "Kruger",
+    "role": "Snub Racer",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 35,
+    "speed": {
+      "scm": 260,
+      "max": 1420
+    },
+    "description": "Racing snub craft from Kruger. The 890 Jump's personal runabout."
+  },
+  "misc_reliant": {
+    "name": "Reliant Kore",
+    "manufacturer": "MISC",
+    "role": "Starter / Light Freight",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 6,
+    "buyPriceAUEC": 632000,
+    "pledgeUSD": 65,
+    "speed": {
+      "scm": 185,
+      "max": 1200
+    },
+    "description": "Two-seat starter with Xi'an-influenced rotating wing design."
+  },
+  "misc_reliant_tana": {
+    "name": "Reliant Tana",
+    "manufacturer": "MISC",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 835400,
+    "pledgeUSD": 75,
+    "speed": {
+      "scm": 200,
+      "max": 1220
+    },
+    "description": "Fighter variant of the Reliant with missiles and upgraded weapons."
+  },
+  "misc_reliant_sen": {
+    "name": "Reliant Sen",
+    "manufacturer": "MISC",
+    "role": "Science / Research",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 80,
+    "speed": {
+      "scm": 180,
+      "max": 1190
+    },
+    "description": "Science variant with research equipment and telescope."
+  },
+  "misc_reliant_mako": {
+    "name": "Reliant Mako",
+    "manufacturer": "MISC",
+    "role": "Reporting / News Van",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 85,
+    "speed": {
+      "scm": 185,
+      "max": 1200
+    },
+    "description": "News van variant designed for recording and broadcasting."
+  },
+  "misc_razor": {
+    "name": "Razor",
+    "manufacturer": "MISC",
+    "role": "Racing",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 145,
+    "speed": {
+      "scm": 270,
+      "max": 1450
+    },
+    "description": "MISC's dedicated racing ship. Blade-thin and extremely fast."
+  },
+  "misc_fury": {
+    "name": "Fury",
+    "manufacturer": "MISC",
+    "role": "Snub Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 40,
+    "speed": {
+      "scm": 255,
+      "max": 1410
+    },
+    "description": "MISC's snub fighter. Compact and punchy for its size."
+  },
+  "misc_hull_a": {
+    "name": "Hull A",
+    "manufacturer": "MISC",
+    "role": "Light Freight",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 64,
+    "buyPriceAUEC": 549600,
+    "pledgeUSD": 60,
+    "speed": {
+      "scm": 165,
+      "max": 1050
+    },
+    "description": "Entry-level dedicated hauler. External cargo spindle for maximum SCU per credit."
+  },
+  "misc_prospector": {
+    "name": "Prospector",
+    "manufacturer": "MISC",
+    "role": "Mining",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 32,
+    "buyPriceAUEC": 2061000,
+    "pledgeUSD": 155,
+    "speed": {
+      "scm": 145,
+      "max": 920
+    },
+    "description": "Solo mining ship. The entry point into ship-based mining operations."
+  },
+  "drak_golem": {
+    "name": "Golem",
+    "manufacturer": "Drake",
+    "role": "Starter Mining",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 12,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 80,
+    "speed": {
+      "scm": 170,
+      "max": 1050
+    },
+    "description": "Drake's entry-level mining ship with saddlebag ore storage."
+  },
+  "drak_vulture": {
+    "name": "Vulture",
+    "manufacturer": "Drake",
+    "role": "Salvage",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 12,
+    "buyPriceAUEC": 1472700,
+    "pledgeUSD": 140,
+    "speed": {
+      "scm": 155,
+      "max": 980
+    },
+    "description": "Solo salvage ship. Scrapes hulls for RMC and recoverable materials."
+  },
+  "misc_fortune": {
+    "name": "Fortune",
+    "manufacturer": "MISC",
+    "role": "Salvage / Light Freight",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 16,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 145,
+    "speed": {
+      "scm": 150,
+      "max": 970
+    },
+    "description": "MISC's entry-level salvage ship. Competitor to the Drake Vulture."
+  },
+  "gama_syulen": {
+    "name": "Syulen",
+    "manufacturer": "Gatac",
+    "role": "Starter / Pathfinder",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 8,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 65,
+    "speed": {
+      "scm": 200,
+      "max": 1250
+    },
+    "description": "Gatac's elegant starter. Xi'an-influenced design with exploration focus."
+  },
+  "crus_intrepid": {
+    "name": "Intrepid",
+    "manufacturer": "Crusader",
+    "role": "Starter / Light Freight",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 8,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 60,
+    "speed": {
+      "scm": 195,
+      "max": 1230
+    },
+    "description": "Crusader's entry into the starter market. Stylish and practical."
+  },
+  "anvl_terrapin": {
+    "name": "Terrapin",
+    "manufacturer": "Anvil",
+    "role": "Pathfinder / Scout",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 2249200,
+    "pledgeUSD": 220,
+    "speed": {
+      "scm": 165,
+      "max": 1050
+    },
+    "description": "Heavily armored scanning ship. Built to survive hostile space while gathering intel."
+  },
+  "rsi_mantis": {
+    "name": "Mantis",
+    "manufacturer": "RSI",
+    "role": "Interdiction",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 1670000,
+    "pledgeUSD": 150,
+    "speed": {
+      "scm": 200,
+      "max": 1250
+    },
+    "description": "Quantum enforcement vessel. Pulls ships out of quantum travel."
+  },
+  "krig_l21_wolf": {
+    "name": "Wolf",
+    "manufacturer": "Kruger",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 95,
+    "speed": {
+      "scm": 245,
+      "max": 1380
+    },
+    "description": "Kruger's first standalone fighter. Fast and agile with solid firepower."
+  },
+  "krig_l22_alphawolf": {
+    "name": "Alpha Wolf",
+    "manufacturer": "Kruger",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 115,
+    "speed": {
+      "scm": 245,
+      "max": 1380
+    },
+    "description": "Enhanced Wolf variant with upgraded components and loadout."
+  },
+  "glsn_shiv": {
+    "name": "Shiv",
+    "manufacturer": "Consolidated Outland",
+    "role": "Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 200,
+    "speed": {
+      "scm": 215,
+      "max": 1250
+    },
+    "description": "Heavy fighter from Consolidated Outland. Packs serious firepower."
+  },
+  "mrai_pulse": {
+    "name": "Pulse",
+    "manufacturer": "Mirai",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 90,
+    "speed": {
+      "scm": 240,
+      "max": 1370
+    },
+    "description": "Mirai's agile light fighter with energy-focused weapons."
+  },
+  "mrai_pulse_lx": {
+    "name": "Pulse LX",
+    "manufacturer": "Mirai",
+    "role": "Racing / Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 100,
+    "speed": {
+      "scm": 250,
+      "max": 1400
+    },
+    "description": "Racing variant of the Pulse with enhanced speed."
+  },
+  "xian_nox": {
+    "name": "Nox",
+    "manufacturer": "Aopoa",
+    "role": "Racing / Hover Bike",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 530800,
+    "pledgeUSD": 50,
+    "speed": {
+      "scm": 195,
+      "max": 1250
+    },
+    "description": "Xi'an hover bike. Sleek, fast, and agile on the ground and in space."
+  },
+  "drak_dragonfly": {
+    "name": "Dragonfly",
+    "manufacturer": "Drake",
+    "role": "Racing / Hover Bike",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 286400,
+    "pledgeUSD": 40,
+    "speed": {
+      "scm": 175,
+      "max": 1150
+    },
+    "description": "Drake's two-seat hover bike. Fits in most ship cargo bays."
+  },
+  "orig_x1": {
+    "name": "X1",
+    "manufacturer": "Origin",
+    "role": "Hover Bike / Touring",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 45,
+    "speed": {
+      "scm": 180,
+      "max": 1180
+    },
+    "description": "Origin's luxury hover bike. Style meets speed."
+  },
+  "xian_scout": {
+    "name": "Khartu-al",
+    "manufacturer": "Aopoa",
+    "role": "Light Fighter / Scout",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 2987400,
+    "pledgeUSD": 170,
+    "speed": {
+      "scm": 230,
+      "max": 1320
+    },
+    "description": "Xi'an scout ship with unique folding wing design. Very maneuverable."
+  },
+  "vncl_blade": {
+    "name": "Blade",
+    "manufacturer": "Esperia",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 2963500,
+    "pledgeUSD": 250,
+    "speed": {
+      "scm": 235,
+      "max": 1340
+    },
+    "description": "Human reproduction of the Vanduul Blade fighter."
+  },
+  "vncl_glaive": {
+    "name": "Glaive",
+    "manufacturer": "Esperia",
+    "role": "Medium Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 350,
+    "speed": {
+      "scm": 220,
+      "max": 1290
+    },
+    "description": "Human reproduction of the Vanduul Glaive. Dual-blade heavy fighter."
+  },
+  "vncl_scythe": {
+    "name": "Scythe",
+    "manufacturer": "Esperia",
+    "role": "Medium Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 300,
+    "speed": {
+      "scm": 225,
+      "max": 1300
+    },
+    "description": "Captured Vanduul fighter. Extremely rare and iconic."
+  },
+  "aegs_vanguard": {
+    "name": "Vanguard Warden",
+    "manufacturer": "Aegis",
+    "role": "Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 2614800,
+    "pledgeUSD": 260,
+    "speed": {
+      "scm": 205,
+      "max": 1180
+    },
+    "description": "Long-range heavy fighter with thick armor and a nose cannon."
+  },
+  "aegs_vanguard_harbinger": {
+    "name": "Vanguard Harbinger",
+    "manufacturer": "Aegis",
+    "role": "Heavy Fighter / Bomber",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 2920300,
+    "pledgeUSD": 290,
+    "speed": {
+      "scm": 195,
+      "max": 1150
+    },
+    "description": "Torpedo-equipped Vanguard. Heavy fighter with anti-capital capability."
+  },
+  "aegs_vanguard_sentinel": {
+    "name": "Vanguard Sentinel",
+    "manufacturer": "Aegis",
+    "role": "Heavy Fighter / EMP",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 2920300,
+    "pledgeUSD": 275,
+    "speed": {
+      "scm": 200,
+      "max": 1170
+    },
+    "description": "Electronic warfare Vanguard with EMP and e-war suite."
+  },
+  "aegs_vanguard_hoplite": {
+    "name": "Vanguard Hoplite",
+    "manufacturer": "Aegis",
+    "role": "Dropship / Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 6
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 2614800,
+    "pledgeUSD": 235,
+    "speed": {
+      "scm": 200,
+      "max": 1160
+    },
+    "description": "Troop transport Vanguard. Carries soldiers into combat zones."
+  },
+  "drak_cutlass_black": {
+    "name": "Cutlass Black",
+    "manufacturer": "Drake",
+    "role": "Multi-Role / Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 46,
+    "buyPriceAUEC": 1385300,
+    "pledgeUSD": 100,
+    "speed": {
+      "scm": 195,
+      "max": 1130
+    },
+    "description": "Drake's workhorse. Great cargo, a manned turret, and vehicle transport."
+  },
+  "drak_cutlass_blue": {
+    "name": "Cutlass Blue",
+    "manufacturer": "Drake",
+    "role": "Bounty Hunter / Interdiction",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 12,
+    "buyPriceAUEC": 1895500,
+    "pledgeUSD": 165,
+    "speed": {
+      "scm": 190,
+      "max": 1120
+    },
+    "description": "Law enforcement Cutlass with prisoner pods and quantum dampener."
+  },
+  "drak_cutlass_red": {
+    "name": "Cutlass Red",
+    "manufacturer": "Drake",
+    "role": "Medical / Search & Rescue",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 12,
+    "buyPriceAUEC": 1566500,
+    "pledgeUSD": 135,
+    "speed": {
+      "scm": 190,
+      "max": 1120
+    },
+    "description": "Medical Cutlass with med beds. Ambulance of the verse."
+  },
+  "drak_cutlass_steel": {
+    "name": "Cutlass Steel",
+    "manufacturer": "Drake",
+    "role": "Dropship / Troop Transport",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 190,
+    "speed": {
+      "scm": 190,
+      "max": 1120
+    },
+    "description": "Troop transport Cutlass with jump seats and door guns."
+  },
+  "misc_freelancer": {
+    "name": "Freelancer",
+    "manufacturer": "MISC",
+    "role": "Medium Freight / Multi-Role",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 4
+    },
+    "cargoSCU": 66,
+    "buyPriceAUEC": 1677900,
+    "pledgeUSD": 110,
+    "speed": {
+      "scm": 180,
+      "max": 1050
+    },
+    "description": "MISC's reliable hauler with turret options and solid cargo capacity."
+  },
+  "misc_freelancer_max": {
+    "name": "Freelancer MAX",
+    "manufacturer": "MISC",
+    "role": "Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 4
+    },
+    "cargoSCU": 120,
+    "buyPriceAUEC": 1930700,
+    "pledgeUSD": 150,
+    "speed": {
+      "scm": 170,
+      "max": 1020
+    },
+    "description": "Expanded cargo Freelancer. More SCU at the cost of some agility."
+  },
+  "misc_freelancer_dur": {
+    "name": "Freelancer DUR",
+    "manufacturer": "MISC",
+    "role": "Exploration / Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 4
+    },
+    "cargoSCU": 36,
+    "buyPriceAUEC": 1993200,
+    "pledgeUSD": 135,
+    "speed": {
+      "scm": 175,
+      "max": 1040
+    },
+    "description": "Exploration variant with extended fuel tanks and better scanners."
+  },
+  "misc_freelancer_mis": {
+    "name": "Freelancer MIS",
+    "manufacturer": "MISC",
+    "role": "Gunship / Missile Boat",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 4
+    },
+    "cargoSCU": 28,
+    "buyPriceAUEC": 2410500,
+    "pledgeUSD": 165,
+    "speed": {
+      "scm": 175,
+      "max": 1040
+    },
+    "description": "Missile-heavy Freelancer. Massive missile payload for its size class."
+  },
+  "anvl_hornet_f7c": {
+    "name": "Hornet F7C",
+    "manufacturer": "Anvil",
+    "role": "Medium Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 1417500,
+    "pledgeUSD": 110,
+    "speed": {
+      "scm": 220,
+      "max": 1280
+    },
+    "description": "The civilian Hornet. Anvil's iconic medium fighter."
+  },
+  "anvl_hornet_f7c_mk2": {
+    "name": "Hornet F7C Mk II",
+    "manufacturer": "Anvil",
+    "role": "Medium Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 130,
+    "speed": {
+      "scm": 225,
+      "max": 1300
+    },
+    "description": "Updated Hornet with modernized frame and improved hardpoints."
+  },
+  "anvl_hornet_f7cm": {
+    "name": "Super Hornet F7C-M",
+    "manufacturer": "Anvil",
+    "role": "Medium Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 2028000,
+    "pledgeUSD": 180,
+    "speed": {
+      "scm": 215,
+      "max": 1270
+    },
+    "description": "Two-seat Super Hornet. More weapons and a co-pilot seat."
+  },
+  "anvl_hornet_f7cm_mk2": {
+    "name": "Super Hornet Mk II",
+    "manufacturer": "Anvil",
+    "role": "Medium Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 195,
+    "speed": {
+      "scm": 220,
+      "max": 1290
+    },
+    "description": "Updated two-seat Super Hornet with modernized systems."
+  },
+  "anvl_hornet_f7cs": {
+    "name": "Hornet Ghost F7C-S",
+    "manufacturer": "Anvil",
+    "role": "Stealth Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 140,
+    "speed": {
+      "scm": 220,
+      "max": 1280
+    },
+    "description": "Stealth Hornet with reduced signature and covert ops loadout."
+  },
+  "anvl_hornet_f7cs_mk2": {
+    "name": "Hornet Ghost Mk II",
+    "manufacturer": "Anvil",
+    "role": "Stealth Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 155,
+    "speed": {
+      "scm": 225,
+      "max": 1300
+    },
+    "description": "Updated Ghost with improved stealth and modernized frame."
+  },
+  "anvl_hornet_f7cr": {
+    "name": "Hornet Tracker F7C-R",
+    "manufacturer": "Anvil",
+    "role": "Tracker / Scout",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 140,
+    "speed": {
+      "scm": 220,
+      "max": 1280
+    },
+    "description": "Tracker Hornet with enhanced radar and scanning suite."
+  },
+  "anvl_hornet_f7cr_mk2": {
+    "name": "Hornet Tracker Mk II",
+    "manufacturer": "Anvil",
+    "role": "Tracker / Scout",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 155,
+    "speed": {
+      "scm": 225,
+      "max": 1300
+    },
+    "description": "Updated Tracker with improved scanning and modernized frame."
+  },
+  "anvl_hurricane": {
+    "name": "Hurricane",
+    "manufacturer": "Anvil",
+    "role": "Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 1740500,
+    "pledgeUSD": 195,
+    "speed": {
+      "scm": 210,
+      "max": 1230
+    },
+    "description": "Two-seat heavy fighter. Devastating turret firepower for its size."
+  },
+  "anvl_lightning_f8c": {
+    "name": "F8C Lightning",
+    "manufacturer": "Anvil",
+    "role": "Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 240,
+    "speed": {
+      "scm": 230,
+      "max": 1310
+    },
+    "description": "Civilian variant of the UEE Navy's premier heavy fighter."
+  },
+  "anvl_paladin": {
+    "name": "Paladin",
+    "manufacturer": "Anvil",
+    "role": "Gunship",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 4
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 250,
+    "speed": {
+      "scm": 185,
+      "max": 1150
+    },
+    "description": "Anvil's multi-crew gunship. Heavy armor and turrets."
+  },
+  "crus_spirit_a1": {
+    "name": "Spirit A1",
+    "manufacturer": "Crusader",
+    "role": "Bomber / Medium Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 150,
+    "speed": {
+      "scm": 195,
+      "max": 1160
+    },
+    "description": "Crusader's strike variant. Bomb bay replaces cargo for ground attack."
+  },
+  "crus_spirit_c1": {
+    "name": "Spirit C1",
+    "manufacturer": "Crusader",
+    "role": "Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 64,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 125,
+    "speed": {
+      "scm": 185,
+      "max": 1140
+    },
+    "description": "Crusader's medium hauler. Sleek design with good cargo capacity."
+  },
+  "crus_star_runner": {
+    "name": "Mercury Star Runner",
+    "manufacturer": "Crusader",
+    "role": "Data Runner / Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 114,
+    "buyPriceAUEC": 4163000,
+    "pledgeUSD": 225,
+    "speed": {
+      "scm": 205,
+      "max": 1200
+    },
+    "description": "Fast data runner with hidden compartments and solid cargo space."
+  },
+  "crus_starfighter_inferno": {
+    "name": "Ares Inferno",
+    "manufacturer": "Crusader",
+    "role": "Heavy Fighter / Anti-Capital",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 2675500,
+    "pledgeUSD": 250,
+    "speed": {
+      "scm": 190,
+      "max": 1150
+    },
+    "description": "Ballistic anti-capital fighter with a massive S7 gatling cannon."
+  },
+  "crus_starfighter_ion": {
+    "name": "Ares Ion",
+    "manufacturer": "Crusader",
+    "role": "Heavy Fighter / Anti-Capital",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 2675500,
+    "pledgeUSD": 250,
+    "speed": {
+      "scm": 190,
+      "max": 1150
+    },
+    "description": "Energy anti-capital fighter with a massive S7 laser cannon."
+  },
+  "rsi_scorpius": {
+    "name": "Scorpius",
+    "manufacturer": "RSI",
+    "role": "Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 2565000,
+    "pledgeUSD": 220,
+    "speed": {
+      "scm": 200,
+      "max": 1200
+    },
+    "description": "Two-seat heavy fighter with remote turret. X-wing inspired design."
+  },
+  "rsi_scorpius_antares": {
+    "name": "Scorpius Antares",
+    "manufacturer": "RSI",
+    "role": "Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 240,
+    "speed": {
+      "scm": 200,
+      "max": 1200
+    },
+    "description": "Upgraded Scorpius variant with enhanced weapons and systems."
+  },
+  "rsi_meteor": {
+    "name": "Meteor",
+    "manufacturer": "RSI",
+    "role": "Medium Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 130,
+    "speed": {
+      "scm": 230,
+      "max": 1290
+    },
+    "description": "RSI's modern medium fighter. Versatile and well-armed."
+  },
+  "mrai_guardian": {
+    "name": "Guardian",
+    "manufacturer": "Mirai",
+    "role": "Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 210,
+    "speed": {
+      "scm": 200,
+      "max": 1200
+    },
+    "description": "Mirai's heavy fighter. Fast and well-armed for its class."
+  },
+  "mrai_guardian_mx": {
+    "name": "Guardian MX",
+    "manufacturer": "Mirai",
+    "role": "Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 225,
+    "speed": {
+      "scm": 205,
+      "max": 1210
+    },
+    "description": "Military spec Guardian with upgraded weapons and armor."
+  },
+  "mrai_guardian_qi": {
+    "name": "Guardian QI",
+    "manufacturer": "Mirai",
+    "role": "Interdiction / Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 235,
+    "speed": {
+      "scm": 195,
+      "max": 1190
+    },
+    "description": "Electronic warfare Guardian with interdiction capabilities."
+  },
+  "aegs_redeemer": {
+    "name": "Redeemer",
+    "manufacturer": "Aegis",
+    "role": "Gunship",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 5
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 3465500,
+    "pledgeUSD": 325,
+    "speed": {
+      "scm": 175,
+      "max": 1080
+    },
+    "description": "Heavy gunship with twin manned turrets. A flying fortress."
+  },
+  "aegs_retaliator": {
+    "name": "Retaliator",
+    "manufacturer": "Aegis",
+    "role": "Heavy Bomber",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 7
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 4588200,
+    "pledgeUSD": 275,
+    "speed": {
+      "scm": 160,
+      "max": 1000
+    },
+    "description": "Multi-crew torpedo bomber. Modular bays for torpedoes or cargo."
+  },
+  "argo_mole": {
+    "name": "MOLE",
+    "manufacturer": "ARGO",
+    "role": "Multi-Crew Mining",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 4
+    },
+    "cargoSCU": 96,
+    "buyPriceAUEC": 5130500,
+    "pledgeUSD": 315,
+    "speed": {
+      "scm": 105,
+      "max": 790
+    },
+    "description": "Multi-crew mining platform with three operator seats and large ore capacity."
+  },
+  "argo_raft": {
+    "name": "RAFT",
+    "manufacturer": "ARGO",
+    "role": "Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 96,
+    "buyPriceAUEC": 1782600,
+    "pledgeUSD": 130,
+    "speed": {
+      "scm": 145,
+      "max": 930
+    },
+    "description": "Dedicated container hauler. Docks standard cargo containers."
+  },
+  "argo_mpuv": {
+    "name": "MPUV Cargo",
+    "manufacturer": "ARGO",
+    "role": "Utility / Light Freight",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 4,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 35,
+    "speed": {
+      "scm": 110,
+      "max": 780
+    },
+    "description": "Tiny utility ship. Moves cargo between ships and stations."
+  },
+  "argo_mpuv_1t": {
+    "name": "MPUV-1T",
+    "manufacturer": "ARGO",
+    "role": "Utility / Personnel",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 40,
+    "speed": {
+      "scm": 110,
+      "max": 780
+    },
+    "description": "Personnel transport variant. Moves people instead of cargo."
+  },
+  "argo_srv": {
+    "name": "SRV",
+    "manufacturer": "ARGO",
+    "role": "Utility / Recovery",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 65,
+    "speed": {
+      "scm": 120,
+      "max": 820
+    },
+    "description": "Ship recovery vehicle with tractor beam for towing disabled vessels."
+  },
+  "espr_prowler": {
+    "name": "Prowler",
+    "manufacturer": "Esperia",
+    "role": "Dropship",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 10
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 4200000,
+    "pledgeUSD": 425,
+    "speed": {
+      "scm": 190,
+      "max": 1160
+    },
+    "description": "Tevarin-inspired stealth dropship. Delivers troops through shield technology."
+  },
+  "drak_corsair": {
+    "name": "Corsair",
+    "manufacturer": "Drake",
+    "role": "Expedition / Multi-Role",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 4
+    },
+    "cargoSCU": 28,
+    "buyPriceAUEC": 3548500,
+    "pledgeUSD": 250,
+    "speed": {
+      "scm": 190,
+      "max": 1140
+    },
+    "description": "Drake's explorer. Heavy guns, habitation, and the Drake aesthetic."
+  },
+  "drak_clipper": {
+    "name": "Clipper",
+    "manufacturer": "Drake",
+    "role": "Multi-Role / Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 4
+    },
+    "cargoSCU": 48,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 175,
+    "speed": {
+      "scm": 185,
+      "max": 1120
+    },
+    "description": "Drake's generalist medium ship. Jack of all trades."
+  },
+  "anvl_carrack": {
+    "name": "Carrack",
+    "manufacturer": "Anvil",
+    "role": "Expedition / Explorer",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 6
+    },
+    "cargoSCU": 456,
+    "buyPriceAUEC": 26709500,
+    "pledgeUSD": 600,
+    "speed": {
+      "scm": 130,
+      "max": 900
+    },
+    "description": "Anvil's premier explorer. Med bay, hangar, drone bay, and a Pisces snub."
+  },
+  "anvl_valkyrie": {
+    "name": "Valkyrie",
+    "manufacturer": "Anvil",
+    "role": "Dropship / Vehicle Transport",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 5
+    },
+    "cargoSCU": 30,
+    "buyPriceAUEC": 4265000,
+    "pledgeUSD": 375,
+    "speed": {
+      "scm": 165,
+      "max": 1040
+    },
+    "description": "Military dropship. Carries vehicles and troops with door guns."
+  },
+  "rsi_constellation_andromeda": {
+    "name": "Constellation Andromeda",
+    "manufacturer": "RSI",
+    "role": "Multi-Crew / Heavy Fighter",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 5
+    },
+    "cargoSCU": 96,
+    "buyPriceAUEC": 3686600,
+    "pledgeUSD": 225,
+    "speed": {
+      "scm": 165,
+      "max": 1020
+    },
+    "description": "RSI's flagship multi-crew ship. Snub fighter, turrets, missiles, and cargo."
+  },
+  "rsi_constellation_taurus": {
+    "name": "Constellation Taurus",
+    "manufacturer": "RSI",
+    "role": "Heavy Freight",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 4
+    },
+    "cargoSCU": 174,
+    "buyPriceAUEC": 3288800,
+    "pledgeUSD": 190,
+    "speed": {
+      "scm": 155,
+      "max": 1000
+    },
+    "description": "Cargo-focused Constellation. Maximum hauling in the Connie frame."
+  },
+  "rsi_constellation_aquila": {
+    "name": "Constellation Aquila",
+    "manufacturer": "RSI",
+    "role": "Exploration",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 5
+    },
+    "cargoSCU": 72,
+    "buyPriceAUEC": 4024000,
+    "pledgeUSD": 275,
+    "speed": {
+      "scm": 160,
+      "max": 1010
+    },
+    "description": "Exploration Constellation with rover bay and upgraded scanners."
+  },
+  "rsi_constellation_phoenix": {
+    "name": "Constellation Phoenix",
+    "manufacturer": "RSI",
+    "role": "Luxury Touring",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 5
+    },
+    "cargoSCU": 40,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 350,
+    "speed": {
+      "scm": 160,
+      "max": 1010
+    },
+    "description": "VIP luxury Constellation. Hot tub, bar, and a point defense turret."
+  },
+  "orig_400i": {
+    "name": "400i",
+    "manufacturer": "Origin",
+    "role": "Expedition / Luxury",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 42,
+    "buyPriceAUEC": 6459400,
+    "pledgeUSD": 250,
+    "speed": {
+      "scm": 190,
+      "max": 1160
+    },
+    "description": "Origin's luxury pathfinder. Fast, shielded, and beautiful."
+  },
+  "orig_600i": {
+    "name": "600i Explorer",
+    "manufacturer": "Origin",
+    "role": "Exploration / Luxury",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 5
+    },
+    "cargoSCU": 40,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 435,
+    "speed": {
+      "scm": 145,
+      "max": 980
+    },
+    "description": "Origin's large luxury explorer. Vehicle bay and generous living space."
+  },
+  "orig_600i_touring": {
+    "name": "600i Touring",
+    "manufacturer": "Origin",
+    "role": "Luxury Touring",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 5
+    },
+    "cargoSCU": 40,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 400,
+    "speed": {
+      "scm": 145,
+      "max": 980
+    },
+    "description": "Touring variant with enhanced luxury interior and amenities."
+  },
+  "orig_890jump": {
+    "name": "890 Jump",
+    "manufacturer": "Origin",
+    "role": "Luxury Capital",
+    "size": "capital",
+    "crew": {
+      "min": 1,
+      "max": 8
+    },
+    "cargoSCU": 32,
+    "buyPriceAUEC": 32099200,
+    "pledgeUSD": 950,
+    "speed": {
+      "scm": 120,
+      "max": 830
+    },
+    "description": "Origin's flagship yacht. The most luxurious ship in the verse."
+  },
+  "drak_caterpillar": {
+    "name": "Caterpillar",
+    "manufacturer": "Drake",
+    "role": "Heavy Freight",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 5
+    },
+    "cargoSCU": 576,
+    "buyPriceAUEC": 4687600,
+    "pledgeUSD": 295,
+    "speed": {
+      "scm": 125,
+      "max": 850
+    },
+    "description": "Drake's modular heavy hauler. Massive cargo capacity with command module."
+  },
+  "crus_starlifter_c2": {
+    "name": "C2 Hercules",
+    "manufacturer": "Crusader",
+    "role": "Heavy Freight / Vehicle Transport",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 4
+    },
+    "cargoSCU": 696,
+    "buyPriceAUEC": 4962200,
+    "pledgeUSD": 360,
+    "speed": {
+      "scm": 150,
+      "max": 930
+    },
+    "description": "Crusader's military-grade heavy transport. Vehicles and cargo in one package."
+  },
+  "crus_starlifter_m2": {
+    "name": "M2 Hercules",
+    "manufacturer": "Crusader",
+    "role": "Military Transport",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 4
+    },
+    "cargoSCU": 522,
+    "buyPriceAUEC": 5250000,
+    "pledgeUSD": 400,
+    "speed": {
+      "scm": 145,
+      "max": 910
+    },
+    "description": "Military Hercules with heavier armor, shields, and turrets."
+  },
+  "crus_starlifter_a2": {
+    "name": "A2 Hercules",
+    "manufacturer": "Crusader",
+    "role": "Heavy Bomber / Transport",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 5
+    },
+    "cargoSCU": 234,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 700,
+    "speed": {
+      "scm": 140,
+      "max": 900
+    },
+    "description": "Bomber Hercules with MOAB and turrets. The biggest boom in the verse."
+  },
+  "misc_hull_c": {
+    "name": "Hull C",
+    "manufacturer": "MISC",
+    "role": "Heavy Freight",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 4
+    },
+    "cargoSCU": 4608,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 250,
+    "speed": {
+      "scm": 100,
+      "max": 750
+    },
+    "description": "Massive external spindle hauler. The backbone of UEE commerce."
+  },
+  "misc_starfarer": {
+    "name": "Starfarer",
+    "manufacturer": "MISC",
+    "role": "Refueling / Heavy Freight",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 7
+    },
+    "cargoSCU": 291,
+    "buyPriceAUEC": 6834400,
+    "pledgeUSD": 300,
+    "speed": {
+      "scm": 110,
+      "max": 800
+    },
+    "description": "MISC's tanker. Refuels other ships and hauls liquid cargo."
+  },
+  "misc_starfarer_gemini": {
+    "name": "Starfarer Gemini",
+    "manufacturer": "MISC",
+    "role": "Military Refueling",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 7
+    },
+    "cargoSCU": 291,
+    "buyPriceAUEC": 7240100,
+    "pledgeUSD": 340,
+    "speed": {
+      "scm": 105,
+      "max": 780
+    },
+    "description": "Militarized Starfarer with heavier armor and defensive turrets."
+  },
+  "misc_starlancer_max": {
+    "name": "Starlancer MAX",
+    "manufacturer": "MISC",
+    "role": "Heavy Freight",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 5
+    },
+    "cargoSCU": 340,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 250,
+    "speed": {
+      "scm": 140,
+      "max": 900
+    },
+    "description": "MISC's new heavy hauler. Replacement for aging Freelancer platform."
+  },
+  "misc_starlancer_tac": {
+    "name": "Starlancer TAC",
+    "manufacturer": "MISC",
+    "role": "Gunship / Tactical",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 6
+    },
+    "cargoSCU": 40,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 300,
+    "speed": {
+      "scm": 150,
+      "max": 930
+    },
+    "description": "Military variant of the Starlancer. Heavy weapons and troop capacity."
+  },
+  "rsi_apollo_medivac": {
+    "name": "Apollo Medivac",
+    "manufacturer": "RSI",
+    "role": "Medical",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 275,
+    "speed": {
+      "scm": 175,
+      "max": 1070
+    },
+    "description": "Dedicated medical ship with Tier 1 med beds. The best healing in flight."
+  },
+  "rsi_apollo_triage": {
+    "name": "Apollo Triage",
+    "manufacturer": "RSI",
+    "role": "Medical",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 250,
+    "speed": {
+      "scm": 175,
+      "max": 1070
+    },
+    "description": "Medical ship with Tier 2 med beds. More beds at lower healing tier."
+  },
+  "rsi_hermes": {
+    "name": "Zeus MkII CL",
+    "manufacturer": "RSI",
+    "role": "Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 80,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 200,
+    "speed": {
+      "scm": 175,
+      "max": 1080
+    },
+    "description": "RSI's modernized medium hauler. Clean design with good cargo space."
+  },
+  "rsi_zeus_cl": {
+    "name": "Zeus CL",
+    "manufacturer": "RSI",
+    "role": "Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 80,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 180,
+    "speed": {
+      "scm": 175,
+      "max": 1080
+    },
+    "description": "RSI's medium cargo variant Zeus. Dedicated hauling platform."
+  },
+  "rsi_zeus_es": {
+    "name": "Zeus ES",
+    "manufacturer": "RSI",
+    "role": "Exploration / Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 48,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 200,
+    "speed": {
+      "scm": 180,
+      "max": 1090
+    },
+    "description": "Exploration variant of the Zeus with scanning and extended range."
+  },
+  "xnaa_santokyai": {
+    "name": "San'tok.yai",
+    "manufacturer": "Aopoa",
+    "role": "Medium Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 220,
+    "speed": {
+      "scm": 215,
+      "max": 1260
+    },
+    "description": "Xi'an medium fighter. Unique alien design with powerful weapons."
+  },
+  "vncl_stinger": {
+    "name": "Stinger",
+    "manufacturer": "Esperia",
+    "role": "Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 280,
+    "speed": {
+      "scm": 210,
+      "max": 1240
+    },
+    "description": "Human reproduction of the Vanduul Stinger heavy fighter."
+  },
+  "rsi_salvation": {
+    "name": "Galaxy",
+    "manufacturer": "RSI",
+    "role": "Modular / Multi-Role",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 6
+    },
+    "cargoSCU": 200,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 380,
+    "speed": {
+      "scm": 140,
+      "max": 900
+    },
+    "description": "RSI's modular platform. Swap modules for cargo, medical, refinery, or more."
+  },
+  "aegs_hammerhead": {
+    "name": "Hammerhead",
+    "manufacturer": "Aegis",
+    "role": "Anti-Fighter Corvette",
+    "size": "capital",
+    "crew": {
+      "min": 1,
+      "max": 9
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": 21672200,
+    "pledgeUSD": 725,
+    "speed": {
+      "scm": 130,
+      "max": 780
+    },
+    "description": "Six manned turrets on a heavily armored platform. The ultimate anti-fighter ship."
+  },
+  "aegs_reclaimer": {
+    "name": "Reclaimer",
+    "manufacturer": "Aegis",
+    "role": "Heavy Salvage",
+    "size": "capital",
+    "crew": {
+      "min": 1,
+      "max": 5
+    },
+    "cargoSCU": 400,
+    "buyPriceAUEC": 14643200,
+    "pledgeUSD": 400,
+    "speed": {
+      "scm": 85,
+      "max": 650
+    },
+    "description": "Industrial-scale salvage platform. Massive capacity for large wreck operations."
+  },
+  "rsi_perseus": {
+    "name": "Perseus",
+    "manufacturer": "RSI",
+    "role": "Gunship / Anti-Capital",
+    "size": "capital",
+    "crew": {
+      "min": 1,
+      "max": 6
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 600,
+    "speed": {
+      "scm": 120,
+      "max": 790
+    },
+    "description": "Heavy gunship with dual S7 turrets. Built to take on capitals."
+  },
+  "rsi_polaris": {
+    "name": "Polaris",
+    "manufacturer": "RSI",
+    "role": "Corvette",
+    "size": "capital",
+    "crew": {
+      "min": 1,
+      "max": 14
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 750,
+    "speed": {
+      "scm": 115,
+      "max": 770
+    },
+    "description": "RSI's corvette with torpedo bays and a hangar for a medium fighter."
+  },
+  "anvl_asgard": {
+    "name": "Asgard",
+    "manufacturer": "Anvil",
+    "role": "Heavy Assault",
+    "size": "capital",
+    "crew": {
+      "min": 1,
+      "max": 20
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 95,
+      "max": 700
+    },
+    "description": "Anvil's capital-class assault ship. A true warship."
+  },
+  "anvl_terrapin_medic": {
+    "name": "Terrapin Medic",
+    "manufacturer": "Anvil",
+    "role": "Medical / Scout",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 235,
+    "speed": {
+      "scm": 165,
+      "max": 1050
+    },
+    "description": "Medical variant of the Terrapin with a med bed."
+  },
+  "espr_prowler_utility": {
+    "name": "Prowler Utility",
+    "manufacturer": "Esperia",
+    "role": "Utility / Light Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 6
+    },
+    "cargoSCU": 24,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 400,
+    "speed": {
+      "scm": 190,
+      "max": 1160
+    },
+    "description": "Cargo variant of the Prowler. Trades troop capacity for freight."
+  },
+  "aegs_idris_p_collector_military": {
+    "name": "Idris-P (Collector)",
+    "manufacturer": "Aegis",
+    "role": "Frigate",
+    "size": "capital",
+    "crew": {
+      "min": 1,
+      "max": 28
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 95,
+      "max": 700
+    },
+    "description": "Collector Edition Idris-P frigate. A Wikelo reward variant of the capital-class military patrol frigate."
+  },
+  "aegs_sabre_firebird_collector_milt": {
+    "name": "Sabre Firebird (Collector)",
+    "manufacturer": "Aegis",
+    "role": "Stealth Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 225,
+      "max": 1260
+    },
+    "description": "Collector Edition Sabre Firebird. A Wikelo reward variant of the stealth fighter with incendiary missiles."
+  },
+  "aegs_sabre_peregrine_collector_competition": {
+    "name": "Sabre Peregrine (Collector)",
+    "manufacturer": "Aegis",
+    "role": "Racing",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 225,
+      "max": 1260
+    },
+    "description": "Collector Edition Sabre Peregrine. A Wikelo reward racing variant of the Sabre stealth fighter."
+  },
+  "anvl_asgard_collector_military": {
+    "name": "Asgard (Collector)",
+    "manufacturer": "Anvil",
+    "role": "Heavy Assault",
+    "size": "capital",
+    "crew": {
+      "min": 1,
+      "max": 20
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 95,
+      "max": 700
+    },
+    "description": "Collector Edition Asgard. A Wikelo reward variant of the heavy assault capital ship."
+  },
+  "anvl_hornet_f7_mk2_collector_mod": {
+    "name": "Hornet F7 Mk II (Collector)",
+    "manufacturer": "Anvil",
+    "role": "Medium Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 225,
+      "max": 1300
+    },
+    "description": "Collector Edition Hornet F7 Mk II. A Wikelo reward variant of the military-spec Hornet."
+  },
+  "anvl_lightning_f8c_collector_military": {
+    "name": "F8C Lightning (Collector)",
+    "manufacturer": "Anvil",
+    "role": "Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 230,
+      "max": 1310
+    },
+    "description": "Collector Edition F8C Lightning. A Wikelo reward variant of the military heavy fighter."
+  },
+  "anvl_lightning_f8c_collector_stealth": {
+    "name": "F8C Lightning (Collector Stealth)",
+    "manufacturer": "Anvil",
+    "role": "Stealth Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 230,
+      "max": 1310
+    },
+    "description": "Collector Stealth Edition F8C Lightning. A Wikelo reward stealth variant of the military heavy fighter."
+  },
+  "anvl_terrapin_medic_collector_medic": {
+    "name": "Terrapin Medic (Collector)",
+    "manufacturer": "Anvil",
+    "role": "Medical / Scout",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 165,
+      "max": 1050
+    },
+    "description": "Collector Edition Terrapin Medic. A Wikelo reward variant of the armored medical ship."
+  },
+  "argo_raft_collector_indust": {
+    "name": "RAFT (Collector)",
+    "manufacturer": "ARGO",
+    "role": "Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 96,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 145,
+      "max": 930
+    },
+    "description": "Collector Edition RAFT. A Wikelo reward variant of the medium freight hauler."
+  },
+  "crus_intrepid_collector_indust": {
+    "name": "Intrepid (Collector)",
+    "manufacturer": "Crusader",
+    "role": "Starter / Light Freight",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 8,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 195,
+      "max": 1230
+    },
+    "description": "Collector Edition Intrepid. A Wikelo reward variant of the starter light freighter."
+  },
+  "crus_starfighter_inferno_collector_military": {
+    "name": "Ares Inferno (Collector)",
+    "manufacturer": "Crusader",
+    "role": "Heavy Fighter / Anti-Capital",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 190,
+      "max": 1150
+    },
+    "description": "Collector Edition Ares Inferno. A Wikelo reward variant of the ballistic anti-capital fighter."
+  },
+  "crus_starfighter_ion_collector_stealth": {
+    "name": "Ares Ion (Collector Stealth)",
+    "manufacturer": "Crusader",
+    "role": "Heavy Fighter / Anti-Capital",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 190,
+      "max": 1150
+    },
+    "description": "Collector Stealth Edition Ares Ion. A Wikelo reward stealth variant of the laser anti-capital fighter."
+  },
+  "crus_starlifter_a2_collector_military": {
+    "name": "A2 Hercules (Collector)",
+    "manufacturer": "Crusader",
+    "role": "Heavy Bomber / Transport",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 5
+    },
+    "cargoSCU": 234,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 140,
+      "max": 900
+    },
+    "description": "Collector Edition A2 Hercules. A Wikelo reward variant of the heavy bomber and transport."
+  },
+  "drak_golem_collector_indust": {
+    "name": "Golem (Collector)",
+    "manufacturer": "Drake",
+    "role": "Starter Mining",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 12,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 170,
+      "max": 1050
+    },
+    "description": "Collector Edition Golem. A Wikelo reward variant of the starter mining ship."
+  },
+  "espr_prowler_utility_collector_indust": {
+    "name": "Prowler Utility (Collector)",
+    "manufacturer": "Esperia",
+    "role": "Utility / Light Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 6
+    },
+    "cargoSCU": 24,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 190,
+      "max": 1160
+    },
+    "description": "Collector Edition Prowler Utility. A Wikelo reward variant of the alien utility ship."
+  },
+  "krig_l21_wolf_collector_military": {
+    "name": "Wolf (Collector)",
+    "manufacturer": "Kruger",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 245,
+      "max": 1380
+    },
+    "description": "Collector Edition Wolf. A Wikelo reward variant of the agile light fighter."
+  },
+  "krig_l21_wolf_collector_stealth": {
+    "name": "Wolf (Collector Stealth)",
+    "manufacturer": "Kruger",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 245,
+      "max": 1380
+    },
+    "description": "Collector Stealth Edition Wolf. A Wikelo reward stealth variant of the agile light fighter."
+  },
+  "misc_fortune_collector_industrial": {
+    "name": "Fortune (Collector)",
+    "manufacturer": "MISC",
+    "role": "Salvage / Light Freight",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 16,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 150,
+      "max": 970
+    },
+    "description": "Collector Edition Fortune. A Wikelo reward variant of the salvage and light freight ship."
+  },
+  "misc_prospector_collector_indust": {
+    "name": "Prospector (Collector)",
+    "manufacturer": "MISC",
+    "role": "Mining",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 32,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 145,
+      "max": 920
+    },
+    "description": "Collector Edition Prospector. A Wikelo reward variant of the solo mining ship."
+  },
+  "misc_starlancer_max_collector_indust": {
+    "name": "Starlancer MAX (Collector)",
+    "manufacturer": "MISC",
+    "role": "Heavy Freight",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 5
+    },
+    "cargoSCU": 340,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 140,
+      "max": 900
+    },
+    "description": "Collector Edition Starlancer MAX. A Wikelo reward variant of the heavy freighter."
+  },
+  "misc_starlancer_tac_collector_military": {
+    "name": "Starlancer TAC (Collector)",
+    "manufacturer": "MISC",
+    "role": "Gunship / Tactical",
+    "size": "large",
+    "crew": {
+      "min": 1,
+      "max": 6
+    },
+    "cargoSCU": 40,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 150,
+      "max": 930
+    },
+    "description": "Collector Edition Starlancer TAC. A Wikelo reward variant of the tactical gunship."
+  },
+  "mrai_guardian_mx_collector_military": {
+    "name": "Guardian MX (Collector)",
+    "manufacturer": "Mirai",
+    "role": "Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 205,
+      "max": 1210
+    },
+    "description": "Collector Edition Guardian MX. A Wikelo reward variant of the heavy fighter."
+  },
+  "mrai_guardian_qi_collector_indust": {
+    "name": "Guardian QI (Collector)",
+    "manufacturer": "Mirai",
+    "role": "Interdiction / Heavy Fighter",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 195,
+      "max": 1190
+    },
+    "description": "Collector Edition Guardian QI. A Wikelo reward variant of the interdiction ship."
+  },
+  "mrai_pulse_collector_civ": {
+    "name": "Pulse (Collector)",
+    "manufacturer": "Mirai",
+    "role": "Light Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 240,
+      "max": 1370
+    },
+    "description": "Collector Edition Pulse. A Wikelo reward variant of the light fighter."
+  },
+  "rsi_meteor_collector_military": {
+    "name": "Meteor (Collector)",
+    "manufacturer": "RSI",
+    "role": "Medium Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 230,
+      "max": 1290
+    },
+    "description": "Collector Edition Meteor. A Wikelo reward variant of the medium fighter."
+  },
+  "rsi_meteor_collector_stealth": {
+    "name": "Meteor (Collector Stealth)",
+    "manufacturer": "RSI",
+    "role": "Medium Fighter",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 230,
+      "max": 1290
+    },
+    "description": "Collector Stealth Edition Meteor. A Wikelo reward stealth variant of the medium fighter."
+  },
+  "rsi_polaris_collector_military": {
+    "name": "Polaris (Collector)",
+    "manufacturer": "RSI",
+    "role": "Corvette",
+    "size": "capital",
+    "crew": {
+      "min": 1,
+      "max": 14
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 115,
+      "max": 770
+    },
+    "description": "Collector Edition Polaris. A Wikelo reward variant of the corvette."
+  },
+  "rsi_zeus_cl_collector_indust": {
+    "name": "Zeus CL (Collector)",
+    "manufacturer": "RSI",
+    "role": "Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 80,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 175,
+      "max": 1080
+    },
+    "description": "Collector Edition Zeus CL. A Wikelo reward variant of the medium freighter."
+  },
+  "rsi_zeus_es_collector_indust": {
+    "name": "Zeus ES (Collector)",
+    "manufacturer": "RSI",
+    "role": "Exploration / Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 3
+    },
+    "cargoSCU": 48,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 180,
+      "max": 1090
+    },
+    "description": "Collector Edition Zeus ES. A Wikelo reward variant of the exploration ship."
+  },
+  "xian_nox_collector_mod": {
+    "name": "Nox (Collector)",
+    "manufacturer": "Aopoa",
+    "role": "Racing / Hover Bike",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 1
+    },
+    "cargoSCU": 0,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 195,
+      "max": 1250
+    },
+    "description": "Collector Edition Nox. A Wikelo reward variant of the alien hover bike."
+  }
+}

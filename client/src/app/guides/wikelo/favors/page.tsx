@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { favorTips, favorConversions } from "@/data/wikelo";
+import { favorTips, favorConversions as staticFavorConversions } from "@/data/wikelo";
+import { useWithOverrides } from "@/hooks/useOverrides";
 import styles from "../../guides.module.css";
 
 export default function FavorEconomy() {
+  const { data: favorConversions } = useWithOverrides("wikelo_favor_conversion", staticFavorConversions, (f) => f.name);
   return (
     <div className={styles.page}>
       <h1 className={styles.title}>Favor Economy Breakdown</h1>
