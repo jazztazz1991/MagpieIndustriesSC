@@ -37,7 +37,7 @@ async function main() {
 
   for (const ore of oreData) {
     await prisma.gameOre.upsert({
-      where: { name: ore.name },
+      where: { abbrev: ore.abbrev },
       update: ore,
       create: ore,
     });
@@ -165,8 +165,7 @@ async function main() {
   // --- Rock Signatures ---
   const rockSigData = rockSignatures.map((r) => ({
     name: r.name,
-    baseRU: r.baseRU,
-    maxMultiples: r.maxMultiples,
+    rarity: r.rarity,
   }));
 
   for (const sig of rockSigData) {
@@ -221,6 +220,7 @@ async function main() {
     atmosphere: l.atmosphere,
     danger: l.danger,
     ores: l.ores,
+    fpsOres: l.fpsOres,
     notes: l.notes,
   }));
 

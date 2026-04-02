@@ -570,12 +570,11 @@ model GameMiningShip {
 }
 
 model GameRockSignature {
-  id           String   @id @default(cuid())
-  name         String   @unique
-  baseRU       Int
-  maxMultiples Int
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String   @unique
+  rarity    String   @default("common")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("game_rock_signatures")
 }
@@ -613,6 +612,7 @@ model GameMiningLocation {
   atmosphere Boolean
   danger     String
   ores       Json
+  fpsOres    Json     @default("[]")
   notes      String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
