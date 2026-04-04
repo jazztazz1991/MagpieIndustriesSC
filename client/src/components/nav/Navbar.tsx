@@ -24,6 +24,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Refinery", href: "/tools/refinery" },
       { label: "Loadout", href: "/tools/loadout" },
       { label: "Ship Compare", href: "/tools/ship-compare" },
+      { label: "Wikelo Tracker", href: "/tools/wikelo-tracker" },
       { label: "Notepad", href: "/tools/notepad" },
     ],
   },

@@ -423,7 +423,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 20
       },
       {
-        "item": "Harvestable Armillaria",
+        "item": "Bluemoon Fungus",
         "quantity": 20
       },
       {
@@ -596,15 +596,15 @@ export const contracts: WikeloContract[] = [
         "quantity": 10
       },
       {
-        "item": "ASD Regulator Module 1",
+        "item": "RCMBNT-RGL-1",
         "quantity": 3
       },
       {
-        "item": "ASD Regulator Module 2",
+        "item": "RCMBNT-RGL-2",
         "quantity": 3
       },
       {
-        "item": "ASD Regulator Module 3",
+        "item": "RCMBNT-RGL-3",
         "quantity": 3
       },
       {
@@ -632,7 +632,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 3
       },
       {
-        "item": "Military Medal",
+        "item": "Government Cartography Agency Medal (Pristine)",
         "quantity": 1
       }
     ],
@@ -708,15 +708,15 @@ export const contracts: WikeloContract[] = [
         "quantity": 30
       },
       {
-        "item": "ASD Power Supply Unit 1",
+        "item": "RCMBNT-PWL-1",
         "quantity": 4
       },
       {
-        "item": "ASD Power Supply Unit 2",
+        "item": "RCMBNT-PWL-2",
         "quantity": 4
       },
       {
-        "item": "ASD Power Supply Unit 3",
+        "item": "RCMBNT-PWL-3",
         "quantity": 4
       },
       {
@@ -833,7 +833,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 1
       },
       {
-        "item": "Vgl Combat Heavy Backpack 01 06 01",
+        "item": "Virgil Heavy Backpack",
         "quantity": 1
       }
     ],
@@ -1084,7 +1084,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 5
       },
       {
-        "item": "Military Medal",
+        "item": "UEE 6th Platoon Medal (Pristine)",
         "quantity": 1
       }
     ],
@@ -1112,7 +1112,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 5
       },
       {
-        "item": "Military Medal",
+        "item": "Tevarin War Service Marker (Pristine)",
         "quantity": 1
       }
     ],
@@ -1172,7 +1172,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 3
       },
       {
-        "item": "Military Medal",
+        "item": "Government Cartography Agency Medal (Pristine)",
         "quantity": 3
       }
     ],
@@ -1192,7 +1192,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 16
       },
       {
-        "item": "Pyro Serverblade",
+        "item": "DCHS-05 Orbital Positioning Comp-Board",
         "quantity": 3
       },
       {
@@ -1200,7 +1200,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 5
       },
       {
-        "item": "Military Medal",
+        "item": "Government Cartography Agency Medal (Pristine)",
         "quantity": 1
       }
     ],
@@ -1220,7 +1220,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 15
       },
       {
-        "item": "Pyro Serverblade",
+        "item": "DCHS-05 Orbital Positioning Comp-Board",
         "quantity": 4
       },
       {
@@ -1228,7 +1228,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 3
       },
       {
-        "item": "Military Medal",
+        "item": "Government Cartography Agency Medal (Pristine)",
         "quantity": 1
       }
     ],
@@ -1252,7 +1252,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 10
       },
       {
-        "item": "Military Medal",
+        "item": "Tevarin War Service Marker (Pristine)",
         "quantity": 1
       },
       {
@@ -1288,7 +1288,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 15
       },
       {
-        "item": "Hadesian Fragment 1 Large Pristine A",
+        "item": "Large Artifact Fragment (Pristine)",
         "quantity": 2
       }
     ],
@@ -1312,11 +1312,11 @@ export const contracts: WikeloContract[] = [
         "quantity": 15
       },
       {
-        "item": "Pyro Serverblade",
+        "item": "DCHS-05 Orbital Positioning Comp-Board",
         "quantity": 15
       },
       {
-        "item": "Military Medal",
+        "item": "UEE 6th Platoon Medal (Pristine)",
         "quantity": 2
       }
     ],
@@ -1344,7 +1344,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 10
       },
       {
-        "item": "Hadesian Fragment 1 Large Pristine A",
+        "item": "Large Artifact Fragment (Pristine)",
         "quantity": 1
       }
     ],
@@ -1433,7 +1433,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 4
       },
       {
-        "item": "Pyro Serverblade",
+        "item": "DCHS-05 Orbital Positioning Comp-Board",
         "quantity": 1
       }
     ],
@@ -1465,7 +1465,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 5
       },
       {
-        "item": "Hadesian Fragment 1 Large Pristine A",
+        "item": "Large Artifact Fragment (Pristine)",
         "quantity": 1
       }
     ],
@@ -1485,11 +1485,11 @@ export const contracts: WikeloContract[] = [
         "quantity": 15
       },
       {
-        "item": "Pyro Serverblade",
+        "item": "DCHS-05 Orbital Positioning Comp-Board",
         "quantity": 4
       },
       {
-        "item": "Military Medal",
+        "item": "Tevarin War Service Marker (Pristine)",
         "quantity": 1
       }
     ],
@@ -1509,7 +1509,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 8
       },
       {
-        "item": "Military Medal",
+        "item": "Tevarin War Service Marker (Pristine)",
         "quantity": 1
       }
     ],
@@ -1561,7 +1561,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 10
       },
       {
-        "item": "Military Medal",
+        "item": "Tevarin War Service Marker (Pristine)",
         "quantity": 1
       }
     ],
@@ -1659,7 +1659,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 50
       },
       {
-        "item": "Pyro Serverblade",
+        "item": "DCHS-05 Orbital Positioning Comp-Board",
         "quantity": 50
       },
       {
@@ -1683,7 +1683,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 30
       },
       {
-        "item": "Military Medal",
+        "item": "UEE 6th Platoon Medal (Pristine)",
         "quantity": 30
       },
       {
@@ -1695,39 +1695,39 @@ export const contracts: WikeloContract[] = [
         "quantity": 30
       },
       {
-        "item": "ASD Power Supply Unit 1",
+        "item": "RCMBNT-PWL-1",
         "quantity": 5
       },
       {
-        "item": "ASD Power Supply Unit 2",
+        "item": "RCMBNT-PWL-2",
         "quantity": 5
       },
       {
-        "item": "ASD Power Supply Unit 3",
+        "item": "RCMBNT-PWL-3",
         "quantity": 5
       },
       {
-        "item": "ASD Regulator Module 1",
+        "item": "RCMBNT-RGL-1",
         "quantity": 5
       },
       {
-        "item": "ASD Regulator Module 2",
+        "item": "RCMBNT-RGL-2",
         "quantity": 5
       },
       {
-        "item": "ASD Regulator Module 3",
+        "item": "RCMBNT-RGL-3",
         "quantity": 5
       },
       {
-        "item": "ASD Crystal Module 1",
+        "item": "RCMBNT-XTL-1",
         "quantity": 5
       },
       {
-        "item": "ASD Crystal Module 2",
+        "item": "RCMBNT-XTL-2",
         "quantity": 5
       },
       {
-        "item": "ASD Crystal Module 3",
+        "item": "RCMBNT-XTL-3",
         "quantity": 5
       }
     ],
@@ -1748,39 +1748,39 @@ export const contracts: WikeloContract[] = [
         "quantity": 50
       },
       {
-        "item": "ASD Power Supply Unit 1",
+        "item": "RCMBNT-PWL-1",
         "quantity": 5
       },
       {
-        "item": "ASD Power Supply Unit 2",
+        "item": "RCMBNT-PWL-2",
         "quantity": 5
       },
       {
-        "item": "ASD Power Supply Unit 3",
+        "item": "RCMBNT-PWL-3",
         "quantity": 5
       },
       {
-        "item": "ASD Regulator Module 1",
+        "item": "RCMBNT-RGL-1",
         "quantity": 5
       },
       {
-        "item": "ASD Regulator Module 2",
+        "item": "RCMBNT-RGL-2",
         "quantity": 5
       },
       {
-        "item": "ASD Regulator Module 3",
+        "item": "RCMBNT-RGL-3",
         "quantity": 5
       },
       {
-        "item": "ASD Crystal Module 1",
+        "item": "RCMBNT-XTL-1",
         "quantity": 5
       },
       {
-        "item": "ASD Crystal Module 2",
+        "item": "RCMBNT-XTL-2",
         "quantity": 5
       },
       {
-        "item": "ASD Crystal Module 3",
+        "item": "RCMBNT-XTL-3",
         "quantity": 5
       },
       {
@@ -1812,7 +1812,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 4
       },
       {
-        "item": "Military Medal",
+        "item": "Tevarin War Service Marker (Pristine)",
         "quantity": 4
       }
     ],
@@ -1832,7 +1832,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 40
       },
       {
-        "item": "Pyro Serverblade",
+        "item": "DCHS-05 Orbital Positioning Comp-Board",
         "quantity": 15
       },
       {
@@ -1864,7 +1864,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 15
       },
       {
-        "item": "Pyro Serverblade",
+        "item": "DCHS-05 Orbital Positioning Comp-Board",
         "quantity": 10
       },
       {
@@ -1888,7 +1888,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 15
       },
       {
-        "item": "Military Medal",
+        "item": "UEE 6th Platoon Medal (Pristine)",
         "quantity": 15
       },
       {
@@ -1900,39 +1900,39 @@ export const contracts: WikeloContract[] = [
         "quantity": 15
       },
       {
-        "item": "ASD Power Supply Unit 1",
+        "item": "RCMBNT-PWL-1",
         "quantity": 1
       },
       {
-        "item": "ASD Power Supply Unit 2",
+        "item": "RCMBNT-PWL-2",
         "quantity": 1
       },
       {
-        "item": "ASD Power Supply Unit 3",
+        "item": "RCMBNT-PWL-3",
         "quantity": 1
       },
       {
-        "item": "ASD Regulator Module 1",
+        "item": "RCMBNT-RGL-1",
         "quantity": 1
       },
       {
-        "item": "ASD Regulator Module 2",
+        "item": "RCMBNT-RGL-2",
         "quantity": 1
       },
       {
-        "item": "ASD Regulator Module 3",
+        "item": "RCMBNT-RGL-3",
         "quantity": 1
       },
       {
-        "item": "ASD Crystal Module 1",
+        "item": "RCMBNT-XTL-1",
         "quantity": 1
       },
       {
-        "item": "ASD Crystal Module 2",
+        "item": "RCMBNT-XTL-2",
         "quantity": 1
       },
       {
-        "item": "ASD Crystal Module 3",
+        "item": "RCMBNT-XTL-3",
         "quantity": 1
       }
     ],
@@ -1997,11 +1997,11 @@ export const contracts: WikeloContract[] = [
         "quantity": 3
       },
       {
-        "item": "Military Medal",
+        "item": "Tevarin War Service Marker (Pristine)",
         "quantity": 3
       },
       {
-        "item": "Pyro Serverblade",
+        "item": "DCHS-05 Orbital Positioning Comp-Board",
         "quantity": 3
       },
       {
@@ -2061,11 +2061,11 @@ export const contracts: WikeloContract[] = [
         "quantity": 6
       },
       {
-        "item": "Military Medal",
+        "item": "Tevarin War Service Marker (Pristine)",
         "quantity": 6
       },
       {
-        "item": "Pyro Serverblade",
+        "item": "DCHS-05 Orbital Positioning Comp-Board",
         "quantity": 6
       },
       {
@@ -2089,7 +2089,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 10
       },
       {
-        "item": "Military Medal",
+        "item": "UEE 6th Platoon Medal (Pristine)",
         "quantity": 1
       }
     ],
@@ -2125,7 +2125,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 5
       },
       {
-        "item": "Military Medal",
+        "item": "Tevarin War Service Marker (Pristine)",
         "quantity": 1
       },
       {
@@ -2329,15 +2329,15 @@ export const contracts: WikeloContract[] = [
         "quantity": 5
       },
       {
-        "item": "ASD Crystal Module 1",
+        "item": "RCMBNT-XTL-1",
         "quantity": 5
       },
       {
-        "item": "ASD Crystal Module 2",
+        "item": "RCMBNT-XTL-2",
         "quantity": 5
       },
       {
-        "item": "ASD Crystal Module 3",
+        "item": "RCMBNT-XTL-3",
         "quantity": 5
       },
       {
@@ -2677,7 +2677,7 @@ export const contracts: WikeloContract[] = [
         "quantity": 10
       },
       {
-        "item": "Military Medal",
+        "item": "Tevarin War Service Marker (Pristine)",
         "quantity": 1
       },
       {

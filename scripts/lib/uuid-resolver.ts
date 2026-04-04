@@ -172,7 +172,11 @@ function prettifyEntityName(name: string): string {
     // Loot items
     [/harddrive.*delving.*asd|asd.*secure.*drive/i, () => "ASD Secure Drive"],
     [/basl_combat_light_helmet|ace.*interceptor/i, () => "Ace Interceptor Helmet"],
-    [/medal.*pristine|military.*medal/i, () => "Military Medal"],
+    [/medal_1_pristine_b|6th.*platoon/i, () => "UEE 6th Platoon Medal (Pristine)"],
+    [/medal_1_pristine_a|unification.*war.*medal/i, () => "UNE Unification War Medal (Pristine)"],
+    [/medal_1_pristine_c|tevarin.*war.*marker/i, () => "Tevarin War Service Marker (Pristine)"],
+    [/medal_1_pristine_d|cartography.*medal/i, () => "Government Cartography Agency Medal (Pristine)"],
+    [/medal.*pristine/i, () => "Medal (Pristine)"],
     [/military.*badge/i, () => "Military Badge"],
     [/tevarin.*marker/i, () => "Tevarin Marker"],
     [/vanduul.*plating/i, () => "Vanduul Plating"],
@@ -182,9 +186,9 @@ function prettifyEntityName(name: string): string {
     [/serverblade_(\d)/i, (m) => `Pyro Serverblade ${m[1]}`],
 
     // Delving/ASD reward items
-    [/asdreward_pwl(\d)/i, (m) => `ASD Power Supply Unit ${m[1]}`],
-    [/asdreward_rgl(\d)/i, (m) => `ASD Regulator Module ${m[1]}`],
-    [/asdreward_xtl(\d)/i, (m) => `ASD Crystal Module ${m[1]}`],
+    [/asdreward[_]?pwl[_]?(\d)/i, (m) => `RCMBNT-PWL-${m[1]}`],
+    [/asdreward[_]?rgl[_]?(\d)/i, (m) => `RCMBNT-RGL-${m[1]}`],
+    [/asdreward[_]?xtl[_]?(\d)/i, (m) => `RCMBNT-XTL-${m[1]}`],
 
     // Module components
     [/rcmbnt.*xtl.*([a-e])/i, (m) => `RCMBNT-XTL Module ${m[1].toUpperCase()}`],
