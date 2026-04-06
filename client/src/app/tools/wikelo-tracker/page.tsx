@@ -8,6 +8,13 @@ import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import shared from "../tools.module.css";
 
+interface ProjectMaterial {
+  id: string;
+  itemName: string;
+  required: number;
+  collected: number;
+}
+
 interface ProjectSummary {
   id: string;
   contractId: string;
@@ -15,6 +22,7 @@ interface ProjectSummary {
   status: string;
   progress: number;
   materialCount: number;
+  materials: ProjectMaterial[];
   createdAt: string;
   updatedAt: string;
 }
@@ -26,13 +34,26 @@ export default function WikeloTrackerPage() {
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
+  const [shoppingListOpen, setShoppingListOpen] = useState(false);
   const [selectedContractId, setSelectedContractId] = useState("");
+  const [contractSearch, setContractSearch] = useState("");
   const [creating, setCreating] = useState(false);
 
   const activeContracts = useMemo(
     () => contracts.filter((c) => c.active).sort((a, b) => a.name.localeCompare(b.name)),
     [contracts]
   );
+
+  const filteredContracts = useMemo(() => {
+    if (!contractSearch.trim()) return activeContracts;
+    const q = contractSearch.toLowerCase();
+    return activeContracts.filter((c) =>
+      c.name.toLowerCase().includes(q) ||
+      c.rewards.some((r) => r.toLowerCase().includes(q)) ||
+      c.tier.toLowerCase().includes(q) ||
+      c.category.toLowerCase().includes(q)
+    );
+  }, [activeContracts, contractSearch]);
 
   // Load projects
   useEffect(() => {
@@ -109,19 +130,43 @@ export default function WikeloTrackerPage() {
       ) : (
         <div className={shared.panel} style={{ marginBottom: "1.5rem" }}>
           <h2 className={shared.panelTitle}>New Project</h2>
-          <select
-            value={selectedContractId}
-            onChange={(e) => setSelectedContractId(e.target.value)}
-            className={shared.select}
+          <input
+            type="text"
+            placeholder="Search contracts by name, reward, tier..."
+            value={contractSearch}
+            onChange={(e) => { setContractSearch(e.target.value); setSelectedContractId(""); }}
+            className={shared.input}
             style={{ marginBottom: "0.75rem", width: "100%" }}
-          >
-            <option value="">-- Select a contract --</option>
-            {activeContracts.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name} ({c.tier}) — {c.rewards.join(", ")}
-              </option>
-            ))}
-          </select>
+            autoFocus
+          />
+          <div style={{ maxHeight: "300px", overflowY: "auto", marginBottom: "0.75rem", border: "1px solid var(--border)", borderRadius: "6px" }}>
+            {filteredContracts.length === 0 ? (
+              <div style={{ padding: "1rem", color: "var(--text-secondary)", fontSize: "0.85rem", textAlign: "center" }}>
+                No contracts match &quot;{contractSearch}&quot;
+              </div>
+            ) : (
+              filteredContracts.map((c) => (
+                <div
+                  key={c.id}
+                  onClick={() => setSelectedContractId(c.id)}
+                  style={{
+                    padding: "0.6rem 0.75rem",
+                    cursor: "pointer",
+                    borderBottom: "1px solid var(--border)",
+                    background: selectedContractId === c.id ? "rgba(74, 158, 255, 0.1)" : "transparent",
+                    borderLeft: selectedContractId === c.id ? "3px solid var(--accent)" : "3px solid transparent",
+                  }}
+                >
+                  <div style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--text-primary)" }}>
+                    {c.name}
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "0.15rem" }}>
+                    {c.tier} · {c.category} · Reward: {c.rewards.join(", ")}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
           <div style={{ display: "flex", gap: "0.5rem" }}>
             <button
               className={shared.addBtn}
@@ -132,13 +177,160 @@ export default function WikeloTrackerPage() {
             </button>
             <button
               className={shared.removeBtn}
-              onClick={() => { setShowCreate(false); setSelectedContractId(""); }}
+              onClick={() => { setShowCreate(false); setSelectedContractId(""); setContractSearch(""); }}
             >
               Cancel
             </button>
           </div>
         </div>
       )}
+
+      {/* Shopping List — aggregate remaining materials across all in-progress projects */}
+      {!loading && projects.filter((p) => p.status === "IN_PROGRESS").length > 1 && (() => {
+        const inProgress = projects.filter((p) => p.status === "IN_PROGRESS");
+
+        // Build aggregation with references to source materials for updating
+        const aggregated = new Map<string, {
+          needed: number;
+          collected: number;
+          sources: { projectId: string; materialId: string; required: number; collected: number }[];
+        }>();
+
+        for (const project of inProgress) {
+          for (const mat of project.materials) {
+            const existing = aggregated.get(mat.itemName) || { needed: 0, collected: 0, sources: [] };
+            existing.needed += mat.required;
+            existing.collected += mat.collected;
+            existing.sources.push({
+              projectId: project.id,
+              materialId: mat.id,
+              required: mat.required,
+              collected: mat.collected,
+            });
+            aggregated.set(mat.itemName, existing);
+          }
+        }
+
+        // Use first project's material order as base, then append extras
+        const seenNames = new Set<string>();
+        const orderedNames: string[] = [];
+        for (const project of inProgress) {
+          for (const mat of project.materials) {
+            if (!seenNames.has(mat.itemName)) {
+              seenNames.add(mat.itemName);
+              orderedNames.push(mat.itemName);
+            }
+          }
+        }
+
+        const items = orderedNames
+          .map((name) => {
+            const data = aggregated.get(name)!;
+            return {
+              name,
+              needed: data.needed,
+              collected: data.collected,
+              remaining: Math.max(0, data.needed - data.collected),
+              sources: data.sources,
+            };
+          });
+
+        const totalRemaining = items.reduce((s, i) => s + i.remaining, 0);
+        const totalNeeded = [...aggregated.values()].reduce((s, v) => s + v.needed, 0);
+        const totalCollected = [...aggregated.values()].reduce((s, v) => s + Math.min(v.collected, v.needed), 0);
+        const overallPct = totalNeeded > 0 ? Math.round((totalCollected / totalNeeded) * 100) : 100;
+
+        // Update a shopping list item: distribute to the first source that still needs it
+        const updateShoppingItem = async (itemName: string, delta: number) => {
+          const data = aggregated.get(itemName);
+          if (!data) return;
+
+          // Find the first source material that can accept this change
+          let target = delta > 0
+            ? data.sources.find((s) => s.collected < s.required)  // add to first incomplete
+            : data.sources.find((s) => s.collected > 0);          // remove from first with stock
+
+          if (!target) target = data.sources[0];
+          if (!target) return;
+
+          const newCollected = Math.max(0, target.collected + delta);
+          const res = await apiFetch<ProjectMaterial>(
+            `/api/wikelo/projects/${target.projectId}/materials/${target.materialId}`,
+            { method: "PATCH", body: JSON.stringify({ collected: newCollected }) }
+          );
+
+          if (res.success && res.data) {
+            // Update local state
+            setProjects((prev) => prev.map((p) => {
+              if (p.id !== target!.projectId) return p;
+              const materials = p.materials.map((m) =>
+                m.id === target!.materialId ? { ...m, collected: res.data!.collected } : m
+              );
+              const tReq = materials.reduce((s, m) => s + m.required, 0);
+              const tCol = materials.reduce((s, m) => s + Math.min(m.collected, m.required), 0);
+              return { ...p, materials, progress: tReq > 0 ? Math.round((tCol / tReq) * 100) : 0 };
+            }));
+          }
+        };
+
+        return (
+          <div className={shared.panel} style={{ marginBottom: "1.5rem" }}>
+            <h2
+              className={shared.panelTitle}
+              onClick={() => setShoppingListOpen((v) => !v)}
+              style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5rem", userSelect: "none" }}
+            >
+              <span style={{ fontSize: "0.7rem", transition: "transform 0.2s", transform: shoppingListOpen ? "rotate(90deg)" : "rotate(0deg)" }}>&#9654;</span>
+              Shopping List
+              <span style={{ fontWeight: 400, fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                ({inProgress.length} active projects · {totalRemaining} items remaining · {overallPct}%)
+              </span>
+            </h2>
+
+            {shoppingListOpen && (<>
+            {/* Overall progress */}
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", marginBottom: "0.25rem" }}>
+              <span style={{ color: "var(--text-secondary)" }}>Overall</span>
+              <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>
+                {overallPct}% — {totalRemaining} items remaining
+              </span>
+            </div>
+            <div style={{ height: "6px", background: "var(--border)", borderRadius: "3px", overflow: "hidden", marginBottom: "1rem" }}>
+              <div style={{ height: "100%", width: `${overallPct}%`, background: "var(--accent)", borderRadius: "3px" }} />
+            </div>
+
+            {/* Material rows */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+              {items.map((item) => {
+                const pct = item.needed > 0 ? Math.round((item.collected / item.needed) * 100) : 100;
+                const complete = item.remaining <= 0;
+                return (
+                  <div key={item.name} style={{ display: "grid", gridTemplateColumns: "1fr 80px 70px auto", gap: "0.5rem", alignItems: "center", padding: "0.4rem 0", borderBottom: "1px solid var(--border)" }}>
+                    <span style={{ fontSize: "0.85rem", fontWeight: 500, color: complete ? "var(--text-secondary)" : "var(--text-primary)" }}>{item.name}</span>
+                    <div style={{ height: "4px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${pct}%`, background: complete ? "#4ade80" : "#fb923c", borderRadius: "2px" }} />
+                    </div>
+                    <span style={{ fontSize: "0.8rem", textAlign: "right", color: complete ? "#4ade80" : "#fb923c", fontWeight: 600 }}>
+                      {item.collected} / {item.needed}
+                    </span>
+                    <div style={{ display: "flex", gap: "0.25rem" }}>
+                      <button
+                        onClick={() => updateShoppingItem(item.name, -1)}
+                        style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", fontSize: "0.9rem", display: "flex", alignItems: "center", justifyContent: "center" }}
+                      >-</button>
+                      <button
+                        onClick={() => updateShoppingItem(item.name, 1)}
+                        style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", fontSize: "0.9rem", display: "flex", alignItems: "center", justifyContent: "center" }}
+                      >+</button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            </>)}
+          </div>
+        );
+      })()}
 
       {/* Project list */}
       {loading ? (
