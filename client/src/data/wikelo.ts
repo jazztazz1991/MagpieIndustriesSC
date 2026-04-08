@@ -1,4 +1,4 @@
-// Auto-generated from DataForge extraction + overrides — sc-alpha-4.7.0-4.7.175.49567
+// Auto-generated from DataForge extraction + overrides — sc-alpha-4.7.0-4.7.176.58286
 // Run: npm run sync:generate
 
 export type ReputationTier = "New Customer" | "Very Good Customer" | "Very Best Customer";
@@ -2140,6 +2140,23 @@ export const contracts: WikeloContract[] = [
     "rewards": [
       "Coda \"Ascension\" Pistol",
       "Coda Pistol Magazine (6 cap)"
+    ],
+    "active": false
+  },
+  {
+    "id": "CollectorBlueprintFlowTest",
+    "name": "CollectorBlueprintFlowTest",
+    "tier": "New Customer",
+    "category": "weapon",
+    "requirements": [
+      {
+        "item": "Basketball",
+        "quantity": 1
+      }
+    ],
+    "rewards": [
+      "R97 \"Crimson Camo\" Shotgun",
+      "R97 Shotgun Magazine (18 cap)"
     ],
     "active": false
   },

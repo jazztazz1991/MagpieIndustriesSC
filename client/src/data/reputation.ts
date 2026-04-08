@@ -1,4 +1,4 @@
-// Auto-generated from DataForge extraction + localization — sc-alpha-4.7.0-4.7.175.49567
+// Auto-generated from DataForge extraction + localization — sc-alpha-4.7.0-4.7.176.58286
 // Run: npm run sync:generate
 
 export interface ReputationTier {

@@ -1,4 +1,4 @@
-// Auto-generated from Data.p4k + overrides — sc-alpha-4.7.0-4.7.175.49567
+// Auto-generated from Data.p4k + overrides — sc-alpha-4.7.0-4.7.176.58286
 // Run: npm run sync:generate
 
 export interface Ship {
@@ -482,6 +482,19 @@ export const ships: Ship[] = [
     speed: { scm: 170, max: 1050 },
     description:
       "Collector Edition Golem. A Wikelo reward variant of the starter mining ship.",
+  },
+  {
+    name: "Greycat UTV",
+    manufacturer: "Greycat Industrial",
+    role: "Ground Utility",
+    size: "small",
+    crew: { min: 1, max: 2 },
+    cargoSCU: 2,
+    buyPriceAUEC: null,
+    pledgeUSD: null,
+    speed: { scm: 0, max: 0 },
+    description:
+      "A durable utility buggy for transporting light cargo across rugged terrain. Simple, practical design for ground logistics.",
   },
   {
     name: "Hawk",
@@ -1574,6 +1587,19 @@ export const ships: Ship[] = [
     speed: { scm: 195, max: 1190 },
     description:
       "Collector Edition Guardian QI. A Wikelo reward variant of the interdiction ship.",
+  },
+  {
+    name: "Hull B",
+    manufacturer: "MISC",
+    role: "Medium Freight",
+    size: "medium",
+    crew: { min: 1, max: 2 },
+    cargoSCU: 384,
+    buyPriceAUEC: null,
+    pledgeUSD: 130,
+    speed: { scm: 140, max: 950 },
+    description:
+      "A rugged dedicated cargo transport. Smaller than other Hull-series models but offers greater flexibility and more access options.",
   },
   {
     name: "Hurricane",

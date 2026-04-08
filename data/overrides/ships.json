@@ -3203,5 +3203,41 @@
       "max": 1250
     },
     "description": "Collector Edition Nox. A Wikelo reward variant of the alien hover bike."
+  },
+  "misc_hull_b": {
+    "name": "Hull B",
+    "manufacturer": "MISC",
+    "role": "Medium Freight",
+    "size": "medium",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 384,
+    "buyPriceAUEC": null,
+    "pledgeUSD": 130,
+    "speed": {
+      "scm": 140,
+      "max": 950
+    },
+    "description": "A rugged dedicated cargo transport. Smaller than other Hull-series models but offers greater flexibility and more access options."
+  },
+  "grin_utv": {
+    "name": "Greycat UTV",
+    "manufacturer": "Greycat Industrial",
+    "role": "Ground Utility",
+    "size": "small",
+    "crew": {
+      "min": 1,
+      "max": 2
+    },
+    "cargoSCU": 2,
+    "buyPriceAUEC": null,
+    "pledgeUSD": null,
+    "speed": {
+      "scm": 0,
+      "max": 0
+    },
+    "description": "A durable utility buggy for transporting light cargo across rugged terrain. Simple, practical design for ground logistics."
   }
 }

@@ -1,4 +1,4 @@
-// Auto-generated from DataForge extraction + overrides — sc-alpha-4.7.0-4.7.175.49567
+// Auto-generated from DataForge extraction + overrides — sc-alpha-4.7.0-4.7.176.58286
 // Run: npm run sync:generate
 
 export type BlueprintType = "weapon" | "armor" | "ammo";
@@ -28903,7 +28903,7 @@ export const blueprints: Blueprint[] = [
             "property": "Damage Mitigation",
             "range": [
               1.1,
-              9
+              0.9
             ]
           }
         ]
@@ -28965,7 +28965,7 @@ export const blueprints: Blueprint[] = [
             "property": "Damage Mitigation",
             "range": [
               1.1,
-              9
+              0.9
             ]
           }
         ]
