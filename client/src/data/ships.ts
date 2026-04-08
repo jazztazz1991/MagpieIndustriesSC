@@ -1594,7 +1594,7 @@ export const ships: Ship[] = [
     role: "Medium Freight",
     size: "medium",
     crew: { min: 1, max: 2 },
-    cargoSCU: 384,
+    cargoSCU: 512,
     buyPriceAUEC: null,
     pledgeUSD: 130,
     speed: { scm: 140, max: 950 },

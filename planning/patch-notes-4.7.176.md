@@ -1,7 +1,7 @@
 # Star Citizen 4.7.176 Patch Notes (DataForge Changes)
 
 ## New Vehicles Added
-- **MISC Hull B** — Medium freight ship, 384 SCU cargo capacity, 2-crew. A dedicated cargo hauler joining the Hull series lineup
+- **MISC Hull B** — Medium freight ship, 512 SCU cargo capacity (16 external cargo grids), 2-crew. A dedicated cargo hauler joining the Hull series lineup
 - **Greycat UTV** — 2-seat utility buggy for ground logistics. Light cargo (2 SCU), multiple paint options
 
 ## Ship Updates
