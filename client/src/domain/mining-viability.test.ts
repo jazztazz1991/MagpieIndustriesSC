@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { assessRockViability, compareLasersForRock } from "./mining";
 import type { MiningLaser } from "@/data/mining-lasers";
-import type { MiningModule } from "@/data/mining-gadgets";
+import type { MiningModule, MiningGadget } from "@/data/mining-gadgets";
 
 // --- Fixtures ---
 
@@ -156,6 +156,92 @@ describe("assessRockViability", () => {
     // Deadly: effectiveInstability >= 700
     const deadly = assessRockViability(100, 800, 10, hofstedeS2, [], []);
     expect(deadly.instabilityRisk).toBe("deadly");
+  });
+});
+
+// --- Gadget fixtures ---
+
+const boreMax: MiningGadget = {
+  name: "BoreMax",
+  type: "gadget",
+  price: 0,
+  laserInstability: -70,
+  resistance: 10,
+  optimalChargeWindow: 0,
+  optimalChargeRate: 0,
+  extractionLaserPower: 0,
+  inertMaterials: 0,
+  clusterModifier: 30,
+  description: "",
+};
+
+const stalwart: MiningGadget = {
+  name: "Stalwart",
+  type: "gadget",
+  price: 0,
+  laserInstability: -50,
+  resistance: -15,
+  optimalChargeWindow: 0,
+  optimalChargeRate: 0,
+  extractionLaserPower: 0,
+  inertMaterials: 0,
+  clusterModifier: 0,
+  description: "",
+};
+
+describe("assessRockViability with gadgets", () => {
+  it("BoreMax reduces instability by 70% and increases resistance by 10%", () => {
+    const without = assessRockViability(5000, 500, 50, hofstedeS2, [], []);
+    const withGadget = assessRockViability(5000, 500, 50, hofstedeS2, [], [], boreMax);
+
+    // Instability: laser +10%, gadget -70% => net -60%
+    // Without: 500 * 1.10 = 550
+    // With BoreMax: 500 * (1 + 0.10 - 0.70) = 500 * 0.40 = 200
+    expect(without.effectiveInstability).toBeCloseTo(550, 0);
+    expect(withGadget.effectiveInstability).toBeCloseTo(200, 0);
+
+    // Resistance: laser -30%, gadget +10% => net -20%
+    // Without: 50 * 0.70 = 35
+    // With BoreMax: 50 * (1 - 0.30 + 0.10) = 50 * 0.80 = 40
+    expect(without.effectiveResistance).toBeCloseTo(35, 0);
+    expect(withGadget.effectiveResistance).toBeCloseTo(40, 0);
+  });
+
+  it("Stalwart reduces both instability and resistance", () => {
+    const result = assessRockViability(5000, 400, 60, hofstedeS2, [], [], stalwart);
+
+    // Instability: laser +10%, gadget -50% => net -40%
+    // 400 * 0.60 = 240
+    expect(result.effectiveInstability).toBeCloseTo(240, 0);
+
+    // Resistance: laser -30%, gadget -15% => net -45%
+    // 60 * 0.55 = 33
+    expect(result.effectiveResistance).toBeCloseTo(33, 0);
+  });
+
+  it("gadget does not affect power", () => {
+    const without = assessRockViability(5000, 100, 10, hofstedeS2, [], []);
+    const withGadget = assessRockViability(5000, 100, 10, hofstedeS2, [], [], boreMax);
+
+    expect(withGadget.effectivePower).toBe(without.effectivePower);
+  });
+
+  it("null gadget has no effect", () => {
+    const without = assessRockViability(5000, 300, 40, hofstedeS2, [], []);
+    const withNull = assessRockViability(5000, 300, 40, hofstedeS2, [], [], null);
+
+    expect(withNull.effectiveInstability).toBe(without.effectiveInstability);
+    expect(withNull.effectiveResistance).toBe(without.effectiveResistance);
+  });
+
+  it("gadget can change instability risk rating", () => {
+    // Without BoreMax: 800 * 1.10 = 880 => deadly
+    const without = assessRockViability(5000, 800, 10, hofstedeS2, [], []);
+    expect(without.instabilityRisk).toBe("deadly");
+
+    // With BoreMax: 800 * 0.40 = 320 => manageable
+    const withGadget = assessRockViability(5000, 800, 10, hofstedeS2, [], [], boreMax);
+    expect(withGadget.instabilityRisk).toBe("manageable");
   });
 });
 

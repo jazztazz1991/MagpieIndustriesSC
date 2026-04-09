@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import type { Ore } from "@/data/mining";
 import { ores as staticOres, scannerOreOrder, rockClasses } from "@/data/mining";
 import { miningLasers as staticLasers } from "@/data/mining-lasers";
-import { activeModules as staticActiveModules, passiveModules as staticPassiveModules } from "@/data/mining-gadgets";
+import { activeModules as staticActiveModules, passiveModules as staticPassiveModules, miningGadgets as staticGadgets } from "@/data/mining-gadgets";
 import { miningShips as staticMiningShips } from "@/data/mining-ships";
 import { useWithOverrides } from "@/hooks/useOverrides";
 import {
@@ -59,8 +59,10 @@ export default function MiningCalculator() {
   const { data: activeModules } = useWithOverrides("mining_module", staticActiveModules, (m) => m.name);
   const { data: passiveModules } = useWithOverrides("mining_module", staticPassiveModules, (m) => m.name);
   const { data: miningShips } = useWithOverrides("mining_ship", staticMiningShips, (s) => s.name);
+  const gadgets = staticGadgets;
 
   const [activeTab, setActiveTab] = useState<Tab>("scanner");
+  const [selectedGadget, setSelectedGadget] = useState<string>("none");
 
   // Fleet state (from FleetBuilder)
   const [fleetLoadouts, setFleetLoadouts] = useState<Loadout[]>([]);
@@ -77,40 +79,44 @@ export default function MiningCalculator() {
   // Scanner properties — persisted to localStorage
   const STORAGE_KEY = "magpie_rock_scan";
 
-  function loadSavedScan() {
+  // Default values (used for SSR and initial render)
+  const [rockClass, setRockClass] = useState<string>("");
+  const effectiveRockClass = rockClass || rockClasses[0] || "";
+  const [rockMass, setRockMass] = useState(53819);
+  const [rockInstability, setRockInstability] = useState(413.82);
+  const [rockResistance, setRockResistance] = useState(60);
+  const [rockSCU, setRockSCU] = useState(143.30);
+
+  const defaultComposition: CompositionEntry[] = [
+    { ore: ores.find((o) => o.abbrev === "QUAN") ?? ores[0], percentage: 50, quality: 500 },
+    { ore: ores.find((o) => o.name === "Inert Material") ?? ores[ores.length - 1], percentage: 50, quality: 0 },
+  ];
+
+  const [compositionRows, setCompositionRows] = useState<CompositionEntry[]>(defaultComposition);
+  const [minValuePerSCU, setMinValuePerSCU] = useState(5000);
+
+  // Restore from localStorage after mount (avoids hydration mismatch)
+  useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return null;
-      return JSON.parse(raw);
-    } catch { return null; }
-  }
-
-  const saved = useMemo(() => loadSavedScan(), []);
-
-  const [rockClass, setRockClass] = useState<string>(saved?.rockClass ?? "");
-  const effectiveRockClass = rockClass || rockClasses[0] || "";
-  const [rockMass, setRockMass] = useState(saved?.rockMass ?? 53819);
-  const [rockInstability, setRockInstability] = useState(saved?.rockInstability ?? 413.82);
-  const [rockResistance, setRockResistance] = useState(saved?.rockResistance ?? 60);
-  const [rockSCU, setRockSCU] = useState(saved?.rockSCU ?? 143.30);
-
-  // Composition — row-based, same ore can appear at different qualities
-  function restoreComposition(): CompositionEntry[] {
-    if (saved?.composition && Array.isArray(saved.composition)) {
-      return saved.composition.map((row: { oreName: string; percentage: number; quality: number }) => {
-        const ore = ores.find((o) => o.name === row.oreName) ?? ores[0];
-        return { ore, percentage: row.percentage, quality: row.quality };
-      });
-    }
-    return [
-      { ore: ores.find((o) => o.abbrev === "QUAN") ?? ores[0], percentage: 50, quality: 500 },
-      { ore: ores.find((o) => o.name === "Inert Material") ?? ores[ores.length - 1], percentage: 50, quality: 0 },
-    ];
-  }
-
-  const [compositionRows, setCompositionRows] = useState<CompositionEntry[]>(restoreComposition);
-
-  const [minValuePerSCU, setMinValuePerSCU] = useState(saved?.minValuePerSCU ?? 5000);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      if (saved.rockClass) setRockClass(saved.rockClass);
+      if (saved.rockMass != null) setRockMass(saved.rockMass);
+      if (saved.rockInstability != null) setRockInstability(saved.rockInstability);
+      if (saved.rockResistance != null) setRockResistance(saved.rockResistance);
+      if (saved.rockSCU != null) setRockSCU(saved.rockSCU);
+      if (saved.minValuePerSCU != null) setMinValuePerSCU(saved.minValuePerSCU);
+      if (saved.composition && Array.isArray(saved.composition)) {
+        setCompositionRows(
+          saved.composition.map((row: { oreName: string; percentage: number; quality: number }) => {
+            const ore = ores.find((o) => o.name === row.oreName) ?? ores[0];
+            return { ore, percentage: row.percentage, quality: row.quality };
+          })
+        );
+      }
+    } catch { /* corrupted data — use defaults */ }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Persist scan to localStorage on change
   useEffect(() => {
@@ -158,11 +164,13 @@ export default function MiningCalculator() {
   };
 
   // --- Multi-head viability ---
+  const activeGadget = gadgets.find((g) => g.name === selectedGadget) ?? null;
+
   const perHeadViability = useMemo(() => {
     return resolvedHeads.map((head) =>
-      assessRockViability(rockMass, rockInstability, rockResistance, head.laser, head.activeModules, head.passiveModules)
+      assessRockViability(rockMass, rockInstability, rockResistance, head.laser, head.activeModules, head.passiveModules, activeGadget)
     );
-  }, [rockMass, rockInstability, rockResistance, resolvedHeads]);
+  }, [rockMass, rockInstability, rockResistance, resolvedHeads, activeGadget]);
 
   const combinedViability = useMemo(() => {
     if (perHeadViability.length === 0) return null;
@@ -215,9 +223,10 @@ export default function MiningCalculator() {
       rockResistance,
       miningLasers.filter((l) => l.size === primaryLaser.size),
       primaryActiveModules,
-      primaryPassiveModules
+      primaryPassiveModules,
+      activeGadget
     ) : [],
-    [rockMass, rockInstability, rockResistance, primaryLaser, miningLasers, primaryActiveModules, primaryPassiveModules]
+    [rockMass, rockInstability, rockResistance, primaryLaser, miningLasers, primaryActiveModules, primaryPassiveModules, activeGadget]
   );
 
   const profitResults = useMemo(
@@ -344,6 +353,24 @@ export default function MiningCalculator() {
                 className={ms.propInput}
                 aria-label="Rock instability"
               />
+              <span className={ms.propUnit} />
+
+              <span className={ms.propLabel}>Gadget</span>
+              <select
+                value={selectedGadget}
+                onChange={(e) => setSelectedGadget(e.target.value)}
+                className={ms.propSelect}
+                aria-label="Mining gadget"
+              >
+                <option value="none">None</option>
+                {gadgets.map((g) => (
+                  <option key={g.name} value={g.name}>
+                    {g.name}
+                    {g.laserInstability !== 0 ? ` (Instab: ${g.laserInstability > 0 ? "+" : ""}${g.laserInstability}%)` : ""}
+                    {g.resistance !== 0 ? ` (Resist: ${g.resistance > 0 ? "+" : ""}${g.resistance}%)` : ""}
+                  </option>
+                ))}
+              </select>
               <span className={ms.propUnit} />
             </div>
 

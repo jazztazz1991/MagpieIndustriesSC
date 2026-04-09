@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { blueprints as staticBlueprints, type Blueprint } from "@/data/crafting";
 import { miningLocations as staticLocations } from "@/data/mining-locations";
+import { prettifySource } from "@/domain/itemFinder";
 import shared from "../tools.module.css";
 import cs from "./crafting.module.css";
 
@@ -22,57 +23,6 @@ const DANGER_CLASS: Record<string, string> = {
 };
 
 const MAX_LOCATIONS_SHOWN = 3;
-
-function prettifySource(raw: string): string {
-  const MAP: Record<string, string> = {
-    ASD2A: "ASD Delving Phase 2A",
-    ASD2B: "ASD Delving Phase 2B",
-    ASD2C: "ASD Delving Phase 2C",
-    ASD2D: "ASD Delving Phase 2D",
-    ASD3: "ASD Delving Phase 3",
-    BHG_ASDFacilityDelving_EngineeringWing_EliminateSpecific: "BHG: ASD Facility — Engineering Wing",
-    BHG_ASDFacilityDelving_ResearchWing_EliminateSpecific: "BHG: ASD Facility — Research Wing",
-    BitZeros_BlackBoxRecovery: "Bit Zero's: Black Box Recovery",
-    BitZeros_RecoverItem_PyroNyx: "Bit Zero's: Item Recovery (Pyro/Nyx)",
-    BitZeros_RecoverItem_Stanton: "Bit Zero's: Item Recovery (Stanton)",
-    BountyHuntersGuild_PAF_EliminateSpecific: "Bounty Hunters Guild: PAF Elimination",
-    CFP_ChainElim_1and2: "Citizens for Prosperity: Chain Elimination 1-2",
-    CFP_ChainElim_3: "Citizens for Prosperity: Chain Elimination 3",
-    CFP_Outpost_RegionAB: "Citizens for Prosperity: Outpost (Region A/B)",
-    CFP_Outpost_RegionC: "Citizens for Prosperity: Outpost (Region C)",
-    CFP_Outpost_RegionD: "Citizens for Prosperity: Outpost (Region D)",
-    CitizensForProsperityDestroyItems_AB: "Citizens for Prosperity: Destroy Items (A/B)",
-    CitizensForProsperityDestroyItems_CD: "Citizens for Prosperity: Destroy Items (C/D)",
-    CitizensForProsperityRecoverCargo_Pyro: "Citizens for Prosperity: Recover Cargo (Pyro)",
-    FoxwellEnforcement_Ambush: "Foxwell Enforcement: Ambush",
-    FoxwellEnforcement_EscortShips: "Foxwell Enforcement: Escort Ships",
-    FoxwellEnforcement_Generator: "Foxwell Enforcement: Generator",
-    FoxwellEnforcement_Patrol: "Foxwell Enforcement: Patrol",
-    Foxwell_DefendEntitiesAndEscort: "Foxwell: Defend & Escort",
-    HeadHunters_MercenaryFPS_EliminateALL_RegionAB: "Headhunters: FPS Eliminate All (Region A/B)",
-    HeadHunters_MercenaryFPS_EliminateALL_RegionCD: "Headhunters: FPS Eliminate All (Region C/D)",
-    HeadHunters_MercenaryFPS_EliminateBoss: "Headhunters: FPS Eliminate Boss",
-    HeadHunters_MercenaryFPS_EliminateSpecific_RegionAB: "Headhunters: FPS Elimination (Region A/B)",
-    HeadHunters_MercenaryFPS_EliminateSpecific_RegionCD: "Headhunters: FPS Elimination (Region C/D)",
-    IDS_RecoverEncryptedData: "IDS: Recover Encrypted Data",
-    InterSec_DefendShip: "InterSec: Defend Ship",
-    InterSec_Patrol: "InterSec: Patrol",
-    InterSec_ResourceGathering: "InterSec: Resource Gathering",
-    NorthRockFPSKill_EliminateBoss: "Northrock: FPS Eliminate Boss",
-    RDC_Boss: "Rough & Ready: Boss Bounty",
-    RDC_Exclusive: "Rough & Ready: Exclusive",
-    RDC_Generic: "Rough & Ready: Bounty",
-    Rayari_RecoverItem_HathorLoot: "Rayari: Hathor Loot Recovery",
-    Rayari_RecoverItem_Irradiated: "Rayari: Irradiated Item Recovery",
-    Shubin_ResourceGathering_FPSMining_Pyro: "Shubin: FPS Mining (Pyro)",
-    Shubin_ResourceGathering_FPSMining_Stanton: "Shubin: FPS Mining (Stanton)",
-    Shubin_ResourceGathering_ShipMining_PyroNyx: "Shubin: Ship Mining (Pyro/Nyx)",
-    Shubin_ResourceGathering_ShipMining_Stanton: "Shubin: Ship Mining (Stanton)",
-    VaughnGenerator_EliminateBoss: "Vaughn: Eliminate Boss",
-    VaughnGenerator_EliminateSpecific: "Vaughn: Elimination",
-  };
-  return MAP[raw] || raw.replace(/_/g, " ");
-}
 
 // Group armor by set name (strip piece suffix like "Arms", "Core", "Helmet", "Legs", "Backpack")
 function getSetName(name: string): string {

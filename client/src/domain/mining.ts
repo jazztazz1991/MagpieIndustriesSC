@@ -1,6 +1,6 @@
 import type { Ore } from "@/data/mining";
 import type { MiningLaser } from "@/data/mining-lasers";
-import type { MiningModule } from "@/data/mining-gadgets";
+import type { MiningModule, MiningGadget } from "@/data/mining-gadgets";
 
 // --- Quality System ---
 // Quality scale: 0-1000, where 500 = baseline shop quality (1.0x multiplier)
@@ -63,7 +63,8 @@ export function assessRockViability(
   rockResistance: number,
   laser: MiningLaser,
   activeModules: MiningModule[],
-  passiveModules: MiningModule[]
+  passiveModules: MiningModule[],
+  gadget?: MiningGadget | null
 ): RockViability {
   // Start with laser's base modifiers (percentage)
   let powerPctMod = 0; // cumulative percentage modifier from modules
@@ -80,6 +81,12 @@ export function assessRockViability(
     }
     instabilityPctMod += m.laserInstability;
     resistancePctMod += m.resistance;
+  }
+
+  // Apply gadget modifiers (gadgets don't affect power, only instability/resistance/etc.)
+  if (gadget) {
+    instabilityPctMod += gadget.laserInstability;
+    resistancePctMod += gadget.resistance;
   }
 
   // Apply modifiers
@@ -185,11 +192,12 @@ export function compareLasersForRock(
   rockResistance: number,
   lasers: MiningLaser[],
   activeModules: MiningModule[] = [],
-  passiveModules: MiningModule[] = []
+  passiveModules: MiningModule[] = [],
+  gadget?: MiningGadget | null
 ): LaserComparison[] {
   return lasers
     .map((laser) => {
-      const viability = assessRockViability(rockMass, rockInstability, rockResistance, laser, activeModules, passiveModules);
+      const viability = assessRockViability(rockMass, rockInstability, rockResistance, laser, activeModules, passiveModules, gadget);
       // Score: power contribution minus instability penalty
       const score = viability.effectivePower * 0.01 - viability.effectiveInstability * 0.05 + (viability.canCrack ? 50 : 0);
       return {
