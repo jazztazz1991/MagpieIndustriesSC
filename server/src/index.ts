@@ -1,4 +1,6 @@
-import "dotenv/config";
+import { resolve } from "path";
+import { config } from "dotenv";
+config({ path: resolve(process.cwd(), "../.env") });
 import express from "express";
 import cors from "cors";
 import { healthRouter } from "./routes/health.js";
@@ -24,6 +26,7 @@ import { missionRecipesRouter } from "./routes/mission-recipes.js";
 import { gameDataRouter } from "./routes/game-data.js";
 import { inventoryNotesRouter } from "./routes/inventory-notes.js";
 import { wikeloRouter } from "./routes/wikelo.js";
+import { pricesRouter } from "./routes/prices.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -55,6 +58,7 @@ app.use("/api/mission-recipes", missionRecipesRouter);
 app.use("/api/game-data", gameDataRouter);
 app.use("/api/inventory-notes", inventoryNotesRouter);
 app.use("/api/wikelo", wikeloRouter);
+app.use("/api/prices", pricesRouter);
 
 app.listen(PORT, () => {
   console.log(`[server] Running on http://localhost:${PORT}`);

@@ -654,6 +654,17 @@ enum WikeloProjectStatus {
   ABANDONED
 }
 
+model PriceCache {
+  id        String   @id @default(cuid())
+  cacheKey  String   @unique
+  data      Json
+  fetchedAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([cacheKey, expiresAt])
+  @@map("price_cache")
+}
+
 model GameDataOverride {
   id        String   @id @default(cuid())
   category  String

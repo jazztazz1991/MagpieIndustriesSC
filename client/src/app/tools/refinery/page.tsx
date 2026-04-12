@@ -1,18 +1,38 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import type { Ore } from "@/data/mining";
 import { ores as staticOres } from "@/data/mining";
 import { refineryMethods as staticRefineryMethods } from "@/data/refinery";
 import { useWithOverrides } from "@/hooks/useOverrides";
 import { calculateRefineryOutput } from "@/domain/refinery";
 import { qualityMultiplier } from "@/domain/mining";
+import LivePrice from "@/components/prices/LivePrice";
+import { apiFetch } from "@/lib/api";
+import type { CommodityPrice } from "@/hooks/usePrices";
 import styles from "../tools.module.css";
+
+const UEX_NAME_MAP: Record<string, string> = {
+  Quantanium: "Quantainium",
+  Aluminium: "Aluminum",
+};
 
 interface OreEntry {
   ore: Ore;
   scu: number;
   quality: number;
+}
+
+interface MarketplaceListing {
+  title: string;
+  price: number;
+  operation: string;
+  location: string;
+  seller: string;
+  quality: number;
+  description: string;
+  dateAdded: number;
+  soldOut?: boolean;
 }
 
 export default function RefineryOptimizer() {
@@ -22,11 +42,56 @@ export default function RefineryOptimizer() {
   const valuableOres = useMemo(() => ores.filter((o) => o.valuePerSCU > 0), [ores]);
 
   const [batch, setBatch] = useState<OreEntry[]>([]);
+  const [useLivePrices, setUseLivePrices] = useState(false);
+  const [marketplaceModal, setMarketplaceModal] = useState<{ oreName: string; listings: MarketplaceListing[]; loading: boolean } | null>(null);
+
+  const openMarketplace = useCallback(async (oreName: string) => {
+    setMarketplaceModal({ oreName, listings: [], loading: true });
+    const uexName = UEX_NAME_MAP[oreName] || oreName;
+    const res = await apiFetch<MarketplaceListing[]>(`/api/prices/marketplace-listings/${encodeURIComponent(uexName)}`);
+    setMarketplaceModal({
+      oreName,
+      listings: res.success && res.data ? res.data : [],
+      loading: false,
+    });
+  }, []);
+  const [livePrices, setLivePrices] = useState<Record<string, number>>({});
+  const [loadingPrices, setLoadingPrices] = useState(false);
+
   // Initialize batch when ores load
   const initBatch = batch.length === 0 && valuableOres.length > 0;
   if (initBatch) {
     setBatch([{ ore: valuableOres[0], scu: 32, quality: 500 }]);
   }
+
+  // Fetch live prices for all ores in the batch
+  const fetchLivePrices = useCallback(async () => {
+    setLoadingPrices(true);
+    const oreNames = [...new Set(batch.map((b) => b.ore.name))];
+    const prices: Record<string, number> = {};
+
+    await Promise.all(oreNames.map(async (name) => {
+      const uexName = UEX_NAME_MAP[name] || name;
+      const res = await apiFetch<CommodityPrice[]>(`/api/prices/commodity/${encodeURIComponent(uexName)}`);
+      if (res.success && res.data) {
+        const buyPrices = res.data.filter((p) => p.priceBuy > 0);
+        if (buyPrices.length > 0) {
+          const best = buyPrices.reduce((b, p) => p.priceBuy > b.priceBuy ? p : b, buyPrices[0]);
+          prices[name] = best.priceBuy;
+        }
+      }
+    }));
+
+    setLivePrices(prices);
+    setLoadingPrices(false);
+  }, [batch]);
+
+  // Fetch when toggle is turned on
+  useEffect(() => {
+    if (useLivePrices && Object.keys(livePrices).length === 0) {
+      fetchLivePrices();
+    }
+  }, [useLivePrices]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const addOre = () => {
     const unused = valuableOres.find(
@@ -63,7 +128,10 @@ export default function RefineryOptimizer() {
     () =>
       refineryMethods.map((method) => {
         const perOre = batch.map((entry) => {
-          const adjustedValue = entry.ore.valuePerSCU * qualityMultiplier(entry.quality);
+          const baseValue = useLivePrices && livePrices[entry.ore.name]
+            ? livePrices[entry.ore.name]
+            : entry.ore.valuePerSCU;
+          const adjustedValue = baseValue * qualityMultiplier(entry.quality);
           return {
             ore: entry.ore.name,
             scu: entry.scu,
@@ -81,7 +149,7 @@ export default function RefineryOptimizer() {
 
         return { method, perOre, totalOutputSCU, totalGross, totalCost, totalProfit, maxTime, profitPerMinute };
       }),
-    [batch, refineryMethods]
+    [batch, refineryMethods, useLivePrices, livePrices]
   );
 
   const bestProfit = Math.max(...comparisons.map((c) => c.totalProfit));
@@ -97,7 +165,40 @@ export default function RefineryOptimizer() {
 
       {/* Batch Input */}
       <div className={styles.panel}>
-        <h2 className={styles.panelTitle}>Ore Batch</h2>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+          <h2 className={styles.panelTitle} style={{ margin: 0 }}>Ore Batch</h2>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <label style={{ display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.8rem", color: useLivePrices ? "#4ade80" : "var(--text-secondary)", cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={useLivePrices}
+                onChange={(e) => setUseLivePrices(e.target.checked)}
+                style={{ accentColor: "#4ade80" }}
+              />
+              Use live prices
+            </label>
+            {useLivePrices && (
+              <button
+                onClick={fetchLivePrices}
+                disabled={loadingPrices}
+                style={{ padding: "0.2rem 0.5rem", fontSize: "0.7rem", background: "rgba(74, 222, 128, 0.1)", border: "1px solid rgba(74, 222, 128, 0.3)", borderRadius: "4px", color: "#4ade80", cursor: "pointer" }}
+              >
+                {loadingPrices ? "..." : "Refresh"}
+              </button>
+            )}
+          </div>
+        </div>
+
+        {useLivePrices && Object.keys(livePrices).length > 0 && (
+          <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginBottom: "0.5rem", padding: "0.4rem 0.6rem", background: "rgba(74, 222, 128, 0.05)", borderRadius: "4px", border: "1px solid rgba(74, 222, 128, 0.15)" }}>
+            Using live terminal prices:{" "}
+            {Object.entries(livePrices).map(([name, price]) => (
+              <span key={name} style={{ marginRight: "0.75rem" }}>
+                <span style={{ color: "#4ade80", fontWeight: 600 }}>{name}</span>: {price.toLocaleString()} aUEC/SCU
+              </span>
+            ))}
+          </div>
+        )}
 
         <div className={styles.compositionList}>
           {batch.map((entry, i) => (
@@ -136,6 +237,13 @@ export default function RefineryOptimizer() {
                 aria-label={`Quality for ${entry.ore.name}`}
               />
               <span className={styles.pctLabel}>RAW</span>
+              <LivePrice commodityName={entry.ore.name} />
+              <button
+                onClick={() => openMarketplace(entry.ore.name)}
+                style={{ padding: "0.2rem 0.45rem", fontSize: "0.65rem", background: "rgba(192, 132, 252, 0.1)", border: "1px solid rgba(192, 132, 252, 0.25)", borderRadius: "3px", color: "#c084fc", cursor: "pointer", whiteSpace: "nowrap" }}
+              >
+                Marketplace
+              </button>
               <button
                 onClick={() => removeOre(i)}
                 className={styles.removeBtn}
@@ -276,6 +384,71 @@ export default function RefineryOptimizer() {
           ))}
         </div>
       </div>
+      {/* Marketplace Modal */}
+      {marketplaceModal && (
+        <div
+          onClick={() => setMarketplaceModal(null)}
+          style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ background: "var(--bg-secondary, #1a1d27)", border: "1px solid var(--border)", borderRadius: "12px", padding: "1.5rem", maxWidth: "600px", width: "90%", maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+              <h3 style={{ margin: 0, fontSize: "1.1rem" }}>
+                Marketplace — {marketplaceModal.oreName}
+              </h3>
+              <button onClick={() => setMarketplaceModal(null)} style={{ background: "none", border: "none", color: "var(--text-secondary)", fontSize: "1.3rem", cursor: "pointer" }}>&times;</button>
+            </div>
+
+            {marketplaceModal.loading ? (
+              <div style={{ padding: "2rem", textAlign: "center", color: "var(--text-secondary)" }}>Loading listings...</div>
+            ) : marketplaceModal.listings.length === 0 ? (
+              <div style={{ padding: "2rem", textAlign: "center", color: "var(--text-secondary)" }}>No marketplace listings found for {marketplaceModal.oreName}.</div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                {marketplaceModal.listings.map((listing, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      padding: "0.75rem",
+                      background: "var(--bg-primary)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "8px",
+                      borderLeft: `3px solid ${listing.soldOut ? "var(--text-secondary)" : listing.operation === "sell" ? "#4ade80" : "#60a5fa"}`,
+                      opacity: listing.soldOut ? 0.5 : 1,
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <div style={{ fontWeight: 600, fontSize: "0.9rem" }}>{listing.title}</div>
+                      <span style={{
+                        fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase",
+                        padding: "0.1rem 0.4rem", borderRadius: "3px",
+                        background: listing.soldOut ? "rgba(255,255,255,0.06)" : listing.operation === "sell" ? "rgba(74,222,128,0.15)" : "rgba(96,165,250,0.15)",
+                        color: listing.soldOut ? "var(--text-secondary)" : listing.operation === "sell" ? "#4ade80" : "#60a5fa",
+                      }}>
+                        {listing.soldOut ? "SOLD OUT" : listing.operation.toUpperCase()}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: "1rem", fontWeight: 700, color: "#facc15", marginTop: "0.25rem" }}>
+                      {listing.price.toLocaleString()} UEC
+                    </div>
+                    <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)", marginTop: "0.25rem", display: "flex", gap: "1rem" }}>
+                      <span>Seller: {listing.seller}</span>
+                      {listing.location && <span>Location: {listing.location}</span>}
+                    </div>
+                    {listing.description && (
+                      <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "0.3rem", opacity: 0.7, lineHeight: 1.4 }}>
+                        {listing.description}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

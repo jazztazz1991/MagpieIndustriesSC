@@ -17,6 +17,7 @@ import {
 } from "@/domain/mining";
 import FleetBuilder from "@/components/mining/FleetBuilder";
 import type { Loadout, ResolvedHead } from "@/components/mining/LoadoutBuilder";
+import LivePrice from "@/components/prices/LivePrice";
 import shared from "../tools.module.css";
 import ms from "./mining.module.css";
 
@@ -460,6 +461,7 @@ export default function MiningCalculator() {
                   <th />
                   <th>Quality</th>
                   <th>SCU</th>
+                  <th>Live Price</th>
                 </tr>
               </thead>
               <tbody>
@@ -470,6 +472,7 @@ export default function MiningCalculator() {
                       <td className={ms.clusterOreName}>{r.ore}</td>
                       <td className={qualityColor(r.quality)}>{r.quality}</td>
                       <td>{r.scu.toFixed(1)}</td>
+                      <td><LivePrice commodityName={r.ore} /></td>
                     </tr>
                   ))}
               </tbody>
@@ -478,11 +481,13 @@ export default function MiningCalculator() {
                   <td>Total</td>
                   <td />
                   <td>
+
                     {profitResults
                       .filter((r) => r.ore !== "Inert Material")
                       .reduce((s, r) => s + r.scu, 0)
                       .toFixed(1)}
                   </td>
+                  <td />
                 </tr>
               </tfoot>
             </table>

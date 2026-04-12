@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { ores as staticOres } from "@/data/mining";
 import { miningLocations as staticLocations } from "@/data/mining-locations";
 import { useWithOverrides } from "@/hooks/useOverrides";
+import LivePrice from "@/components/prices/LivePrice";
 import shared from "../tools.module.css";
 
 type View = "locations" | "by-ore";
@@ -197,9 +198,13 @@ export default function MiningLocationsPage() {
                                 : "rgba(255, 255, 255, 0.06)",
                               color: isHighValue ? "var(--accent)" : "var(--text-secondary)",
                               fontWeight: isHighValue ? 600 : 400,
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "0.3rem",
                             }}
                           >
                             {oreName}
+                            <LivePrice commodityName={oreName} />
                           </span>
                         );
                       })}

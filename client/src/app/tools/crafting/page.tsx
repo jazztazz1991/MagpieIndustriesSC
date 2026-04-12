@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import { blueprints as staticBlueprints, type Blueprint } from "@/data/crafting";
 import { miningLocations as staticLocations } from "@/data/mining-locations";
 import { prettifySource } from "@/domain/itemFinder";
+import LivePrice from "@/components/prices/LivePrice";
 import shared from "../tools.module.css";
 import cs from "./crafting.module.css";
 
@@ -166,6 +167,7 @@ export default function CraftingPage() {
           <th>Slot</th>
           <th>Resource</th>
           <th>SCU</th>
+          <th>Price</th>
           <th>Where to Mine</th>
         </tr>
       </thead>
@@ -175,6 +177,7 @@ export default function CraftingPage() {
             <td>{a.slot}</td>
             <td style={{ fontWeight: 500 }}>{a.resource}</td>
             <td>{a.quantitySCU}</td>
+            <td><LivePrice commodityName={a.resource} /></td>
             <td>{renderLocations(a.resource)}</td>
           </tr>
         ))}
@@ -183,6 +186,7 @@ export default function CraftingPage() {
             <td>ITEM</td>
             <td style={{ fontWeight: 500 }}>{ic.item}</td>
             <td>{ic.quantity}x</td>
+            <td />
             <td />
           </tr>
         ))}

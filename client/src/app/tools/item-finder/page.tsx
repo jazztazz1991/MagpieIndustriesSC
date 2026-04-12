@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { findItem, type ItemSource } from "@/domain/itemFinder";
+import { apiFetch } from "@/lib/api";
+import type { CommodityPrice } from "@/hooks/usePrices";
 import shared from "../tools.module.css";
 
 const TYPE_CONFIG: Record<ItemSource["type"], { label: string; color: string; bg: string; icon: string }> = {
@@ -15,6 +17,83 @@ const TYPE_CONFIG: Record<ItemSource["type"], { label: string; color: string; bg
 };
 
 const TYPE_ORDER: ItemSource["type"][] = ["ore", "craftable", "loot", "wikelo_reward", "wikelo_requirement", "blueprint_drop"];
+
+const UEX_NAME_MAP: Record<string, string> = {
+  Quantanium: "Quantainium",
+  Aluminium: "Aluminum",
+};
+
+interface MarketplaceAvg { name: string; marketplaceBuy: number; marketplaceSell: number; }
+
+function LivePriceButton({ name }: { name: string }) {
+  const [prices, setPrices] = useState<CommodityPrice[] | null>(null);
+  const [marketplace, setMarketplace] = useState<MarketplaceAvg | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [fetched, setFetched] = useState(false);
+
+  const fetchPrice = useCallback(async () => {
+    setLoading(true);
+    const uexName = UEX_NAME_MAP[name] || name;
+    const [terminalRes, mkRes] = await Promise.all([
+      apiFetch<CommodityPrice[]>(`/api/prices/commodity/${encodeURIComponent(uexName)}`),
+      apiFetch<MarketplaceAvg>(`/api/prices/marketplace/${encodeURIComponent(uexName)}`),
+    ]);
+    if (terminalRes.success && terminalRes.data) setPrices(terminalRes.data);
+    if (mkRes.success && mkRes.data) setMarketplace(mkRes.data);
+    setLoading(false);
+    setFetched(true);
+  }, [name]);
+
+  if (!fetched) {
+    return (
+      <button
+        onClick={(e) => { e.stopPropagation(); fetchPrice(); }}
+        style={{
+          padding: "0.2rem 0.5rem",
+          fontSize: "0.7rem",
+          background: "rgba(74, 222, 128, 0.1)",
+          border: "1px solid rgba(74, 222, 128, 0.3)",
+          borderRadius: "4px",
+          color: "#4ade80",
+          cursor: "pointer",
+          marginTop: "0.35rem",
+        }}
+      >
+        {loading ? "Loading..." : "Check live price"}
+      </button>
+    );
+  }
+
+  if (!prices || prices.length === 0) {
+    return <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "0.25rem", display: "block" }}>No market data available</span>;
+  }
+
+  const terminalPrices = prices ? prices.filter((p) => p.priceBuy > 0) : [];
+  const bestTerminal = terminalPrices.length > 0
+    ? terminalPrices.reduce((best, p) => p.priceBuy > best.priceBuy ? p : best, terminalPrices[0])
+    : null;
+  const mkSell = marketplace?.marketplaceSell || 0;
+
+  if (!bestTerminal && !mkSell) {
+    return <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "0.25rem", display: "block" }}>No price data</span>;
+  }
+
+  return (
+    <div style={{ marginTop: "0.35rem", fontSize: "0.8rem", display: "flex", flexDirection: "column", gap: "0.15rem" }}>
+      {bestTerminal && (
+        <span style={{ color: "#4ade80" }}>
+          Terminal: {bestTerminal.priceBuy.toLocaleString()} aUEC/SCU at {bestTerminal.locationName}
+        </span>
+      )}
+      {mkSell > 0 && (
+        <span style={{ color: "#c084fc" }}>
+          Marketplace: {mkSell.toLocaleString()} aUEC avg
+        </span>
+      )}
+      <span style={{ color: "var(--text-secondary)", fontSize: "0.65rem" }}>via UEX</span>
+    </div>
+  );
+}
 
 export default function ItemFinderPage() {
   const [query, setQuery] = useState("");
@@ -188,6 +267,7 @@ export default function ItemFinderPage() {
                       {item.subDetail}
                     </div>
                   )}
+                  {item.type === "ore" && <LivePriceButton name={item.name} />}
                 </div>
               ))}
             </div>
