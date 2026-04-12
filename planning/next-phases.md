@@ -15,7 +15,7 @@ Single search page cross-referencing crafting, loot, missions, mining, and Wikel
 
 ---
 
-## Phase 4: UEX Live Prices Integration
+## Phase 4: UEX Live Prices Integration ✅ DONE
 **Goal:** Show real market prices from UEX API alongside our static DataForge data.
 
 ### Architecture
@@ -79,7 +79,7 @@ Single search page cross-referencing crafting, loot, missions, mining, and Wikel
 
 ---
 
-## Phase 5: Reputation & Law Pages
+## Phase 5: Reputation & Law Pages ✅ DONE
 **Goal:** Make the extracted rep/law data browsable and useful.
 
 ### Features
@@ -137,6 +137,6 @@ Single search page cross-referencing crafting, loot, missions, mining, and Wikel
 1. ~~**Phase 1** (Crafting Page)~~ ✅
 2. ~~**Phase 2** (Gadget Integration)~~ ✅
 3. ~~**Phase 3** (Item Finder)~~ ✅
-4. **Phase 4** (UEX Live Prices) — real market data, biggest user-facing upgrade
-5. **Phase 5** (Rep & Law) — data exists, just needs UI
+4. ~~**Phase 4** (UEX Live Prices)~~ ✅
+5. ~~**Phase 5** (Rep & Law)~~ ✅
 6. **Phase 6** (Polish) — ongoing, do pieces between phases
