@@ -12,6 +12,7 @@ model User {
   username               String                @unique
   email                  String                @unique
   passwordHash           String?
+  discordId              String?               @unique
   rsiHandle              String?
   avatarUrl              String?
   bio                    String?

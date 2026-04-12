@@ -27,6 +27,7 @@ import { gameDataRouter } from "./routes/game-data.js";
 import { inventoryNotesRouter } from "./routes/inventory-notes.js";
 import { wikeloRouter } from "./routes/wikelo.js";
 import { pricesRouter } from "./routes/prices.js";
+import { discordBotRouter } from "./routes/discord-bot.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -59,6 +60,7 @@ app.use("/api/game-data", gameDataRouter);
 app.use("/api/inventory-notes", inventoryNotesRouter);
 app.use("/api/wikelo", wikeloRouter);
 app.use("/api/prices", pricesRouter);
+app.use("/api/discord-bot", discordBotRouter);
 
 app.listen(PORT, () => {
   console.log(`[server] Running on http://localhost:${PORT}`);

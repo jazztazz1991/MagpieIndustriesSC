@@ -255,7 +255,29 @@ export default function WikeloProjectDetailPage() {
                 </div>
 
                 {/* Controls */}
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", justifyContent: "flex-end" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.35rem", justifyContent: "flex-end", flexWrap: "wrap" }}>
+                  <button
+                    onClick={() => updateMaterial(mat.id, mat.collected - 10)}
+                    style={{
+                      width: "32px", height: "28px",
+                      background: "var(--border)", border: "none", borderRadius: "4px",
+                      color: "var(--text-secondary)", fontSize: "0.7rem", cursor: "pointer",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}
+                  >
+                    -10
+                  </button>
+                  <button
+                    onClick={() => updateMaterial(mat.id, mat.collected - 5)}
+                    style={{
+                      width: "28px", height: "28px",
+                      background: "var(--border)", border: "none", borderRadius: "4px",
+                      color: "var(--text-secondary)", fontSize: "0.7rem", cursor: "pointer",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}
+                  >
+                    -5
+                  </button>
                   <button
                     onClick={() => updateMaterial(mat.id, mat.collected - 1)}
                     style={{
@@ -289,6 +311,28 @@ export default function WikeloProjectDetailPage() {
                     }}
                   >
                     +
+                  </button>
+                  <button
+                    onClick={() => updateMaterial(mat.id, mat.collected + 5)}
+                    style={{
+                      width: "28px", height: "28px",
+                      background: "var(--border)", border: "none", borderRadius: "4px",
+                      color: "var(--text-secondary)", fontSize: "0.7rem", cursor: "pointer",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}
+                  >
+                    +5
+                  </button>
+                  <button
+                    onClick={() => updateMaterial(mat.id, mat.collected + 10)}
+                    style={{
+                      width: "32px", height: "28px",
+                      background: "var(--border)", border: "none", borderRadius: "4px",
+                      color: "var(--text-secondary)", fontSize: "0.7rem", cursor: "pointer",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}
+                  >
+                    +10
                   </button>
                 </div>
               </div>

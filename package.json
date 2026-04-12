@@ -20,7 +20,10 @@
     "sync:generate": "npx ts-node --project scripts/tsconfig.json scripts/generate-data.ts",
     "sync:gamedata": "npm run sync:extract && npm run sync:generate",
     "seed": "npx esbuild server/prisma/seed-game-data.ts --bundle --platform=node --format=esm --outfile=server/prisma/seed-game-data.mjs --external:@prisma/client && cd server && node prisma/seed-game-data.mjs",
-    "data:view": "npx ts-node --project scripts/tsconfig.json scripts/data-viewer.ts && start data/viewer.html"
+    "data:view": "npx ts-node --project scripts/tsconfig.json scripts/data-viewer.ts && start data/viewer.html",
+    "data:update": "npx ts-node --project scripts/tsconfig.json scripts/update-gamedata.ts",
+    "data:update:skip-extract": "npx ts-node --project scripts/tsconfig.json scripts/update-gamedata.ts --skip-extract",
+    "data:diff": "npx ts-node --project scripts/tsconfig.json scripts/update-gamedata.ts --diff-only"
   },
   "engines": {
     "node": ">=18.0.0"

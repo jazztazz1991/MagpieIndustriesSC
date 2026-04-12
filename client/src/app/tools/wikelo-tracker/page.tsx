@@ -285,6 +285,25 @@ export default function WikeloTrackerPage() {
               <span style={{ fontWeight: 400, fontSize: "0.8rem", color: "var(--text-secondary)" }}>
                 ({inProgress.length} active projects · {totalRemaining} items remaining · {overallPct}%)
               </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const lines = [`**Shopping List** (${inProgress.length} active projects)`, `Overall: ${overallPct}% — ${totalRemaining} items remaining`, ""];
+                  items.forEach((item) => {
+                    const check = item.remaining <= 0 ? "x" : " ";
+                    lines.push(`- [${check}] ${item.name}: ${item.collected} / ${item.needed}`);
+                  });
+                  navigator.clipboard.writeText(lines.join("\n")).then(() => {
+                    const btn = e.target as HTMLButtonElement;
+                    const orig = btn.textContent;
+                    btn.textContent = "Copied!";
+                    setTimeout(() => { btn.textContent = orig; }, 2000);
+                  });
+                }}
+                style={{ marginLeft: "auto", padding: "0.2rem 0.5rem", fontSize: "0.7rem", background: "rgba(88, 101, 242, 0.15)", border: "1px solid rgba(88, 101, 242, 0.3)", borderRadius: "4px", color: "#5865F2", cursor: "pointer" }}
+              >
+                Copy for Discord
+              </button>
             </h2>
 
             {shoppingListOpen && (<>
