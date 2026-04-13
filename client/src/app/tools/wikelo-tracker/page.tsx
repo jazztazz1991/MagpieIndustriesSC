@@ -346,6 +346,48 @@ export default function WikeloTrackerPage() {
                 );
               })}
             </div>
+
+            {/* Conversion requirements — how much MG Scrip / Quantanium needed */}
+            {(() => {
+              const favorItem = items.find((i) => i.name === "Wikelo Favor");
+              const polarisBitItem = items.find((i) => i.name === "Polaris Bit");
+              const favorRemaining = favorItem?.remaining || 0;
+              const bitsRemaining = polarisBitItem?.remaining || 0;
+
+              if (favorRemaining <= 0 && bitsRemaining <= 0) return null;
+
+              return (
+                <div style={{ marginTop: "1rem", paddingTop: "0.75rem", borderTop: "1px solid var(--border)" }}>
+                  <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: "0.5rem" }}>
+                    Conversion Materials Needed
+                  </div>
+
+                  {favorRemaining > 0 && (
+                    <div style={{ padding: "0.5rem 0.75rem", background: "rgba(192, 132, 252, 0.06)", border: "1px solid rgba(192, 132, 252, 0.15)", borderRadius: "6px", marginBottom: "0.4rem" }}>
+                      <div style={{ fontSize: "0.8rem", color: "#c084fc", fontWeight: 600, marginBottom: "0.15rem" }}>
+                        MG Scrip for Favor ({favorRemaining} favors remaining)
+                      </div>
+                      <div style={{ fontSize: "0.85rem", color: "var(--text-primary)" }}>
+                        {(favorRemaining * 50).toLocaleString()} MG Scrip needed
+                        <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem", marginLeft: "0.5rem" }}>(50 scrip = 1 favor)</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {bitsRemaining > 0 && (
+                    <div style={{ padding: "0.5rem 0.75rem", background: "rgba(250, 204, 21, 0.06)", border: "1px solid rgba(250, 204, 21, 0.15)", borderRadius: "6px" }}>
+                      <div style={{ fontSize: "0.8rem", color: "#facc15", fontWeight: 600, marginBottom: "0.15rem" }}>
+                        Quantanium for Polaris Bits ({bitsRemaining} bits remaining)
+                      </div>
+                      <div style={{ fontSize: "0.85rem", color: "var(--text-primary)" }}>
+                        {(bitsRemaining * 24).toLocaleString()} SCU Quantanium needed
+                        <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem", marginLeft: "0.5rem" }}>(24 SCU = 1 bit)</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
             </>)}
           </div>
         );
