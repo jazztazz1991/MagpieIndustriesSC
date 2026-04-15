@@ -233,3 +233,206 @@ discordBotRouter.get("/shopping-list/:discordId", requireBotAuth, async (req, re
     res.status(500).json({ success: false, error: "Internal server error" });
   }
 });
+
+// ─── Group endpoints for Discord bot ───
+
+// GET /api/discord-bot/groups/:discordId — list user's groups
+discordBotRouter.get("/groups/:discordId", requireBotAuth, async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { discordId: req.params.discordId as string } });
+    if (!user) { res.status(404).json({ success: false, error: "Account not linked" }); return; }
+
+    const groups = await prisma.wikeloGroup.findMany({
+      where: { members: { some: { userId: user.id } } },
+      include: { members: true, projects: { where: { status: "IN_PROGRESS" }, include: { materials: true } } },
+    });
+
+    res.json({
+      success: true,
+      data: groups.map((g) => ({
+        id: g.id,
+        name: g.name,
+        inviteCode: g.inviteCode,
+        memberCount: g.members.length,
+        projectCount: g.projects.length,
+      })),
+    });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// POST /api/discord-bot/groups/create — create group from Discord
+const createGroupSchema = z.object({
+  discordId: z.string().min(1),
+  name: z.string().min(1).max(100),
+});
+
+discordBotRouter.post("/groups/create", requireBotAuth, async (req, res) => {
+  try {
+    const parsed = createGroupSchema.safeParse(req.body);
+    if (!parsed.success) { res.status(400).json({ success: false, error: "Invalid input" }); return; }
+
+    const user = await prisma.user.findUnique({ where: { discordId: parsed.data.discordId } });
+    if (!user) { res.status(404).json({ success: false, error: "Account not linked" }); return; }
+
+    const { randomBytes } = await import("crypto");
+    const inviteCode = randomBytes(4).toString("hex").toUpperCase();
+
+    const group = await prisma.wikeloGroup.create({
+      data: {
+        name: parsed.data.name,
+        inviteCode,
+        ownerId: user.id,
+        members: { create: { userId: user.id } },
+      },
+    });
+
+    res.json({ success: true, data: { id: group.id, name: group.name, inviteCode: group.inviteCode } });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// POST /api/discord-bot/groups/join — join group from Discord
+const joinGroupSchema = z.object({
+  discordId: z.string().min(1),
+  inviteCode: z.string().min(1),
+});
+
+discordBotRouter.post("/groups/join", requireBotAuth, async (req, res) => {
+  try {
+    const parsed = joinGroupSchema.safeParse(req.body);
+    if (!parsed.success) { res.status(400).json({ success: false, error: "Invalid input" }); return; }
+
+    const user = await prisma.user.findUnique({ where: { discordId: parsed.data.discordId } });
+    if (!user) { res.status(404).json({ success: false, error: "Account not linked" }); return; }
+
+    const group = await prisma.wikeloGroup.findUnique({ where: { inviteCode: parsed.data.inviteCode.toUpperCase() } });
+    if (!group) { res.status(404).json({ success: false, error: "Invalid invite code" }); return; }
+
+    const existing = await prisma.wikeloGroupMember.findUnique({
+      where: { groupId_userId: { groupId: group.id, userId: user.id } },
+    });
+
+    if (!existing) {
+      await prisma.wikeloGroupMember.create({ data: { groupId: group.id, userId: user.id } });
+    }
+
+    res.json({ success: true, data: { groupId: group.id, groupName: group.name, alreadyMember: !!existing } });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// GET /api/discord-bot/groups/:groupId/shopping-list/:discordId — group shopping list
+discordBotRouter.get("/groups/:groupId/shopping-list/:discordId", requireBotAuth, async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { discordId: req.params.discordId as string } });
+    if (!user) { res.status(404).json({ success: false, error: "Account not linked" }); return; }
+
+    // Verify membership
+    const member = await prisma.wikeloGroupMember.findUnique({
+      where: { groupId_userId: { groupId: req.params.groupId as string, userId: user.id } },
+    });
+    if (!member) { res.status(403).json({ success: false, error: "Not a group member" }); return; }
+
+    const projects = await prisma.wikeloProject.findMany({
+      where: { groupId: req.params.groupId as string, status: "IN_PROGRESS" },
+      include: { materials: true },
+      orderBy: { priority: "asc" },
+    });
+
+    const aggregated = new Map<string, { needed: number; collected: number }>();
+    for (const p of projects) {
+      for (const m of p.materials) {
+        const e = aggregated.get(m.itemName) || { needed: 0, collected: 0 };
+        e.needed += m.required;
+        e.collected += m.collected;
+        aggregated.set(m.itemName, e);
+      }
+    }
+
+    const items = [...aggregated.entries()].map(([name, { needed, collected }]) => ({
+      name, needed, collected, remaining: Math.max(0, needed - collected),
+    }));
+
+    const totalNeeded = items.reduce((s, i) => s + i.needed, 0);
+    const totalCollected = items.reduce((s, i) => s + Math.min(i.collected, i.needed), 0);
+
+    res.json({
+      success: true,
+      data: {
+        projectCount: projects.length,
+        overallProgress: totalNeeded > 0 ? Math.round((totalCollected / totalNeeded) * 100) : 100,
+        totalRemaining: items.reduce((s, i) => s + i.remaining, 0),
+        items,
+      },
+    });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// POST /api/discord-bot/groups/:groupId/add-items — add items to group projects
+const groupAddSchema = z.object({
+  discordId: z.string().min(1),
+  itemName: z.string().min(1),
+  quantity: z.number().int().min(1),
+});
+
+discordBotRouter.post("/groups/:groupId/add-items", requireBotAuth, async (req, res) => {
+  try {
+    const parsed = groupAddSchema.safeParse(req.body);
+    if (!parsed.success) { res.status(400).json({ success: false, error: "Invalid input" }); return; }
+
+    const user = await prisma.user.findUnique({ where: { discordId: parsed.data.discordId } });
+    if (!user) { res.status(404).json({ success: false, error: "Account not linked" }); return; }
+
+    const member = await prisma.wikeloGroupMember.findUnique({
+      where: { groupId_userId: { groupId: req.params.groupId as string, userId: user.id } },
+    });
+    if (!member) { res.status(403).json({ success: false, error: "Not a group member" }); return; }
+
+    const projects = await prisma.wikeloProject.findMany({
+      where: { groupId: req.params.groupId as string, status: "IN_PROGRESS" },
+      include: { materials: true },
+      orderBy: { priority: "asc" },
+    });
+
+    const matchingMaterials = projects.flatMap((p) =>
+      p.materials
+        .filter((m) => m.itemName.toLowerCase() === parsed.data.itemName.toLowerCase() && m.collected < m.required)
+        .map((m) => ({ projectId: p.id, projectName: (p as any).displayName || p.name, material: m }))
+    );
+
+    if (matchingMaterials.length === 0) {
+      res.json({ success: true, data: { updated: 0, message: `No group projects need "${parsed.data.itemName}"` } });
+      return;
+    }
+
+    let remaining = parsed.data.quantity;
+    const updates: { projectName: string; itemName: string; oldCount: number; newCount: number }[] = [];
+
+    for (const { projectId, projectName, material } of matchingMaterials) {
+      if (remaining <= 0) break;
+      const canAdd = material.required - material.collected;
+      const toAdd = Math.min(remaining, canAdd);
+      const newCollected = material.collected + toAdd;
+
+      await prisma.$transaction([
+        prisma.wikeloProjectMaterial.update({ where: { id: material.id }, data: { collected: newCollected } }),
+        prisma.wikeloContributionLog.create({
+          data: { projectId, userId: user.id, itemName: material.itemName, delta: toAdd, newTotal: newCollected },
+        }),
+      ]);
+
+      updates.push({ projectName, itemName: material.itemName, oldCount: material.collected, newCount: newCollected });
+      remaining -= toAdd;
+    }
+
+    res.json({ success: true, data: { updated: updates.length, totalAdded: parsed.data.quantity - remaining, updates } });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
