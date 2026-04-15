@@ -43,6 +43,9 @@ model User {
   treasuryTransactions   TreasuryTransaction[] @relation("treasuryTransactions")
   inventoryNotes         InventoryNote[]
   wikeloProjects         WikeloProject[]
+  ownedWikeloGroups      WikeloGroup[]            @relation("ownedWikeloGroups")
+  wikeloGroupMemberships WikeloGroupMember[]
+  wikeloContributions    WikeloContributionLog[]
 
   @@map("users")
 }
@@ -622,18 +625,51 @@ model GameMiningLocation {
   @@map("game_mining_locations")
 }
 
-model WikeloProject {
-  id         String                  @id @default(cuid())
-  userId     String
-  contractId String
+model WikeloGroup {
+  id         String              @id @default(cuid())
   name       String
-  status     WikeloProjectStatus     @default(IN_PROGRESS)
-  createdAt  DateTime                @default(now())
-  updatedAt  DateTime                @updatedAt
-  user       User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  materials  WikeloProjectMaterial[]
+  inviteCode String              @unique
+  ownerId    String
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+  owner      User                @relation("ownedWikeloGroups", fields: [ownerId], references: [id], onDelete: Cascade)
+  members    WikeloGroupMember[]
+  projects   WikeloProject[]
+
+  @@index([ownerId])
+  @@map("wikelo_groups")
+}
+
+model WikeloGroupMember {
+  id       String      @id @default(cuid())
+  groupId  String
+  userId   String
+  joinedAt DateTime    @default(now())
+  group    WikeloGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId])
+  @@map("wikelo_group_members")
+}
+
+model WikeloProject {
+  id            String                  @id @default(cuid())
+  userId        String
+  contractId    String
+  name          String
+  displayName   String?
+  status        WikeloProjectStatus     @default(IN_PROGRESS)
+  groupId       String?
+  priority      Int                     @default(0)
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+  user          User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group         WikeloGroup?            @relation(fields: [groupId], references: [id])
+  materials     WikeloProjectMaterial[]
+  contributions WikeloContributionLog[]
 
   @@index([userId, status])
+  @@index([groupId, status])
   @@map("wikelo_projects")
 }
 
@@ -647,6 +683,22 @@ model WikeloProjectMaterial {
 
   @@unique([projectId, itemName])
   @@map("wikelo_project_materials")
+}
+
+model WikeloContributionLog {
+  id        String        @id @default(cuid())
+  projectId String
+  userId    String
+  itemName  String
+  delta     Int
+  newTotal  Int
+  createdAt DateTime      @default(now())
+  project   WikeloProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdAt])
+  @@index([userId, createdAt])
+  @@map("wikelo_contribution_log")
 }
 
 enum WikeloProjectStatus {

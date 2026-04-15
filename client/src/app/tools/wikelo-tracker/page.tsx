@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { contracts as staticContracts } from "@/data/wikelo";
 import { useWithOverrides } from "@/hooks/useOverrides";
@@ -31,10 +31,26 @@ export default function WikeloTrackerPage() {
   const { user, loading: authLoading } = useAuth();
   const { data: contracts } = useWithOverrides("wikelo_contract", staticContracts, (c) => c.id);
 
+  const [activeTab, setActiveTab] = useState<"personal" | "shared">("personal");
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [shoppingListOpen, setShoppingListOpen] = useState(false);
+
+  // Group state
+  interface GroupSummary {
+    id: string;
+    name: string;
+    inviteCode: string;
+    ownerName: string;
+    memberCount: number;
+    projectCount: number;
+  }
+  const [groups, setGroups] = useState<GroupSummary[]>([]);
+  const [groupsLoading, setGroupsLoading] = useState(false);
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
+  const [newGroupName, setNewGroupName] = useState("");
+  const [joinCode, setJoinCode] = useState("");
   const [selectedContractId, setSelectedContractId] = useState("");
   const [contractSearch, setContractSearch] = useState("");
   const [creating, setCreating] = useState(false);
@@ -99,6 +115,45 @@ export default function WikeloTrackerPage() {
     }
   };
 
+  // Load groups when switching to shared tab
+  const loadGroups = useCallback(async () => {
+    setGroupsLoading(true);
+    const res = await apiFetch<GroupSummary[]>("/api/wikelo/groups");
+    if (res.success && res.data) setGroups(res.data);
+    setGroupsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === "shared" && user && groups.length === 0) {
+      loadGroups();
+    }
+  }, [activeTab, user]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleCreateGroup = async () => {
+    if (!newGroupName.trim()) return;
+    const res = await apiFetch<GroupSummary>("/api/wikelo/groups", {
+      method: "POST",
+      body: JSON.stringify({ name: newGroupName }),
+    });
+    if (res.success && res.data) {
+      setGroups((prev) => [res.data!, ...prev]);
+      setShowCreateGroup(false);
+      setNewGroupName("");
+    }
+  };
+
+  const handleJoinGroup = async () => {
+    if (!joinCode.trim()) return;
+    const res = await apiFetch<{ groupId: string; groupName?: string }>("/api/wikelo/groups/join", {
+      method: "POST",
+      body: JSON.stringify({ inviteCode: joinCode.trim() }),
+    });
+    if (res.success) {
+      setJoinCode("");
+      loadGroups(); // refresh list
+    }
+  };
+
   if (authLoading) return null;
 
   if (!user) {
@@ -115,8 +170,119 @@ export default function WikeloTrackerPage() {
     <div className={shared.page}>
       <h1 className={shared.title}>Wikelo Contract Tracker</h1>
       <p className={shared.subtitle}>
-        Create projects to track material collection for Wikelo contracts.
+        Track material collection for Wikelo contracts — personal or with your group.
       </p>
+
+      {/* Tab toggle */}
+      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}>
+        <button
+          className={activeTab === "personal" ? shared.shipBtnActive + " " + shared.shipBtn : shared.shipBtn}
+          onClick={() => setActiveTab("personal")}
+        >
+          Personal
+        </button>
+        <button
+          className={activeTab === "shared" ? shared.shipBtnActive + " " + shared.shipBtn : shared.shipBtn}
+          onClick={() => setActiveTab("shared")}
+        >
+          Shared Groups
+        </button>
+      </div>
+
+      {/* ========== SHARED GROUPS TAB ========== */}
+      {activeTab === "shared" && (
+        <>
+          <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
+            {!showCreateGroup ? (
+              <button className={shared.addBtn} onClick={() => setShowCreateGroup(true)}>
+                + Create Group
+              </button>
+            ) : (
+              <div className={shared.panel} style={{ width: "100%", marginBottom: "0.5rem" }}>
+                <h2 className={shared.panelTitle}>New Group</h2>
+                <input
+                  type="text"
+                  placeholder="Group name (e.g., Magpie Miners)"
+                  value={newGroupName}
+                  onChange={(e) => setNewGroupName(e.target.value)}
+                  className={shared.input}
+                  style={{ marginBottom: "0.5rem", width: "100%" }}
+                  autoFocus
+                />
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  <button className={shared.addBtn} onClick={handleCreateGroup} disabled={!newGroupName.trim()}>
+                    Create
+                  </button>
+                  <button className={shared.removeBtn} onClick={() => { setShowCreateGroup(false); setNewGroupName(""); }}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+            <div style={{ display: "flex", gap: "0.35rem", alignItems: "center" }}>
+              <input
+                type="text"
+                placeholder="Enter invite code..."
+                value={joinCode}
+                onChange={(e) => setJoinCode(e.target.value)}
+                className={shared.input}
+                style={{ width: "160px" }}
+              />
+              <button
+                className={shared.addBtn}
+                onClick={handleJoinGroup}
+                disabled={!joinCode.trim()}
+              >
+                Join
+              </button>
+            </div>
+          </div>
+
+          {groupsLoading ? (
+            <div className={shared.emptyMessage}>Loading groups...</div>
+          ) : groups.length === 0 ? (
+            <div className={shared.emptyMessage}>
+              No groups yet. Create one or join with an invite code.
+            </div>
+          ) : (
+            <div className={shared.methodGrid}>
+              {groups.map((group) => (
+                <div key={group.id} className={shared.methodCard}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
+                    <div>
+                      <h3 style={{ margin: 0 }}>
+                        <Link
+                          href={`/tools/wikelo-tracker/group/${group.id}`}
+                          style={{ color: "var(--accent)", textDecoration: "none" }}
+                        >
+                          {group.name}
+                        </Link>
+                      </h3>
+                      <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                        {group.memberCount} member{group.memberCount !== 1 ? "s" : ""} · {group.projectCount} project{group.projectCount !== 1 ? "s" : ""}
+                      </span>
+                    </div>
+                    <span style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem", background: "rgba(192, 132, 252, 0.15)", color: "#c084fc", borderRadius: "4px", fontWeight: 600 }}>
+                      {group.inviteCode}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Link href={`/tools/wikelo-tracker/group/${group.id}`} style={{ fontSize: "0.8rem", color: "var(--accent)" }}>
+                      View Group →
+                    </Link>
+                    <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                      Owner: {group.ownerName}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* ========== PERSONAL TAB ========== */}
+      {activeTab === "personal" && (<>
 
       {/* Create new project */}
       {!showCreate ? (
@@ -486,6 +652,8 @@ export default function WikeloTrackerPage() {
           ))}
         </div>
       )}
+
+      </>)}
     </div>
   );
 }

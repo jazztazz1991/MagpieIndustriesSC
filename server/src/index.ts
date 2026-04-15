@@ -28,6 +28,7 @@ import { inventoryNotesRouter } from "./routes/inventory-notes.js";
 import { wikeloRouter } from "./routes/wikelo.js";
 import { pricesRouter } from "./routes/prices.js";
 import { discordBotRouter } from "./routes/discord-bot.js";
+import { wikeloGroupsRouter } from "./routes/wikelo-groups.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -59,6 +60,7 @@ app.use("/api/mission-recipes", missionRecipesRouter);
 app.use("/api/game-data", gameDataRouter);
 app.use("/api/inventory-notes", inventoryNotesRouter);
 app.use("/api/wikelo", wikeloRouter);
+app.use("/api/wikelo/groups", wikeloGroupsRouter);
 app.use("/api/prices", pricesRouter);
 app.use("/api/discord-bot", discordBotRouter);
 

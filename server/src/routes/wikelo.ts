@@ -144,16 +144,37 @@ wikeloRouter.patch("/projects/:id/materials/:materialId", requireAuth, async (re
       return;
     }
 
-    const material = await prisma.wikeloProjectMaterial.update({
+    // Get current value for delta calculation
+    const currentMaterial = await prisma.wikeloProjectMaterial.findUnique({
       where: { id: req.params.materialId as string },
-      data: { collected: parsed.data.collected },
     });
+    if (!currentMaterial) {
+      res.status(404).json({ success: false, error: "Material not found" });
+      return;
+    }
 
-    // Update project timestamp
-    await prisma.wikeloProject.update({
-      where: { id: req.params.id as string },
-      data: { updatedAt: new Date() },
-    });
+    const delta = parsed.data.collected - currentMaterial.collected;
+
+    // Update material + log contribution in a transaction
+    const [material] = await prisma.$transaction([
+      prisma.wikeloProjectMaterial.update({
+        where: { id: currentMaterial.id },
+        data: { collected: parsed.data.collected },
+      }),
+      prisma.wikeloContributionLog.create({
+        data: {
+          projectId: project.id,
+          userId,
+          itemName: currentMaterial.itemName,
+          delta,
+          newTotal: parsed.data.collected,
+        },
+      }),
+      prisma.wikeloProject.update({
+        where: { id: req.params.id as string },
+        data: { updatedAt: new Date() },
+      }),
+    ]);
 
     res.json({
       success: true,
@@ -196,6 +217,42 @@ wikeloRouter.patch("/projects/:id", requireAuth, async (req, res) => {
     });
 
     res.json({ success: true, data: projectToDTO(updated) });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// GET /api/wikelo/projects/:id/log — personal project contribution log
+wikeloRouter.get("/projects/:id/log", requireAuth, async (req, res) => {
+  try {
+    const { userId } = (req as Request & { user: AuthPayload }).user;
+    const project = await prisma.wikeloProject.findFirst({
+      where: { id: req.params.id as string, userId },
+    });
+
+    if (!project) {
+      res.status(404).json({ success: false, error: "Project not found" });
+      return;
+    }
+
+    const logs = await prisma.wikeloContributionLog.findMany({
+      where: { projectId: project.id },
+      include: { user: { select: { username: true } } },
+      orderBy: { createdAt: "desc" },
+      take: 200,
+    });
+
+    res.json({
+      success: true,
+      data: logs.map((l) => ({
+        id: l.id,
+        username: l.user.username,
+        itemName: l.itemName,
+        delta: l.delta,
+        newTotal: l.newTotal,
+        createdAt: l.createdAt.toISOString(),
+      })),
+    });
   } catch {
     res.status(500).json({ success: false, error: "Internal server error" });
   }
