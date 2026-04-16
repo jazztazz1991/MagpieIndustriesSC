@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { contracts as staticContracts } from "@/data/wikelo";
 import { useAuth } from "@/context/AuthContext";
@@ -16,6 +16,7 @@ interface LogEntry { id: string; username: string; projectName?: string; itemNam
 
 export default function GroupDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const { user, loading: authLoading } = useAuth();
 
   const [group, setGroup] = useState<Group | null>(null);
@@ -26,9 +27,11 @@ export default function GroupDetailPage() {
   const [projectName, setProjectName] = useState("");
   const [creating, setCreating] = useState(false);
   const [activeView, setActiveView] = useState<"projects" | "log">("projects");
+  const [expandedProject, setExpandedProject] = useState<string | null>(null);
   const [log, setLog] = useState<LogEntry[]>([]);
   const [logLoading, setLogLoading] = useState(false);
   const [shoppingListOpen, setShoppingListOpen] = useState(false);
+  const [leaving, setLeaving] = useState(false);
 
   const contracts = staticContracts;
   const activeContracts = useMemo(() => contracts.filter((c) => c.active).sort((a, b) => a.name.localeCompare(b.name)), [contracts]);
@@ -60,6 +63,16 @@ export default function GroupDetailPage() {
   useEffect(() => {
     if (activeView === "log" && log.length === 0) loadLog();
   }, [activeView]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleLeave = async () => {
+    if (!user || !group) return;
+    setLeaving(true);
+    const res = await apiFetch(`/api/wikelo/groups/${id}/members/${user.id}`, { method: "DELETE" });
+    if (res.success) {
+      router.push("/tools/wikelo-tracker");
+    }
+    setLeaving(false);
+  };
 
   // Create project
   const handleCreateProject = async () => {
@@ -161,6 +174,15 @@ export default function GroupDetailPage() {
           >
             {group.inviteCode}
           </button>
+          {user && group.ownerId !== user.id && (
+            <button
+              onClick={() => { if (confirm(`Leave "${group.name}"?`)) handleLeave(); }}
+              disabled={leaving}
+              style={{ padding: "0.25rem 0.6rem", background: "rgba(248, 113, 113, 0.1)", border: "1px solid rgba(248, 113, 113, 0.25)", borderRadius: "4px", color: "#f87171", fontSize: "0.8rem", cursor: "pointer" }}
+            >
+              {leaving ? "Leaving..." : "Leave Group"}
+            </button>
+          )}
         </div>
       </div>
 
@@ -272,55 +294,85 @@ export default function GroupDetailPage() {
           {group.projects.length === 0 ? (
             <div className={shared.emptyMessage}>No projects yet. Create one to start tracking.</div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              {group.projects.map((project) => (
-                <div key={project.id} className={shared.panel}>
+            <>
+            <div className={shared.methodGrid}>
+              {group.projects.map((project, idx) => (
+                <div
+                  key={project.id}
+                  className={shared.methodCard}
+                  onClick={() => setExpandedProject(expandedProject === project.id ? null : project.id)}
+                  style={{ cursor: "pointer" }}
+                >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
-                    <div>
-                      <h3 style={{ margin: 0, fontSize: "1rem" }}>{project.displayName || project.name}</h3>
-                      {project.displayName && <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>{project.name}</span>}
-                    </div>
-                    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                      <span style={{ fontSize: "1rem", fontWeight: 700, color: project.progress === 100 ? "#4ade80" : "var(--accent)" }}>
-                        {project.progress}%
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
+                      <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-secondary)", background: "var(--border)", borderRadius: "50%", width: "22px", height: "22px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "0.15rem" }}>
+                        {idx + 1}
                       </span>
-                      <span style={{ fontSize: "0.7rem", fontWeight: 600, textTransform: "uppercase", padding: "0.1rem 0.4rem", borderRadius: "3px",
-                        background: project.status === "COMPLETED" ? "rgba(74,222,128,0.15)" : "rgba(74,158,255,0.15)",
-                        color: project.status === "COMPLETED" ? "#4ade80" : "var(--accent)",
-                      }}>
-                        {project.status.replace("_", " ")}
-                      </span>
+                      <div>
+                        <h3 style={{ margin: 0 }}>{project.displayName || project.name}</h3>
+                        {project.displayName && <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>{project.name}</span>}
+                        <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", display: "block" }}>
+                          {project.materials.length} materials
+                        </span>
+                      </div>
                     </div>
+                    <span style={{
+                      fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", padding: "0.15rem 0.5rem", borderRadius: "4px",
+                      background: project.status === "COMPLETED" ? "rgba(74,222,128,0.15)" : project.status === "ABANDONED" ? "rgba(248,113,113,0.15)" : "rgba(74,158,255,0.15)",
+                      color: project.status === "COMPLETED" ? "#4ade80" : project.status === "ABANDONED" ? "#f87171" : "var(--accent)",
+                    }}>
+                      {project.status.replace("_", " ")}
+                    </span>
                   </div>
 
-                  <div style={{ height: "6px", background: "var(--border)", borderRadius: "3px", overflow: "hidden", marginBottom: "0.75rem" }}>
-                    <div style={{ height: "100%", width: `${project.progress}%`, background: project.progress === 100 ? "#4ade80" : "var(--accent)", borderRadius: "3px" }} />
+                  <div style={{ marginBottom: "0.5rem" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", marginBottom: "0.25rem" }}>
+                      <span style={{ color: "var(--text-secondary)" }}>Progress</span>
+                      <span style={{ fontWeight: 600, color: project.progress === 100 ? "#4ade80" : "var(--text-primary)" }}>{project.progress}%</span>
+                    </div>
+                    <div style={{ height: "6px", background: "var(--border)", borderRadius: "3px", overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${project.progress}%`, background: project.progress === 100 ? "#4ade80" : "var(--accent)", borderRadius: "3px", transition: "width 0.3s" }} />
+                    </div>
                   </div>
+                </div>
+              ))}
+            </div>
 
+            {/* Expanded project detail */}
+            {expandedProject && (() => {
+              const project = group.projects.find((p) => p.id === expandedProject);
+              if (!project) return null;
+              return (
+                <div className={shared.panel} style={{ marginTop: "1rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+                    <h3 style={{ margin: 0 }}>{project.displayName || project.name}</h3>
+                    <button onClick={() => setExpandedProject(null)} style={{ background: "none", border: "none", color: "var(--text-secondary)", fontSize: "1.2rem", cursor: "pointer" }}>&times;</button>
+                  </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
                     {project.materials.map((mat) => {
-                      const pct = mat.required > 0 ? Math.min(100, Math.round((mat.collected / mat.required) * 100)) : 100;
                       const complete = mat.collected >= mat.required;
                       return (
-                        <div key={mat.id} style={{ display: "grid", gridTemplateColumns: "1fr 70px auto", gap: "0.5rem", alignItems: "center" }}>
+                        <div key={mat.id} style={{ display: "grid", gridTemplateColumns: "1fr 70px auto", gap: "0.5rem", alignItems: "center", padding: "0.25rem 0", borderBottom: "1px solid var(--border)" }}>
                           <span style={{ fontSize: "0.85rem", fontWeight: 500, color: complete ? "var(--text-secondary)" : "var(--text-primary)" }}>
                             {mat.itemName}
                           </span>
                           <span style={{ fontSize: "0.8rem", textAlign: "right", color: complete ? "#4ade80" : "#fb923c", fontWeight: 600 }}>
                             {mat.collected}/{mat.required}
                           </span>
-                          <div style={{ display: "flex", gap: "0.2rem" }}>
+                          <div style={{ display: "flex", gap: "0.2rem" }} onClick={(e) => e.stopPropagation()}>
                             <button onClick={() => updateMaterial(project.id, mat.id, mat.collected - 1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>-</button>
                             <button onClick={() => updateMaterial(project.id, mat.id, mat.collected + 1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
                             <button onClick={() => updateMaterial(project.id, mat.id, mat.collected + 5)} style={{ width: "28px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+5</button>
+                            <button onClick={() => updateMaterial(project.id, mat.id, mat.collected + 10)} style={{ width: "32px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+10</button>
                           </div>
                         </div>
                       );
                     })}
                   </div>
                 </div>
-              ))}
-            </div>
+              );
+            })()}
+            </>
           )}
         </>
       )}

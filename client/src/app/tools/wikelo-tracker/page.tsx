@@ -41,13 +41,23 @@ export default function WikeloTrackerPage() {
   const [shoppingListOpen, setShoppingListOpen] = useState(false);
 
   // Group state
+  interface GroupProject {
+    id: string;
+    name: string;
+    displayName: string | null;
+    status: string;
+    progress: number;
+    materialCount: number;
+  }
   interface GroupSummary {
     id: string;
     name: string;
     inviteCode: string;
+    ownerId: string;
     ownerName: string;
     memberCount: number;
     projectCount: number;
+    projects: GroupProject[];
   }
   const [groups, setGroups] = useState<GroupSummary[]>([]);
   const [groupsLoading, setGroupsLoading] = useState(false);
@@ -177,6 +187,14 @@ export default function WikeloTrackerPage() {
     }
   };
 
+  const handleLeaveGroup = async (groupId: string) => {
+    if (!user) return;
+    const res = await apiFetch(`/api/wikelo/groups/${groupId}/members/${user.id}`, { method: "DELETE" });
+    if (res.success) {
+      setGroups((prev) => prev.filter((g) => g.id !== groupId));
+    }
+  };
+
   if (authLoading) return null;
 
   if (!user) {
@@ -268,38 +286,103 @@ export default function WikeloTrackerPage() {
               No groups yet. Create one or join with an invite code.
             </div>
           ) : (
-            <div className={shared.methodGrid}>
-              {groups.map((group) => (
-                <div key={group.id} className={shared.methodCard}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
-                    <div>
-                      <h3 style={{ margin: 0 }}>
-                        <Link
-                          href={`/tools/wikelo-tracker/group/${group.id}`}
-                          style={{ color: "var(--accent)", textDecoration: "none" }}
-                        >
-                          {group.name}
-                        </Link>
-                      </h3>
-                      <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
-                        {group.memberCount} member{group.memberCount !== 1 ? "s" : ""} · {group.projectCount} project{group.projectCount !== 1 ? "s" : ""}
-                      </span>
-                    </div>
-                    <span style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem", background: "rgba(192, 132, 252, 0.15)", color: "#c084fc", borderRadius: "4px", fontWeight: 600 }}>
-                      {group.inviteCode}
+            groups.map((group) => (
+              <div key={group.id} style={{ marginBottom: "2rem" }}>
+                {/* Group header */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+                  <div>
+                    <Link
+                      href={`/tools/wikelo-tracker/group/${group.id}`}
+                      style={{ fontSize: "1.1rem", fontWeight: 700, color: "var(--text-primary)", textDecoration: "none" }}
+                    >
+                      {group.name}
+                    </Link>
+                    <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", marginLeft: "0.75rem" }}>
+                      {group.memberCount} member{group.memberCount !== 1 ? "s" : ""} · Owner: {group.ownerName}
                     </span>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                    <button
+                      onClick={() => navigator.clipboard.writeText(group.inviteCode)}
+                      style={{ padding: "0.15rem 0.5rem", fontSize: "0.7rem", background: "rgba(192, 132, 252, 0.15)", border: "1px solid rgba(192, 132, 252, 0.3)", borderRadius: "4px", color: "#c084fc", cursor: "pointer", fontWeight: 600 }}
+                    >
+                      {group.inviteCode}
+                    </button>
                     <Link href={`/tools/wikelo-tracker/group/${group.id}`} style={{ fontSize: "0.8rem", color: "var(--accent)" }}>
-                      View Group →
+                      Manage →
                     </Link>
-                    <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
-                      Owner: {group.ownerName}
-                    </span>
+                    {user && group.ownerId !== user.id && (
+                      <button
+                        onClick={() => { if (confirm(`Leave "${group.name}"?`)) handleLeaveGroup(group.id); }}
+                        style={{ padding: "0.15rem 0.5rem", fontSize: "0.7rem", background: "rgba(248, 113, 113, 0.1)", border: "1px solid rgba(248, 113, 113, 0.25)", borderRadius: "4px", color: "#f87171", cursor: "pointer" }}
+                      >
+                        Leave
+                      </button>
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
+
+                {/* Group project cards — same grid as personal */}
+                {group.projects.length === 0 ? (
+                  <div className={shared.emptyMessage} style={{ fontSize: "0.85rem" }}>
+                    No projects in this group yet. <Link href={`/tools/wikelo-tracker/group/${group.id}`} style={{ color: "var(--accent)" }}>Create one →</Link>
+                  </div>
+                ) : (
+                  <div className={shared.methodGrid}>
+                    {group.projects.map((project, idx) => (
+                      <div key={project.id} className={shared.methodCard}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
+                          <div style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
+                            <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-secondary)", background: "var(--border)", borderRadius: "50%", width: "22px", height: "22px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "0.15rem" }}>
+                              {idx + 1}
+                            </span>
+                            <div>
+                              <h3 style={{ margin: 0 }}>
+                                <Link
+                                  href={`/tools/wikelo-tracker/group/${group.id}`}
+                                  style={{ color: "var(--accent)", textDecoration: "none" }}
+                                >
+                                  {project.displayName || project.name}
+                                </Link>
+                              </h3>
+                              <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                                {project.materialCount} materials
+                              </span>
+                            </div>
+                          </div>
+                          <span
+                            style={{
+                              fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase",
+                              padding: "0.15rem 0.5rem", borderRadius: "4px",
+                              background: project.status === "COMPLETED" ? "rgba(74, 222, 128, 0.15)" : project.status === "ABANDONED" ? "rgba(248, 113, 113, 0.15)" : "rgba(74, 158, 255, 0.15)",
+                              color: project.status === "COMPLETED" ? "#4ade80" : project.status === "ABANDONED" ? "#f87171" : "var(--accent)",
+                            }}
+                          >
+                            {project.status.replace("_", " ")}
+                          </span>
+                        </div>
+
+                        <div style={{ marginBottom: "0.75rem" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", marginBottom: "0.25rem" }}>
+                            <span style={{ color: "var(--text-secondary)" }}>Progress</span>
+                            <span style={{ fontWeight: 600, color: project.progress === 100 ? "#4ade80" : "var(--text-primary)" }}>
+                              {project.progress}%
+                            </span>
+                          </div>
+                          <div style={{ height: "6px", background: "var(--border)", borderRadius: "3px", overflow: "hidden" }}>
+                            <div style={{ height: "100%", width: `${project.progress}%`, background: project.progress === 100 ? "#4ade80" : "var(--accent)", borderRadius: "3px", transition: "width 0.3s" }} />
+                          </div>
+                        </div>
+
+                        <Link href={`/tools/wikelo-tracker/group/${group.id}`} style={{ fontSize: "0.8rem", color: "var(--accent)" }}>
+                          View Details →
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))
           )}
         </>
       )}
@@ -592,9 +675,9 @@ export default function WikeloTrackerPage() {
       ) : (
         <>
         <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>
-          Drag to reorder — items fill top project first
+          Drag to reorder — items fill first project first
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        <div className={shared.methodGrid}>
           {projects.map((project, idx) => (
             <div
               key={project.id}
@@ -603,7 +686,7 @@ export default function WikeloTrackerPage() {
               onDragOver={(e) => e.preventDefault()}
               onDrop={() => handleDrop(idx)}
               className={shared.methodCard}
-              style={{ cursor: "grab", borderLeft: dragIdx === idx ? "3px solid var(--accent)" : "3px solid transparent" }}
+              style={{ cursor: "grab", borderLeft: dragIdx === idx ? "3px solid var(--accent)" : undefined }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
                 <div style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
