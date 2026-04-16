@@ -19,7 +19,10 @@ interface ProjectSummary {
   id: string;
   contractId: string;
   name: string;
+  displayName: string | null;
   status: string;
+  groupId: string | null;
+  priority: number;
   progress: number;
   materialCount: number;
   materials: ProjectMaterial[];
@@ -105,6 +108,26 @@ export default function WikeloTrackerPage() {
       setSelectedContractId("");
     }
     setCreating(false);
+  };
+
+  // Drag reorder
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+
+  const handleDragStart = (idx: number) => setDragIdx(idx);
+
+  const handleDrop = async (dropIdx: number) => {
+    if (dragIdx === null || dragIdx === dropIdx) { setDragIdx(null); return; }
+    const reordered = [...projects];
+    const [moved] = reordered.splice(dragIdx, 1);
+    reordered.splice(dropIdx, 0, moved);
+    setProjects(reordered);
+    setDragIdx(null);
+
+    // Save new order to server
+    await apiFetch("/api/wikelo/projects/reorder", {
+      method: "POST",
+      body: JSON.stringify({ projectIds: reordered.map((p) => p.id) }),
+    });
   };
 
   // Delete project
@@ -567,22 +590,39 @@ export default function WikeloTrackerPage() {
           No projects yet. Create one to start tracking materials.
         </div>
       ) : (
-        <div className={shared.methodGrid}>
-          {projects.map((project) => (
-            <div key={project.id} className={shared.methodCard}>
+        <>
+        <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>
+          Drag to reorder — items fill top project first
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          {projects.map((project, idx) => (
+            <div
+              key={project.id}
+              draggable
+              onDragStart={() => handleDragStart(idx)}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={() => handleDrop(idx)}
+              className={shared.methodCard}
+              style={{ cursor: "grab", borderLeft: dragIdx === idx ? "3px solid var(--accent)" : "3px solid transparent" }}
+            >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
-                <div>
-                  <h3 style={{ margin: 0 }}>
-                    <Link
-                      href={`/tools/wikelo-tracker/${project.id}`}
-                      style={{ color: "var(--accent)", textDecoration: "none" }}
-                    >
-                      {project.name}
-                    </Link>
-                  </h3>
-                  <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
-                    {project.materialCount} materials
+                <div style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
+                  <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-secondary)", background: "var(--border)", borderRadius: "50%", width: "22px", height: "22px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "0.15rem" }}>
+                    {idx + 1}
                   </span>
+                  <div>
+                    <h3 style={{ margin: 0 }}>
+                      <Link
+                        href={`/tools/wikelo-tracker/${project.id}`}
+                        style={{ color: "var(--accent)", textDecoration: "none" }}
+                      >
+                        {project.name}
+                      </Link>
+                    </h3>
+                    <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                      {project.materialCount} materials
+                    </span>
+                  </div>
                 </div>
                 <span
                   style={{
@@ -651,6 +691,7 @@ export default function WikeloTrackerPage() {
             </div>
           ))}
         </div>
+        </>
       )}
 
       </>)}

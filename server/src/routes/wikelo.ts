@@ -40,8 +40,11 @@ function projectToDTO(p: any) {
   return {
     id: p.id,
     contractId: p.contractId,
-    name: p.name,
+    name: p.displayName || p.name,
+    displayName: p.displayName || null,
     status: p.status,
+    groupId: p.groupId || null,
+    priority: p.priority ?? 0,
     progress,
     materialCount: materials.length,
     materials,
@@ -56,9 +59,9 @@ wikeloRouter.get("/projects", requireAuth, async (req, res) => {
     const { userId } = (req as Request & { user: AuthPayload }).user;
 
     const projects = await prisma.wikeloProject.findMany({
-      where: { userId },
+      where: { userId, groupId: null },
       include: { materials: true },
-      orderBy: { updatedAt: "desc" },
+      orderBy: [{ priority: "asc" }, { updatedAt: "desc" }],
       take: 100,
     });
 
@@ -190,38 +193,6 @@ wikeloRouter.patch("/projects/:id/materials/:materialId", requireAuth, async (re
   }
 });
 
-// PATCH /api/wikelo/projects/:id
-wikeloRouter.patch("/projects/:id", requireAuth, async (req, res) => {
-  try {
-    const { userId } = (req as Request & { user: AuthPayload }).user;
-    const parsed = updateStatusSchema.safeParse(req.body);
-
-    if (!parsed.success) {
-      res.status(400).json({ success: false, error: "Invalid input" });
-      return;
-    }
-
-    const project = await prisma.wikeloProject.findFirst({
-      where: { id: req.params.id as string, userId },
-    });
-
-    if (!project) {
-      res.status(404).json({ success: false, error: "Project not found" });
-      return;
-    }
-
-    const updated = await prisma.wikeloProject.update({
-      where: { id: req.params.id as string },
-      data: { status: parsed.data.status },
-      include: { materials: true },
-    });
-
-    res.json({ success: true, data: projectToDTO(updated) });
-  } catch {
-    res.status(500).json({ success: false, error: "Internal server error" });
-  }
-});
-
 // GET /api/wikelo/projects/:id/log — personal project contribution log
 wikeloRouter.get("/projects/:id/log", requireAuth, async (req, res) => {
   try {
@@ -253,6 +224,79 @@ wikeloRouter.get("/projects/:id/log", requireAuth, async (req, res) => {
         createdAt: l.createdAt.toISOString(),
       })),
     });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// PATCH /api/wikelo/projects/:id — update displayName, status, priority
+const updateProjectSchema = z.object({
+  displayName: z.string().max(200).optional(),
+  status: z.enum(["IN_PROGRESS", "COMPLETED", "ABANDONED"]).optional(),
+  priority: z.number().int().optional(),
+});
+
+wikeloRouter.patch("/projects/:id", requireAuth, async (req, res) => {
+  try {
+    const { userId } = (req as Request & { user: AuthPayload }).user;
+    const parsed = updateProjectSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      res.status(400).json({ success: false, error: "Invalid input" });
+      return;
+    }
+
+    const project = await prisma.wikeloProject.findFirst({
+      where: { id: req.params.id as string, userId },
+    });
+
+    if (!project) {
+      res.status(404).json({ success: false, error: "Project not found" });
+      return;
+    }
+
+    const updated = await prisma.wikeloProject.update({
+      where: { id: project.id },
+      data: {
+        ...(parsed.data.displayName !== undefined ? { displayName: parsed.data.displayName } : {}),
+        ...(parsed.data.status ? { status: parsed.data.status } : {}),
+        ...(parsed.data.priority !== undefined ? { priority: parsed.data.priority } : {}),
+      },
+      include: { materials: true },
+    });
+
+    res.json({ success: true, data: projectToDTO(updated) });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// POST /api/wikelo/projects/reorder — reorder personal projects
+const reorderSchema = z.object({
+  projectIds: z.array(z.string()).min(1),
+});
+
+wikeloRouter.post("/projects/reorder", requireAuth, async (req, res) => {
+  try {
+    const { userId } = (req as Request & { user: AuthPayload }).user;
+    const parsed = reorderSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      res.status(400).json({ success: false, error: "Invalid input" });
+      return;
+    }
+
+    // Update priority for each project in order
+    await prisma.$transaction(
+      parsed.data.projectIds.map((id, index) =>
+        prisma.wikeloProject.updateMany({
+          where: { id, userId, groupId: null },
+          data: { priority: index },
+        })
+      )
+    );
+
+    res.json({ success: true });
   } catch {
     res.status(500).json({ success: false, error: "Internal server error" });
   }
