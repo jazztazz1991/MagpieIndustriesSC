@@ -195,18 +195,28 @@ export default function GroupDetailPage() {
       .sort((a, b) => naturalCompare(a.name, b.name));
   }, [group]);
 
-  // Update shopping list item: distribute to first source that can accept the change
+  // Update shopping list item: distribute across sources, filling each to its cap
   const updateShoppingItem = useCallback(async (itemName: string, delta: number) => {
     const item = shoppingList.find((i) => i.name === itemName);
     if (!item) return;
 
-    let target = delta > 0
-      ? item.sources.find((s) => s.collected < s.required)
-      : item.sources.find((s) => s.collected > 0);
-    if (!target) target = item.sources[0];
-    if (!target) return;
-
-    await updateMaterial(target.projectId, target.materialId, delta);
+    let remaining = delta;
+    for (const source of item.sources) {
+      if (remaining === 0) break;
+      if (remaining > 0) {
+        const canAdd = source.required - source.collected;
+        if (canAdd <= 0) continue;
+        const toAdd = Math.min(remaining, canAdd);
+        await updateMaterial(source.projectId, source.materialId, toAdd);
+        remaining -= toAdd;
+      } else {
+        const canRemove = source.collected;
+        if (canRemove <= 0) continue;
+        const toRemove = Math.min(Math.abs(remaining), canRemove);
+        await updateMaterial(source.projectId, source.materialId, -toRemove);
+        remaining += toRemove;
+      }
+    }
   }, [shoppingList, updateMaterial]);
 
   // Drag reorder

@@ -499,35 +499,44 @@ export default function WikeloTrackerPage() {
         const totalCollected = [...aggregated.values()].reduce((s, v) => s + Math.min(v.collected, v.needed), 0);
         const overallPct = totalNeeded > 0 ? Math.round((totalCollected / totalNeeded) * 100) : 100;
 
-        // Update a shopping list item: distribute to the first source that still needs it
+        // Update a shopping list item: distribute across sources, filling each to its cap
         const updateShoppingItem = async (itemName: string, delta: number) => {
           const data = aggregated.get(itemName);
           if (!data) return;
 
-          // Find the first source material that can accept this change
-          let target = delta > 0
-            ? data.sources.find((s) => s.collected < s.required)  // add to first incomplete
-            : data.sources.find((s) => s.collected > 0);          // remove from first with stock
+          let remaining = delta;
+          for (const source of data.sources) {
+            if (remaining === 0) break;
+            let toApply: number;
+            if (remaining > 0) {
+              const canAdd = source.required - source.collected;
+              if (canAdd <= 0) continue;
+              toApply = Math.min(remaining, canAdd);
+              remaining -= toApply;
+            } else {
+              const canRemove = source.collected;
+              if (canRemove <= 0) continue;
+              toApply = -Math.min(Math.abs(remaining), canRemove);
+              remaining -= toApply;
+            }
 
-          if (!target) target = data.sources[0];
-          if (!target) return;
+            const res = await apiFetch<ProjectMaterial>(
+              `/api/wikelo/projects/${source.projectId}/materials/${source.materialId}`,
+              { method: "PATCH", body: JSON.stringify({ delta: toApply }) }
+            );
 
-          const res = await apiFetch<ProjectMaterial>(
-            `/api/wikelo/projects/${target.projectId}/materials/${target.materialId}`,
-            { method: "PATCH", body: JSON.stringify({ delta }) }
-          );
-
-          if (res.success && res.data) {
-            // Update local state
-            setProjects((prev) => prev.map((p) => {
-              if (p.id !== target!.projectId) return p;
-              const materials = p.materials.map((m) =>
-                m.id === target!.materialId ? { ...m, collected: res.data!.collected } : m
-              );
-              const tReq = materials.reduce((s, m) => s + m.required, 0);
-              const tCol = materials.reduce((s, m) => s + Math.min(m.collected, m.required), 0);
-              return { ...p, materials, progress: tReq > 0 ? Math.round((tCol / tReq) * 100) : 0 };
-            }));
+            if (res.success && res.data) {
+              const updated = res.data;
+              setProjects((prev) => prev.map((p) => {
+                if (p.id !== source.projectId) return p;
+                const materials = p.materials.map((m) =>
+                  m.id === source.materialId ? { ...m, collected: updated.collected } : m
+                );
+                const tReq = materials.reduce((s, m) => s + m.required, 0);
+                const tCol = materials.reduce((s, m) => s + Math.min(m.collected, m.required), 0);
+                return { ...p, materials, progress: tReq > 0 ? Math.round((tCol / tReq) * 100) : 0 };
+              }));
+            }
           }
         };
 
