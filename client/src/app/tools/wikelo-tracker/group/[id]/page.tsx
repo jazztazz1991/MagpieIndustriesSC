@@ -38,6 +38,37 @@ export default function GroupDetailPage() {
   const [contributions, setContributions] = useState<UserContribution[]>([]);
   const [contributionsLoading, setContributionsLoading] = useState(false);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [mgScrip, setMgScrip] = useState(0);
+  const [quantanium, setQuantanium] = useState(0);
+
+  // Load tracked conversion materials from localStorage
+  useEffect(() => {
+    if (!id) return;
+    const saved = localStorage.getItem(`wikelo-group-${id}-conversion`);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setMgScrip(parsed.mgScrip || 0);
+        setQuantanium(parsed.quantanium || 0);
+      } catch { /* ignore */ }
+    }
+  }, [id]);
+
+  const saveConversion = (scrip: number, quant: number) => {
+    localStorage.setItem(`wikelo-group-${id}-conversion`, JSON.stringify({ mgScrip: scrip, quantanium: quant }));
+  };
+
+  const updateMgScrip = (delta: number) => {
+    const val = Math.max(0, mgScrip + delta);
+    setMgScrip(val);
+    saveConversion(val, quantanium);
+  };
+
+  const updateQuantanium = (delta: number) => {
+    const val = Math.max(0, quantanium + delta);
+    setQuantanium(val);
+    saveConversion(mgScrip, val);
+  };
 
   const contracts = staticContracts;
   const activeContracts = useMemo(() => contracts.filter((c) => c.active).sort((a, b) => a.name.localeCompare(b.name)), [contracts]);
@@ -260,7 +291,7 @@ export default function GroupDetailPage() {
               ({totalRemaining} items remaining · {overallPct}%)
             </span>
           </h2>
-          {shoppingListOpen && (
+          {shoppingListOpen && (<>
             <div style={{ marginTop: "0.75rem", display: "flex", flexDirection: "column", gap: "0.3rem" }}>
               {shoppingList.map((item) => {
                 const pct = item.needed > 0 ? Math.round((item.collected / item.needed) * 100) : 100;
@@ -284,7 +315,94 @@ export default function GroupDetailPage() {
                 );
               })}
             </div>
-          )}
+
+            {/* Conversion materials */}
+            {(() => {
+              const favorItem = shoppingList.find((i) => i.name === "Wikelo Favor");
+              const polarisBitItem = shoppingList.find((i) => i.name === "Polaris Bit");
+              const favorRemaining = favorItem?.remaining || 0;
+              const bitsRemaining = polarisBitItem?.remaining || 0;
+
+              if (favorRemaining <= 0 && bitsRemaining <= 0) return null;
+
+              const scripNeeded = favorRemaining * 50;
+              const scripRemaining = Math.max(0, scripNeeded - mgScrip);
+              const quantNeeded = bitsRemaining * 24;
+              const quantRemaining = Math.max(0, quantNeeded - quantanium);
+
+              return (
+                <div style={{ marginTop: "1rem", paddingTop: "0.75rem", borderTop: "1px solid var(--border)" }}>
+                  <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: "0.5rem" }}>
+                    Conversion Materials
+                  </div>
+
+                  {favorRemaining > 0 && (
+                    <div style={{ padding: "0.5rem 0.75rem", background: "rgba(192, 132, 252, 0.06)", border: "1px solid rgba(192, 132, 252, 0.15)", borderRadius: "6px", marginBottom: "0.4rem" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                        <div style={{ fontSize: "0.8rem", color: "#c084fc", fontWeight: 600 }}>
+                          MG Scrip for Favor ({favorRemaining} favors remaining)
+                        </div>
+                      </div>
+                      <div style={{ fontSize: "0.85rem", color: "var(--text-primary)", marginBottom: "0.4rem" }}>
+                        {scripNeeded.toLocaleString()} MG Scrip needed
+                        <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem", marginLeft: "0.5rem" }}>(50 scrip = 1 favor)</span>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>Have:</span>
+                        <span style={{ fontSize: "0.85rem", fontWeight: 600, color: mgScrip >= scripNeeded ? "#4ade80" : "#c084fc" }}>
+                          {mgScrip.toLocaleString()} / {scripNeeded.toLocaleString()}
+                        </span>
+                        {scripRemaining > 0 && (
+                          <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                            ({scripRemaining.toLocaleString()} more needed)
+                          </span>
+                        )}
+                        <div style={{ display: "flex", gap: "0.2rem", marginLeft: "auto" }}>
+                          <button onClick={() => updateMgScrip(-10)} style={{ width: "28px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>-10</button>
+                          <button onClick={() => updateMgScrip(-1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>-</button>
+                          <button onClick={() => updateMgScrip(1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                          <button onClick={() => updateMgScrip(10)} style={{ width: "28px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+10</button>
+                          <button onClick={() => updateMgScrip(50)} style={{ width: "32px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+50</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {bitsRemaining > 0 && (
+                    <div style={{ padding: "0.5rem 0.75rem", background: "rgba(250, 204, 21, 0.06)", border: "1px solid rgba(250, 204, 21, 0.15)", borderRadius: "6px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                        <div style={{ fontSize: "0.8rem", color: "#facc15", fontWeight: 600 }}>
+                          Quantanium for Polaris Bits ({bitsRemaining} bits remaining)
+                        </div>
+                      </div>
+                      <div style={{ fontSize: "0.85rem", color: "var(--text-primary)", marginBottom: "0.4rem" }}>
+                        {quantNeeded.toLocaleString()} SCU Quantanium needed
+                        <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem", marginLeft: "0.5rem" }}>(24 SCU = 1 bit)</span>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>Have:</span>
+                        <span style={{ fontSize: "0.85rem", fontWeight: 600, color: quantanium >= quantNeeded ? "#4ade80" : "#facc15" }}>
+                          {quantanium.toLocaleString()} / {quantNeeded.toLocaleString()}
+                        </span>
+                        {quantRemaining > 0 && (
+                          <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                            ({quantRemaining.toLocaleString()} more needed)
+                          </span>
+                        )}
+                        <div style={{ display: "flex", gap: "0.2rem", marginLeft: "auto" }}>
+                          <button onClick={() => updateQuantanium(-10)} style={{ width: "28px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>-10</button>
+                          <button onClick={() => updateQuantanium(-1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>-</button>
+                          <button onClick={() => updateQuantanium(1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                          <button onClick={() => updateQuantanium(10)} style={{ width: "28px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+10</button>
+                          <button onClick={() => updateQuantanium(24)} style={{ width: "32px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+24</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+          </>)}
         </div>
       )}
 
@@ -459,13 +577,14 @@ export default function GroupDetailPage() {
                   <div style={{ fontWeight: 600, color: "var(--accent)", fontSize: "0.9rem", marginBottom: "0.4rem", borderBottom: "1px solid var(--border)", paddingBottom: "0.25rem" }}>
                     {c.username}
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "0.15rem" }}>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
                     {c.items
                       .sort((a, b) => naturalCompare(a.itemName, b.itemName))
-                      .map((item) => (
-                        <div key={item.itemName} style={{ display: "flex", justifyContent: "space-between", padding: "0.2rem 0", fontSize: "0.85rem" }}>
-                          <span>{item.itemName}</span>
-                          <span style={{ fontWeight: 600, color: item.net > 0 ? "#4ade80" : "#f87171" }}>
+                      .map((item, i) => (
+                        <div key={item.itemName} style={{ display: "flex", alignItems: "center", padding: "0.3rem 0.5rem", fontSize: "0.85rem", background: i % 2 === 0 ? "rgba(255,255,255,0.03)" : "transparent", borderRadius: "3px" }}>
+                          <span style={{ whiteSpace: "nowrap" }}>{item.itemName}</span>
+                          <span style={{ flex: 1, borderBottom: "1px dotted rgba(255,255,255,0.1)", margin: "0 0.5rem", minWidth: "2rem", alignSelf: "flex-end", marginBottom: "0.25rem" }} />
+                          <span style={{ fontWeight: 600, color: item.net > 0 ? "#4ade80" : "#f87171", whiteSpace: "nowrap" }}>
                             {item.net > 0 ? "+" : ""}{item.net}
                           </span>
                         </div>
