@@ -512,10 +512,9 @@ export default function WikeloTrackerPage() {
           if (!target) target = data.sources[0];
           if (!target) return;
 
-          const newCollected = Math.max(0, target.collected + delta);
           const res = await apiFetch<ProjectMaterial>(
             `/api/wikelo/projects/${target.projectId}/materials/${target.materialId}`,
-            { method: "PATCH", body: JSON.stringify({ collected: newCollected }) }
+            { method: "PATCH", body: JSON.stringify({ delta }) }
           );
 
           if (res.success && res.data) {

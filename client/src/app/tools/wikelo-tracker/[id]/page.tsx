@@ -47,11 +47,10 @@ export default function WikeloProjectDetailPage() {
     });
   }, [id, user, authLoading]);
 
-  const updateMaterial = useCallback(async (materialId: string, collected: number) => {
-    const clamped = Math.max(0, collected);
+  const updateMaterial = useCallback(async (materialId: string, delta: number) => {
     const res = await apiFetch<Material>(`/api/wikelo/projects/${id}/materials/${materialId}`, {
       method: "PATCH",
-      body: JSON.stringify({ collected: clamped }),
+      body: JSON.stringify({ delta }),
     });
 
     if (res.success && res.data) {
@@ -258,7 +257,7 @@ export default function WikeloProjectDetailPage() {
                 {/* Controls */}
                 <div style={{ display: "flex", alignItems: "center", gap: "0.35rem", justifyContent: "flex-end", flexWrap: "wrap" }}>
                   <button
-                    onClick={() => updateMaterial(mat.id, mat.collected - 10)}
+                    onClick={() => updateMaterial(mat.id, -10)}
                     style={{
                       width: "32px", height: "28px",
                       background: "var(--border)", border: "none", borderRadius: "4px",
@@ -269,7 +268,7 @@ export default function WikeloProjectDetailPage() {
                     -10
                   </button>
                   <button
-                    onClick={() => updateMaterial(mat.id, mat.collected - 5)}
+                    onClick={() => updateMaterial(mat.id, -5)}
                     style={{
                       width: "28px", height: "28px",
                       background: "var(--border)", border: "none", borderRadius: "4px",
@@ -280,7 +279,7 @@ export default function WikeloProjectDetailPage() {
                     -5
                   </button>
                   <button
-                    onClick={() => updateMaterial(mat.id, mat.collected - 1)}
+                    onClick={() => updateMaterial(mat.id, -1)}
                     style={{
                       width: "28px", height: "28px",
                       background: "var(--border)", border: "none", borderRadius: "4px",
@@ -293,7 +292,7 @@ export default function WikeloProjectDetailPage() {
                   <input
                     type="number"
                     value={mat.collected}
-                    onChange={(e) => updateMaterial(mat.id, parseInt(e.target.value, 10) || 0)}
+                    onChange={(e) => { const v = parseInt(e.target.value, 10) || 0; updateMaterial(mat.id, v - mat.collected); }}
                     min={0}
                     style={{
                       width: "60px", padding: "0.25rem 0.4rem",
@@ -303,7 +302,7 @@ export default function WikeloProjectDetailPage() {
                     }}
                   />
                   <button
-                    onClick={() => updateMaterial(mat.id, mat.collected + 1)}
+                    onClick={() => updateMaterial(mat.id, 1)}
                     style={{
                       width: "28px", height: "28px",
                       background: "var(--border)", border: "none", borderRadius: "4px",
@@ -314,7 +313,7 @@ export default function WikeloProjectDetailPage() {
                     +
                   </button>
                   <button
-                    onClick={() => updateMaterial(mat.id, mat.collected + 5)}
+                    onClick={() => updateMaterial(mat.id, 5)}
                     style={{
                       width: "28px", height: "28px",
                       background: "var(--border)", border: "none", borderRadius: "4px",
@@ -325,7 +324,7 @@ export default function WikeloProjectDetailPage() {
                     +5
                   </button>
                   <button
-                    onClick={() => updateMaterial(mat.id, mat.collected + 10)}
+                    onClick={() => updateMaterial(mat.id, 10)}
                     style={{
                       width: "32px", height: "28px",
                       background: "var(--border)", border: "none", borderRadius: "4px",

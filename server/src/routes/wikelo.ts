@@ -18,7 +18,8 @@ const createProjectSchema = z.object({
 });
 
 const updateMaterialSchema = z.object({
-  collected: z.number().int().min(0),
+  delta: z.number().int().optional(),
+  collected: z.number().int().min(0).optional(),
 });
 
 const updateStatusSchema = z.object({
@@ -147,45 +148,48 @@ wikeloRouter.patch("/projects/:id/materials/:materialId", requireAuth, async (re
       return;
     }
 
-    // Get current value for delta calculation
-    const currentMaterial = await prisma.wikeloProjectMaterial.findUnique({
-      where: { id: req.params.materialId as string },
+    // Atomic update via delta or fallback to absolute collected
+    const materialId = req.params.materialId as string;
+    const result = await prisma.$transaction(async (tx) => {
+      const current = await tx.wikeloProjectMaterial.findUnique({ where: { id: materialId } });
+      if (!current) return null;
+
+      let delta: number;
+      let newCollected: number;
+      if (parsed.data.delta !== undefined) {
+        delta = parsed.data.delta;
+        newCollected = Math.max(0, current.collected + delta);
+      } else {
+        newCollected = parsed.data.collected!;
+        delta = newCollected - current.collected;
+      }
+
+      const updated = await tx.wikeloProjectMaterial.update({
+        where: { id: materialId },
+        data: { collected: newCollected },
+      });
+      await tx.wikeloContributionLog.create({
+        data: { projectId: project.id, userId, itemName: current.itemName, delta, newTotal: newCollected },
+      });
+      await tx.wikeloProject.update({
+        where: { id: req.params.id as string },
+        data: { updatedAt: new Date() },
+      });
+      return updated;
     });
-    if (!currentMaterial) {
+
+    if (!result) {
       res.status(404).json({ success: false, error: "Material not found" });
       return;
     }
 
-    const delta = parsed.data.collected - currentMaterial.collected;
-
-    // Update material + log contribution in a transaction
-    const [material] = await prisma.$transaction([
-      prisma.wikeloProjectMaterial.update({
-        where: { id: currentMaterial.id },
-        data: { collected: parsed.data.collected },
-      }),
-      prisma.wikeloContributionLog.create({
-        data: {
-          projectId: project.id,
-          userId,
-          itemName: currentMaterial.itemName,
-          delta,
-          newTotal: parsed.data.collected,
-        },
-      }),
-      prisma.wikeloProject.update({
-        where: { id: req.params.id as string },
-        data: { updatedAt: new Date() },
-      }),
-    ]);
-
     res.json({
       success: true,
       data: {
-        id: material.id,
-        itemName: material.itemName,
-        required: material.required,
-        collected: material.collected,
+        id: result.id,
+        itemName: result.itemName,
+        required: result.required,
+        collected: result.collected,
       },
     });
   } catch {

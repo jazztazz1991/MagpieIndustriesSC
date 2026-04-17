@@ -144,12 +144,11 @@ export default function GroupDetailPage() {
     setCreating(false);
   };
 
-  // Update material
-  const updateMaterial = useCallback(async (projectId: string, materialId: string, collected: number) => {
-    const clamped = Math.max(0, collected);
+  // Update material — sends delta for atomic server-side increment
+  const updateMaterial = useCallback(async (projectId: string, materialId: string, delta: number) => {
     const res = await apiFetch<Material>(`/api/wikelo/groups/${id}/projects/${projectId}/materials/${materialId}`, {
       method: "PATCH",
-      body: JSON.stringify({ collected: clamped }),
+      body: JSON.stringify({ delta }),
     });
     if (res.success && res.data) {
       setGroup((prev) => {
@@ -207,8 +206,7 @@ export default function GroupDetailPage() {
     if (!target) target = item.sources[0];
     if (!target) return;
 
-    const newCollected = Math.max(0, target.collected + delta);
-    await updateMaterial(target.projectId, target.materialId, newCollected);
+    await updateMaterial(target.projectId, target.materialId, delta);
   }, [shoppingList, updateMaterial]);
 
   // Drag reorder
@@ -545,10 +543,10 @@ export default function GroupDetailPage() {
                             {mat.collected}/{mat.required}
                           </span>
                           <div style={{ display: "flex", gap: "0.2rem" }} onClick={(e) => e.stopPropagation()}>
-                            <button onClick={() => updateMaterial(project.id, mat.id, mat.collected - 1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>-</button>
-                            <button onClick={() => updateMaterial(project.id, mat.id, mat.collected + 1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
-                            <button onClick={() => updateMaterial(project.id, mat.id, mat.collected + 5)} style={{ width: "28px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+5</button>
-                            <button onClick={() => updateMaterial(project.id, mat.id, mat.collected + 10)} style={{ width: "32px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+10</button>
+                            <button onClick={() => updateMaterial(project.id, mat.id, -1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>-</button>
+                            <button onClick={() => updateMaterial(project.id, mat.id, 1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                            <button onClick={() => updateMaterial(project.id, mat.id, 5)} style={{ width: "28px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+5</button>
+                            <button onClick={() => updateMaterial(project.id, mat.id, 10)} style={{ width: "32px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+10</button>
                           </div>
                         </div>
                       );
