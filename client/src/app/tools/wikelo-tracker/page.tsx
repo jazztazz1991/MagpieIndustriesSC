@@ -6,6 +6,7 @@ import { contracts as staticContracts } from "@/data/wikelo";
 import { useWithOverrides } from "@/hooks/useOverrides";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
+import { naturalCompare } from "@/lib/sort";
 import shared from "../tools.module.css";
 
 interface ProjectMaterial {
@@ -483,29 +484,15 @@ export default function WikeloTrackerPage() {
           }
         }
 
-        // Use first project's material order as base, then append extras
-        const seenNames = new Set<string>();
-        const orderedNames: string[] = [];
-        for (const project of inProgress) {
-          for (const mat of project.materials) {
-            if (!seenNames.has(mat.itemName)) {
-              seenNames.add(mat.itemName);
-              orderedNames.push(mat.itemName);
-            }
-          }
-        }
-
-        const items = orderedNames
-          .map((name) => {
-            const data = aggregated.get(name)!;
-            return {
-              name,
-              needed: data.needed,
-              collected: data.collected,
-              remaining: Math.max(0, data.needed - data.collected),
-              sources: data.sources,
-            };
-          });
+        const items = Array.from(aggregated.entries())
+          .map(([name, data]) => ({
+            name,
+            needed: data.needed,
+            collected: data.collected,
+            remaining: Math.max(0, data.needed - data.collected),
+            sources: data.sources,
+          }))
+          .sort((a, b) => naturalCompare(a.name, b.name));
 
         const totalRemaining = items.reduce((s, i) => s + i.remaining, 0);
         const totalNeeded = [...aggregated.values()].reduce((s, v) => s + v.needed, 0);

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { contracts as staticContracts } from "@/data/wikelo";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
+import { naturalCompare } from "@/lib/sort";
 import shared from "../../tools.module.css";
 
 interface Material {
@@ -218,7 +219,7 @@ export default function WikeloProjectDetailPage() {
       <div className={shared.panel}>
         <h2 className={shared.panelTitle}>Required Materials</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-          {project.materials.map((mat) => {
+          {[...project.materials].sort((a, b) => naturalCompare(a.itemName, b.itemName)).map((mat) => {
             const pct = mat.required > 0 ? Math.min(100, Math.round((mat.collected / mat.required) * 100)) : 100;
             const complete = mat.collected >= mat.required;
 

@@ -432,6 +432,39 @@ wikeloGroupsRouter.patch(
   }
 );
 
+// POST /groups/:groupId/projects/reorder — reorder group projects
+const reorderSchema = z.object({
+  projectIds: z.array(z.string()).min(1),
+});
+
+wikeloGroupsRouter.post(
+  "/:groupId/projects/reorder",
+  requireAuth,
+  requireGroupMember,
+  async (req, res) => {
+    try {
+      const parsed = reorderSchema.safeParse(req.body);
+      if (!parsed.success) {
+        res.status(400).json({ success: false, error: "Invalid input" });
+        return;
+      }
+
+      await prisma.$transaction(
+        parsed.data.projectIds.map((id, index) =>
+          prisma.wikeloProject.updateMany({
+            where: { id, groupId: req.params.groupId as string },
+            data: { priority: index },
+          })
+        )
+      );
+
+      res.json({ success: true });
+    } catch {
+      res.status(500).json({ success: false, error: "Internal server error" });
+    }
+  }
+);
+
 // ─── Contribution Log ───
 
 // GET /groups/:id/log — group-wide contribution history
@@ -559,6 +592,52 @@ wikeloGroupsRouter.get("/:id/shopping-list", requireAuth, requireGroupMember, as
         items,
       },
     });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// ─── Contributions (who has what) ───
+
+// GET /groups/:id/contributions — net contributions per member
+wikeloGroupsRouter.get("/:id/contributions", requireAuth, requireGroupMember, async (req, res) => {
+  try {
+    const groupProjects = await prisma.wikeloProject.findMany({
+      where: { groupId: req.params.id as string },
+      select: { id: true },
+    });
+    const projectIds = groupProjects.map((p) => p.id);
+
+    if (projectIds.length === 0) {
+      res.json({ success: true, data: [] });
+      return;
+    }
+
+    const logs = await prisma.wikeloContributionLog.findMany({
+      where: { projectId: { in: projectIds } },
+      include: { user: { select: { id: true, username: true } } },
+    });
+
+    // Aggregate: userId → itemName → net delta
+    const byUser = new Map<string, { username: string; items: Map<string, number> }>();
+    for (const log of logs) {
+      let entry = byUser.get(log.userId);
+      if (!entry) {
+        entry = { username: log.user.username, items: new Map() };
+        byUser.set(log.userId, entry);
+      }
+      entry.items.set(log.itemName, (entry.items.get(log.itemName) || 0) + log.delta);
+    }
+
+    const data = Array.from(byUser.entries()).map(([userId, { username, items }]) => ({
+      userId,
+      username,
+      items: Array.from(items.entries())
+        .filter(([, net]) => net !== 0)
+        .map(([itemName, net]) => ({ itemName, net })),
+    }));
+
+    res.json({ success: true, data });
   } catch {
     res.status(500).json({ success: false, error: "Internal server error" });
   }

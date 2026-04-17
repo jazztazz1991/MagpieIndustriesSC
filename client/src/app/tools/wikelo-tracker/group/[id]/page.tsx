@@ -6,6 +6,7 @@ import Link from "next/link";
 import { contracts as staticContracts } from "@/data/wikelo";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
+import { naturalCompare } from "@/lib/sort";
 import shared from "../../../tools.module.css";
 
 interface Material { id: string; itemName: string; required: number; collected: number; }
@@ -13,6 +14,8 @@ interface Project { id: string; name: string; displayName: string | null; contra
 interface Member { userId: string; username: string; joinedAt: string; }
 interface Group { id: string; name: string; inviteCode: string; ownerId: string; ownerName: string; members: Member[]; projects: Project[]; }
 interface LogEntry { id: string; username: string; projectName?: string; itemName: string; delta: number; newTotal: number; createdAt: string; }
+interface ContributionItem { itemName: string; net: number; }
+interface UserContribution { userId: string; username: string; items: ContributionItem[]; }
 
 export default function GroupDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -26,12 +29,15 @@ export default function GroupDetailPage() {
   const [selectedContractId, setSelectedContractId] = useState("");
   const [projectName, setProjectName] = useState("");
   const [creating, setCreating] = useState(false);
-  const [activeView, setActiveView] = useState<"projects" | "log">("projects");
+  const [activeView, setActiveView] = useState<"projects" | "log" | "contributions">("projects");
   const [expandedProject, setExpandedProject] = useState<string | null>(null);
   const [log, setLog] = useState<LogEntry[]>([]);
   const [logLoading, setLogLoading] = useState(false);
   const [shoppingListOpen, setShoppingListOpen] = useState(false);
   const [leaving, setLeaving] = useState(false);
+  const [contributions, setContributions] = useState<UserContribution[]>([]);
+  const [contributionsLoading, setContributionsLoading] = useState(false);
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
 
   const contracts = staticContracts;
   const activeContracts = useMemo(() => contracts.filter((c) => c.active).sort((a, b) => a.name.localeCompare(b.name)), [contracts]);
@@ -60,8 +66,17 @@ export default function GroupDetailPage() {
     setLogLoading(false);
   }, [id]);
 
+  // Load contributions
+  const loadContributions = useCallback(async () => {
+    setContributionsLoading(true);
+    const res = await apiFetch<UserContribution[]>(`/api/wikelo/groups/${id}/contributions`);
+    if (res.success && res.data) setContributions(res.data);
+    setContributionsLoading(false);
+  }, [id]);
+
   useEffect(() => {
     if (activeView === "log" && log.length === 0) loadLog();
+    if (activeView === "contributions" && contributions.length === 0) loadContributions();
   }, [activeView]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLeave = async () => {
@@ -124,25 +139,61 @@ export default function GroupDetailPage() {
   const shoppingList = useMemo(() => {
     if (!group) return [];
     const inProgress = group.projects.filter((p) => p.status === "IN_PROGRESS");
-    const aggregated = new Map<string, { needed: number; collected: number }>();
-    const orderedNames: string[] = [];
-    const seen = new Set<string>();
+    const aggregated = new Map<string, {
+      needed: number; collected: number;
+      sources: { projectId: string; materialId: string; required: number; collected: number }[];
+    }>();
 
     for (const project of inProgress) {
       for (const mat of project.materials) {
-        const existing = aggregated.get(mat.itemName) || { needed: 0, collected: 0 };
+        const existing = aggregated.get(mat.itemName) || { needed: 0, collected: 0, sources: [] };
         existing.needed += mat.required;
         existing.collected += mat.collected;
+        existing.sources.push({ projectId: project.id, materialId: mat.id, required: mat.required, collected: mat.collected });
         aggregated.set(mat.itemName, existing);
-        if (!seen.has(mat.itemName)) { seen.add(mat.itemName); orderedNames.push(mat.itemName); }
       }
     }
 
-    return orderedNames.map((name) => {
-      const data = aggregated.get(name)!;
-      return { name, needed: data.needed, collected: data.collected, remaining: Math.max(0, data.needed - data.collected) };
-    });
+    return Array.from(aggregated.entries())
+      .map(([name, data]) => ({
+        name,
+        needed: data.needed,
+        collected: data.collected,
+        remaining: Math.max(0, data.needed - data.collected),
+        sources: data.sources,
+      }))
+      .sort((a, b) => naturalCompare(a.name, b.name));
   }, [group]);
+
+  // Update shopping list item: distribute to first source that can accept the change
+  const updateShoppingItem = useCallback(async (itemName: string, delta: number) => {
+    const item = shoppingList.find((i) => i.name === itemName);
+    if (!item) return;
+
+    let target = delta > 0
+      ? item.sources.find((s) => s.collected < s.required)
+      : item.sources.find((s) => s.collected > 0);
+    if (!target) target = item.sources[0];
+    if (!target) return;
+
+    const newCollected = Math.max(0, target.collected + delta);
+    await updateMaterial(target.projectId, target.materialId, newCollected);
+  }, [shoppingList, updateMaterial]);
+
+  // Drag reorder
+  const handleDrop = async (dropIdx: number) => {
+    if (dragIdx === null || dragIdx === dropIdx || !group) { setDragIdx(null); return; }
+    const reordered = [...group.projects];
+    const [moved] = reordered.splice(dragIdx, 1);
+    reordered.splice(dropIdx, 0, moved);
+    setGroup({ ...group, projects: reordered });
+    setDragIdx(null);
+
+    await apiFetch(`/api/wikelo/groups/${id}/projects/reorder`, {
+      method: "POST",
+      body: JSON.stringify({ projectIds: reordered.map((p) => p.id) }),
+    });
+  };
 
   const totalRemaining = shoppingList.reduce((s, i) => s + i.remaining, 0);
   const totalNeeded = shoppingList.reduce((s, i) => s + i.needed, 0);
@@ -215,7 +266,7 @@ export default function GroupDetailPage() {
                 const pct = item.needed > 0 ? Math.round((item.collected / item.needed) * 100) : 100;
                 const complete = item.remaining <= 0;
                 return (
-                  <div key={item.name} style={{ display: "grid", gridTemplateColumns: "1fr 80px 70px", gap: "0.5rem", alignItems: "center", padding: "0.3rem 0", borderBottom: "1px solid var(--border)" }}>
+                  <div key={item.name} style={{ display: "grid", gridTemplateColumns: "1fr 80px 70px auto", gap: "0.5rem", alignItems: "center", padding: "0.3rem 0", borderBottom: "1px solid var(--border)" }}>
                     <span style={{ fontSize: "0.85rem", fontWeight: 500, color: complete ? "var(--text-secondary)" : "var(--text-primary)" }}>{item.name}</span>
                     <div style={{ height: "4px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
                       <div style={{ height: "100%", width: `${pct}%`, background: complete ? "#4ade80" : "#fb923c", borderRadius: "2px" }} />
@@ -223,6 +274,10 @@ export default function GroupDetailPage() {
                     <span style={{ fontSize: "0.8rem", textAlign: "right", color: complete ? "#4ade80" : "#fb923c", fontWeight: 600 }}>
                       {item.collected} / {item.needed}
                     </span>
+                    <div style={{ display: "flex", gap: "0.25rem" }}>
+                      <button onClick={() => updateShoppingItem(item.name, -1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", fontSize: "0.9rem", display: "flex", alignItems: "center", justifyContent: "center" }}>-</button>
+                      <button onClick={() => updateShoppingItem(item.name, 1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", fontSize: "0.9rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                    </div>
                   </div>
                 );
               })}
@@ -235,6 +290,9 @@ export default function GroupDetailPage() {
       <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
         <button className={activeView === "projects" ? shared.shipBtnActive + " " + shared.shipBtn : shared.shipBtn} onClick={() => setActiveView("projects")}>
           Projects
+        </button>
+        <button className={activeView === "contributions" ? shared.shipBtnActive + " " + shared.shipBtn : shared.shipBtn} onClick={() => setActiveView("contributions")}>
+          Who Has What
         </button>
         <button className={activeView === "log" ? shared.shipBtnActive + " " + shared.shipBtn : shared.shipBtn} onClick={() => { setActiveView("log"); }}>
           Activity Log
@@ -295,13 +353,20 @@ export default function GroupDetailPage() {
             <div className={shared.emptyMessage}>No projects yet. Create one to start tracking.</div>
           ) : (
             <>
+            <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>
+              Drag to reorder priority
+            </div>
             <div className={shared.methodGrid}>
               {group.projects.map((project, idx) => (
                 <div
                   key={project.id}
+                  draggable
+                  onDragStart={() => setDragIdx(idx)}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={() => handleDrop(idx)}
                   className={shared.methodCard}
                   onClick={() => setExpandedProject(expandedProject === project.id ? null : project.id)}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: "grab", borderLeft: dragIdx === idx ? "3px solid var(--accent)" : undefined }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
                     <div style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
@@ -349,7 +414,7 @@ export default function GroupDetailPage() {
                     <button onClick={() => setExpandedProject(null)} style={{ background: "none", border: "none", color: "var(--text-secondary)", fontSize: "1.2rem", cursor: "pointer" }}>&times;</button>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
-                    {project.materials.map((mat) => {
+                    {[...project.materials].sort((a, b) => naturalCompare(a.itemName, b.itemName)).map((mat) => {
                       const complete = mat.collected >= mat.required;
                       return (
                         <div key={mat.id} style={{ display: "grid", gridTemplateColumns: "1fr 70px auto", gap: "0.5rem", alignItems: "center", padding: "0.25rem 0", borderBottom: "1px solid var(--border)" }}>
@@ -375,6 +440,40 @@ export default function GroupDetailPage() {
             </>
           )}
         </>
+      )}
+
+      {/* Contributions view */}
+      {activeView === "contributions" && (
+        <div className={shared.panel}>
+          <h2 className={shared.panelTitle}>Who Has What</h2>
+          {contributionsLoading ? (
+            <div className={shared.emptyMessage}>Loading...</div>
+          ) : contributions.length === 0 ? (
+            <div className={shared.emptyMessage}>No contributions yet.</div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+              {contributions.map((c) => (
+                <div key={c.userId}>
+                  <div style={{ fontWeight: 600, color: "var(--accent)", fontSize: "0.9rem", marginBottom: "0.4rem", borderBottom: "1px solid var(--border)", paddingBottom: "0.25rem" }}>
+                    {c.username}
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.15rem" }}>
+                    {c.items
+                      .sort((a, b) => naturalCompare(a.itemName, b.itemName))
+                      .map((item) => (
+                        <div key={item.itemName} style={{ display: "flex", justifyContent: "space-between", padding: "0.2rem 0", fontSize: "0.85rem" }}>
+                          <span>{item.itemName}</span>
+                          <span style={{ fontWeight: 600, color: item.net > 0 ? "#4ade80" : "#f87171" }}>
+                            {item.net > 0 ? "+" : ""}{item.net}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       )}
 
       {/* Activity Log view */}
