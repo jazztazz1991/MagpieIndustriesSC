@@ -274,9 +274,11 @@ export default function GroupDetailPage() {
                     <span style={{ fontSize: "0.8rem", textAlign: "right", color: complete ? "#4ade80" : "#fb923c", fontWeight: 600 }}>
                       {item.collected} / {item.needed}
                     </span>
-                    <div style={{ display: "flex", gap: "0.25rem" }}>
+                    <div style={{ display: "flex", gap: "0.2rem" }}>
                       <button onClick={() => updateShoppingItem(item.name, -1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", fontSize: "0.9rem", display: "flex", alignItems: "center", justifyContent: "center" }}>-</button>
                       <button onClick={() => updateShoppingItem(item.name, 1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", fontSize: "0.9rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                      <button onClick={() => updateShoppingItem(item.name, 5)} style={{ width: "28px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+5</button>
+                      <button onClick={() => updateShoppingItem(item.name, 10)} style={{ width: "32px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+10</button>
                     </div>
                   </div>
                 );
