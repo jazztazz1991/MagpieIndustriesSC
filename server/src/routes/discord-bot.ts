@@ -436,3 +436,235 @@ discordBotRouter.post("/groups/:groupId/add-items", requireBotAuth, async (req, 
     res.status(500).json({ success: false, error: "Internal server error" });
   }
 });
+
+// Natural sort comparator — alphabetical with numeric segments sorted numerically
+function naturalCompare(a: string, b: string): number {
+  const re = /(\d+|\D+)/g;
+  const aParts = a.match(re) || [];
+  const bParts = b.match(re) || [];
+  for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
+    const ap = aParts[i] || "";
+    const bp = bParts[i] || "";
+    const aNum = /^\d+$/.test(ap);
+    const bNum = /^\d+$/.test(bp);
+    if (aNum && bNum) {
+      const diff = parseInt(ap, 10) - parseInt(bp, 10);
+      if (diff !== 0) return diff;
+    } else {
+      const cmp = ap.localeCompare(bp, undefined, { sensitivity: "base" });
+      if (cmp !== 0) return cmp;
+    }
+  }
+  return 0;
+}
+
+// GET /api/discord-bot/groups/:groupId/detail/:discordId — full group detail
+discordBotRouter.get("/groups/:groupId/detail/:discordId", requireBotAuth, async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { discordId: req.params.discordId as string } });
+    if (!user) { res.status(404).json({ success: false, error: "Account not linked" }); return; }
+
+    const groupId = req.params.groupId as string;
+    const member = await prisma.wikeloGroupMember.findUnique({
+      where: { groupId_userId: { groupId, userId: user.id } },
+    });
+    if (!member) { res.status(403).json({ success: false, error: "Not a member of this group" }); return; }
+
+    const group = await prisma.wikeloGroup.findUnique({
+      where: { id: groupId },
+      include: {
+        owner: { select: { username: true } },
+        members: { include: { user: { select: { id: true, username: true } } } },
+        projects: { include: { materials: true }, orderBy: { priority: "asc" } },
+      },
+    });
+    if (!group) { res.status(404).json({ success: false, error: "Not a member of this group" }); return; }
+
+    // Owner first, then alphabetical
+    const members = group.members
+      .map((m) => ({
+        id: m.user.id,
+        username: m.user.username,
+        joinedAt: m.joinedAt.toISOString(),
+        isOwner: m.user.id === group.ownerId,
+      }))
+      .sort((a, b) => {
+        if (a.isOwner !== b.isOwner) return a.isOwner ? -1 : 1;
+        return a.username.localeCompare(b.username);
+      });
+
+    const projects = group.projects.map((p) => {
+      const totalReq = p.materials.reduce((s, m) => s + m.required, 0);
+      const totalCol = p.materials.reduce((s, m) => s + Math.min(m.collected, m.required), 0);
+      const progress = totalReq > 0 ? Math.round((totalCol / totalReq) * 100) : 0;
+      return {
+        id: p.id,
+        name: p.displayName || p.name,
+        progress,
+        status: p.status.toLowerCase(),
+        materials: p.materials
+          .map((m) => ({ itemName: m.itemName, collected: m.collected, required: m.required }))
+          .sort((a, b) => naturalCompare(a.itemName, b.itemName)),
+      };
+    });
+
+    res.json({
+      success: true,
+      data: {
+        id: group.id,
+        name: group.name,
+        inviteCode: group.inviteCode,
+        ownerId: group.ownerId,
+        ownerName: group.owner?.username || "",
+        memberCount: members.length,
+        members,
+        projects,
+      },
+    });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// GET /api/discord-bot/groups/:groupId/log/:discordId?limit=20 — activity log
+discordBotRouter.get("/groups/:groupId/log/:discordId", requireBotAuth, async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { discordId: req.params.discordId as string } });
+    if (!user) { res.status(404).json({ success: false, error: "Account not linked" }); return; }
+
+    const groupId = req.params.groupId as string;
+    const member = await prisma.wikeloGroupMember.findUnique({
+      where: { groupId_userId: { groupId, userId: user.id } },
+    });
+    if (!member) { res.status(403).json({ success: false, error: "Not a member of this group" }); return; }
+
+    const limitRaw = parseInt(String(req.query.limit || "20"), 10);
+    const limit = Math.min(50, Math.max(1, isNaN(limitRaw) ? 20 : limitRaw));
+
+    const groupProjects = await prisma.wikeloProject.findMany({
+      where: { groupId },
+      select: { id: true },
+    });
+    const projectIds = groupProjects.map((p) => p.id);
+
+    if (projectIds.length === 0) {
+      res.json({ success: true, data: [] });
+      return;
+    }
+
+    const logs = await prisma.wikeloContributionLog.findMany({
+      where: { projectId: { in: projectIds } },
+      include: {
+        user: { select: { username: true } },
+        project: { select: { name: true, displayName: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+
+    res.json({
+      success: true,
+      data: logs.map((l) => ({
+        username: l.user.username,
+        projectName: l.project.displayName || l.project.name,
+        itemName: l.itemName,
+        delta: l.delta,
+        newTotal: l.newTotal,
+        createdAt: l.createdAt.toISOString(),
+      })),
+    });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// GET /api/discord-bot/groups/:groupId/contributions/:discordId — who has what
+discordBotRouter.get("/groups/:groupId/contributions/:discordId", requireBotAuth, async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { discordId: req.params.discordId as string } });
+    if (!user) { res.status(404).json({ success: false, error: "Account not linked" }); return; }
+
+    const groupId = req.params.groupId as string;
+    const member = await prisma.wikeloGroupMember.findUnique({
+      where: { groupId_userId: { groupId, userId: user.id } },
+    });
+    if (!member) { res.status(403).json({ success: false, error: "Not a member of this group" }); return; }
+
+    const groupProjects = await prisma.wikeloProject.findMany({
+      where: { groupId },
+      select: { id: true },
+    });
+    const projectIds = groupProjects.map((p) => p.id);
+
+    if (projectIds.length === 0) {
+      res.json({ success: true, data: { members: [] } });
+      return;
+    }
+
+    const logs = await prisma.wikeloContributionLog.findMany({
+      where: { projectId: { in: projectIds } },
+      include: { user: { select: { username: true } } },
+    });
+
+    const byUser = new Map<string, { username: string; items: Map<string, number> }>();
+    for (const log of logs) {
+      let entry = byUser.get(log.userId);
+      if (!entry) {
+        entry = { username: log.user.username, items: new Map() };
+        byUser.set(log.userId, entry);
+      }
+      entry.items.set(log.itemName, (entry.items.get(log.itemName) || 0) + log.delta);
+    }
+
+    const members = Array.from(byUser.values())
+      .map(({ username, items }) => ({
+        username,
+        items: Array.from(items.entries())
+          .filter(([, netTotal]) => netTotal !== 0)
+          .map(([itemName, netTotal]) => ({ itemName, netTotal }))
+          .sort((a, b) => naturalCompare(a.itemName, b.itemName)),
+      }))
+      .sort((a, b) => a.username.localeCompare(b.username));
+
+    res.json({ success: true, data: { members } });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// POST /api/discord-bot/groups/:groupId/leave — leave a group
+const leaveGroupSchema = z.object({
+  discordId: z.string().min(1),
+});
+
+discordBotRouter.post("/groups/:groupId/leave", requireBotAuth, async (req, res) => {
+  try {
+    const parsed = leaveGroupSchema.safeParse(req.body);
+    if (!parsed.success) { res.status(400).json({ success: false, error: "Invalid input" }); return; }
+
+    const user = await prisma.user.findUnique({ where: { discordId: parsed.data.discordId } });
+    if (!user) { res.status(404).json({ success: false, error: "Account not linked" }); return; }
+
+    const groupId = req.params.groupId as string;
+    const group = await prisma.wikeloGroup.findUnique({ where: { id: groupId } });
+    if (!group) { res.status(404).json({ success: false, error: "Not a member of this group" }); return; }
+
+    if (group.ownerId === user.id) {
+      res.status(400).json({ success: false, error: "Owner cannot leave — delete the group instead" });
+      return;
+    }
+
+    const member = await prisma.wikeloGroupMember.findUnique({
+      where: { groupId_userId: { groupId, userId: user.id } },
+    });
+    if (!member) { res.status(403).json({ success: false, error: "Not a member of this group" }); return; }
+
+    await prisma.wikeloGroupMember.deleteMany({
+      where: { groupId, userId: user.id },
+    });
+
+    res.json({ success: true, data: { groupName: group.name } });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
