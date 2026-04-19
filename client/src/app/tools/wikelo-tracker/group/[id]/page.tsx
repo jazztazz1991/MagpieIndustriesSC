@@ -105,10 +105,22 @@ export default function GroupDetailPage() {
     setContributionsLoading(false);
   }, [id]);
 
+  const [refreshTick, setRefreshTick] = useState(0);
+
   useEffect(() => {
-    if (activeView === "log" && log.length === 0) loadLog();
-    if (activeView === "contributions" && contributions.length === 0) loadContributions();
+    if (activeView === "log") loadLog();
+    if (activeView === "contributions") loadContributions();
   }, [activeView]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Debounced refresh on material updates — handles shopping list distribute (multiple updates in a row)
+  useEffect(() => {
+    if (refreshTick === 0) return;
+    const timer = setTimeout(() => {
+      if (activeView === "log") loadLog();
+      if (activeView === "contributions") loadContributions();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [refreshTick]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLeave = async () => {
     if (!user || !group) return;
@@ -162,6 +174,7 @@ export default function GroupDetailPage() {
         });
         return { ...prev, projects };
       });
+      setRefreshTick((v) => v + 1);
     }
   }, [id]);
 
