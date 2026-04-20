@@ -23,6 +23,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Mining Calculator", href: "/tools/mining" },
       { label: "Where to Mine", href: "/tools/mining-locations" },
       { label: "Refinery", href: "/tools/refinery" },
+      { label: "Station Bonuses", href: "/tools/refinery-stations" },
       { label: "Loadout", href: "/tools/loadout" },
       { label: "Crafting", href: "/tools/crafting" },
       { label: "Ship Compare", href: "/tools/ship-compare" },

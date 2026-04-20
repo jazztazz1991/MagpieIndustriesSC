@@ -34,6 +34,7 @@ const updateProfileSchema = z.object({
   rsiHandle: z.string().max(60).optional(),
   bio: z.string().max(500).optional(),
   avatarUrl: z.string().url().optional(),
+  publicProfile: z.boolean().optional(),
 });
 
 // --- Response DTOs (no email, no raw DB objects) ---
@@ -50,7 +51,7 @@ function toPublicUser(user: { id: string; username: string; rsiHandle: string | 
   };
 }
 
-function toProfileUser(user: { id: string; username: string; email: string; rsiHandle: string | null; avatarUrl: string | null; bio: string | null; role: string; isAdmin: boolean; isSuperAdmin: boolean; createdAt: Date }) {
+function toProfileUser(user: { id: string; username: string; email: string; rsiHandle: string | null; avatarUrl: string | null; bio: string | null; role: string; isAdmin: boolean; isSuperAdmin: boolean; publicProfile?: boolean; createdAt: Date }) {
   return {
     id: user.id,
     username: user.username,
@@ -61,6 +62,7 @@ function toProfileUser(user: { id: string; username: string; email: string; rsiH
     role: user.role,
     isAdmin: user.isAdmin,
     isSuperAdmin: user.isSuperAdmin,
+    publicProfile: user.publicProfile ?? false,
     createdAt: user.createdAt,
   };
 }
@@ -240,6 +242,7 @@ authRouter.get("/me", requireAuth, async (req, res) => {
         role: true,
         isAdmin: true,
         isSuperAdmin: true,
+        publicProfile: true,
         createdAt: true,
       },
     });
@@ -266,7 +269,7 @@ authRouter.patch("/me", requireAuth, async (req, res) => {
       return;
     }
 
-    const { rsiHandle, bio, avatarUrl } = parsed.data;
+    const { rsiHandle, bio, avatarUrl, publicProfile } = parsed.data;
 
     const user = await prisma.user.update({
       where: { id: userId },
@@ -274,6 +277,7 @@ authRouter.patch("/me", requireAuth, async (req, res) => {
         ...(rsiHandle !== undefined && { rsiHandle }),
         ...(bio !== undefined && { bio }),
         ...(avatarUrl !== undefined && { avatarUrl }),
+        ...(publicProfile !== undefined && { publicProfile }),
       },
       select: {
         id: true,
@@ -285,11 +289,66 @@ authRouter.patch("/me", requireAuth, async (req, res) => {
         role: true,
         isAdmin: true,
         isSuperAdmin: true,
+        publicProfile: true,
         createdAt: true,
       },
     });
 
     res.json({ success: true, data: toProfileUser(user) });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// GET /api/auth/public/:username — public profile (only if user opted in)
+authRouter.get("/public/:username", async (req, res) => {
+  try {
+    const username = req.params.username as string;
+    if (!username || username.length > 60) {
+      res.status(400).json({ success: false, error: "Invalid username" });
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { username },
+      select: {
+        id: true,
+        username: true,
+        rsiHandle: true,
+        avatarUrl: true,
+        bio: true,
+        role: true,
+        isAdmin: true,
+        publicProfile: true,
+        createdAt: true,
+      },
+    });
+
+    if (!user || !user.publicProfile) {
+      res.status(404).json({ success: false, error: "Profile not found" });
+      return;
+    }
+
+    const inventory = await prisma.inventoryNote.findMany({
+      where: { userId: user.id, totalCount: { gt: 0 } },
+      orderBy: { itemName: "asc" },
+      select: {
+        itemName: true,
+        totalCount: true,
+      },
+    });
+
+    res.json({
+      success: true,
+      data: {
+        username: user.username,
+        rsiHandle: user.rsiHandle,
+        avatarUrl: user.avatarUrl,
+        bio: user.bio,
+        memberSince: user.createdAt.toISOString(),
+        inventory,
+      },
+    });
   } catch {
     res.status(500).json({ success: false, error: "Internal server error" });
   }

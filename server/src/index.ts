@@ -29,6 +29,7 @@ import { wikeloRouter } from "./routes/wikelo.js";
 import { pricesRouter } from "./routes/prices.js";
 import { discordBotRouter } from "./routes/discord-bot.js";
 import { wikeloGroupsRouter } from "./routes/wikelo-groups.js";
+import { refinerySubmissionsRouter } from "./routes/refinery-submissions.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -63,6 +64,7 @@ app.use("/api/wikelo", wikeloRouter);
 app.use("/api/wikelo/groups", wikeloGroupsRouter);
 app.use("/api/prices", pricesRouter);
 app.use("/api/discord-bot", discordBotRouter);
+app.use("/api/refinery-submissions", refinerySubmissionsRouter);
 
 app.listen(PORT, () => {
   console.log(`[server] Running on http://localhost:${PORT}`);

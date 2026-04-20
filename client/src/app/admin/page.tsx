@@ -293,6 +293,9 @@ export default function AdminDashboardPage() {
             <Link href="/admin/data-browser" className={styles.saveBtn} style={{ textDecoration: "none", padding: "0.5rem 1rem" }}>
               Game Data Browser
             </Link>
+            <Link href="/admin/refinery-submissions" className={styles.saveBtn} style={{ textDecoration: "none", padding: "0.5rem 1rem" }}>
+              Refinery Submissions
+            </Link>
           </div>
           {stats && (
             <div style={{ color: "var(--text-secondary, #8888a0)", fontSize: "0.9rem" }}>

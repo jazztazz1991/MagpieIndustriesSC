@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import styles from "./profile.module.css";
@@ -9,6 +10,7 @@ export default function ProfilePage() {
   const { user, loading } = useAuth();
   const [rsiHandle, setRsiHandle] = useState(user?.rsiHandle || "");
   const [bio, setBio] = useState(user?.bio || "");
+  const [publicProfile, setPublicProfile] = useState(user?.publicProfile || false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -27,7 +29,7 @@ export default function ProfilePage() {
 
     const res = await apiFetch("/api/auth/me", {
       method: "PATCH",
-      body: JSON.stringify({ rsiHandle, bio }),
+      body: JSON.stringify({ rsiHandle, bio, publicProfile }),
     });
 
     if (res.success) {
@@ -82,6 +84,29 @@ export default function ProfilePage() {
               rows={4}
             />
           </label>
+
+          <label className={styles.field} style={{ flexDirection: "row", alignItems: "center", gap: "0.5rem" }}>
+            <input
+              type="checkbox"
+              checked={publicProfile}
+              onChange={(e) => setPublicProfile(e.target.checked)}
+            />
+            <span style={{ flex: 1 }}>
+              Public profile
+              <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 400, marginTop: "0.15rem" }}>
+                Let others view your profile and inventory at{" "}
+                <code style={{ fontSize: "0.8rem" }}>/u/{user.username}</code>
+              </div>
+            </span>
+          </label>
+
+          {publicProfile && (
+            <div style={{ fontSize: "0.8rem", marginTop: "-0.25rem" }}>
+              <Link href={`/u/${user.username}`} style={{ color: "var(--accent)" }}>
+                View your public profile →
+              </Link>
+            </div>
+          )}
 
           {message && <p className={styles.message}>{message}</p>}
 

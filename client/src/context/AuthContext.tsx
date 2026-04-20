@@ -19,6 +19,7 @@ interface User {
   role: string;
   isAdmin?: boolean;
   isSuperAdmin?: boolean;
+  publicProfile?: boolean;
 }
 
 interface AuthContextType {

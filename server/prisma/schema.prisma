@@ -21,6 +21,7 @@ model User {
   updatedAt              DateTime              @updatedAt
   isAdmin                Boolean               @default(false)
   isSuperAdmin           Boolean               @default(false)
+  publicProfile          Boolean               @default(false)
   accounts               Account[]
   activities             Activity[]
   comments               Comment[]
@@ -46,6 +47,7 @@ model User {
   ownedWikeloGroups      WikeloGroup[]            @relation("ownedWikeloGroups")
   wikeloGroupMemberships WikeloGroupMember[]
   wikeloContributions    WikeloContributionLog[]
+  refinerySubmissions    RefinerySubmission[]
 
   @@map("users")
 }
@@ -819,4 +821,28 @@ enum OreType {
   ROCK
   GEM
   METAL
+}
+
+enum RefinerySubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model RefinerySubmission {
+  id          String                    @id @default(cuid())
+  userId      String
+  user        User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stationName String
+  oreName     String
+  bonusPct    Int
+  notes       String?
+  status      RefinerySubmissionStatus  @default(PENDING)
+  reviewedBy  String?
+  reviewedAt  DateTime?
+  createdAt   DateTime                  @default(now())
+
+  @@index([status])
+  @@index([stationName, oreName])
+  @@map("refinery_submissions")
 }
