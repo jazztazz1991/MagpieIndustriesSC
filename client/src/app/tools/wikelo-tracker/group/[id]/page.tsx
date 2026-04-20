@@ -262,14 +262,14 @@ export default function GroupDetailPage() {
       </Link>
 
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
+      <div className={shared.groupHeader}>
         <div>
           <h1 className={shared.title} style={{ marginBottom: "0.25rem" }}>{group.name}</h1>
           <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
             {group.members.length} member{group.members.length !== 1 ? "s" : ""} · {group.projects.length} project{group.projects.length !== 1 ? "s" : ""}
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <div className={shared.groupHeaderControls}>
           <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>Invite:</span>
           <button
             onClick={() => navigator.clipboard.writeText(group.inviteCode)}
@@ -318,7 +318,7 @@ export default function GroupDetailPage() {
                 const pct = item.needed > 0 ? Math.round((item.collected / item.needed) * 100) : 100;
                 const complete = item.remaining <= 0;
                 return (
-                  <div key={item.name} style={{ display: "grid", gridTemplateColumns: "1fr 80px 70px auto", gap: "0.5rem", alignItems: "center", padding: "0.3rem 0", borderBottom: "1px solid var(--border)" }}>
+                  <div key={item.name} className={shared.shoppingRow}>
                     <span style={{ fontSize: "0.85rem", fontWeight: 500, color: complete ? "var(--text-secondary)" : "var(--text-primary)" }}>{item.name}</span>
                     <div style={{ height: "4px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
                       <div style={{ height: "100%", width: `${pct}%`, background: complete ? "#4ade80" : "#fb923c", borderRadius: "2px" }} />
@@ -368,7 +368,7 @@ export default function GroupDetailPage() {
                         {scripNeeded.toLocaleString()} MG Scrip needed
                         <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem", marginLeft: "0.5rem" }}>(50 scrip = 1 favor)</span>
                       </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <div className={shared.conversionHaveRow}>
                         <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>Have:</span>
                         <span style={{ fontSize: "0.85rem", fontWeight: 600, color: mgScrip >= scripNeeded ? "#4ade80" : "#c084fc" }}>
                           {mgScrip.toLocaleString()} / {scripNeeded.toLocaleString()}
@@ -378,7 +378,7 @@ export default function GroupDetailPage() {
                             ({scripRemaining.toLocaleString()} more needed)
                           </span>
                         )}
-                        <div style={{ display: "flex", gap: "0.2rem", marginLeft: "auto" }}>
+                        <div className={shared.conversionBtns}>
                           <button onClick={() => updateMgScrip(-10)} style={{ width: "28px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>-10</button>
                           <button onClick={() => updateMgScrip(-1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>-</button>
                           <button onClick={() => updateMgScrip(1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
@@ -400,7 +400,7 @@ export default function GroupDetailPage() {
                         {quantNeeded.toLocaleString()} SCU Quantanium needed
                         <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem", marginLeft: "0.5rem" }}>(24 SCU = 1 bit)</span>
                       </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <div className={shared.conversionHaveRow}>
                         <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>Have:</span>
                         <span style={{ fontSize: "0.85rem", fontWeight: 600, color: quantanium >= quantNeeded ? "#4ade80" : "#facc15" }}>
                           {quantanium.toLocaleString()} / {quantNeeded.toLocaleString()}
@@ -410,7 +410,7 @@ export default function GroupDetailPage() {
                             ({quantRemaining.toLocaleString()} more needed)
                           </span>
                         )}
-                        <div style={{ display: "flex", gap: "0.2rem", marginLeft: "auto" }}>
+                        <div className={shared.conversionBtns}>
                           <button onClick={() => updateQuantanium(-10)} style={{ width: "28px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>-10</button>
                           <button onClick={() => updateQuantanium(-1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>-</button>
                           <button onClick={() => updateQuantanium(1)} style={{ width: "24px", height: "24px", background: "var(--border)", border: "none", borderRadius: "3px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
@@ -494,7 +494,7 @@ export default function GroupDetailPage() {
             <div className={shared.emptyMessage}>No projects yet. Create one to start tracking.</div>
           ) : (
             <>
-            <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>
+            <div className={shared.hideMobile} style={{ fontSize: "0.7rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>
               Drag to reorder priority
             </div>
             <div className={shared.methodGrid}>
@@ -558,7 +558,7 @@ export default function GroupDetailPage() {
                     {[...project.materials].sort((a, b) => naturalCompare(a.itemName, b.itemName)).map((mat) => {
                       const complete = mat.collected >= mat.required;
                       return (
-                        <div key={mat.id} style={{ display: "grid", gridTemplateColumns: "1fr 70px auto", gap: "0.5rem", alignItems: "center", padding: "0.25rem 0", borderBottom: "1px solid var(--border)" }}>
+                        <div key={mat.id} className={shared.materialRow}>
                           <span style={{ fontSize: "0.85rem", fontWeight: 500, color: complete ? "var(--text-secondary)" : "var(--text-primary)" }}>
                             {mat.itemName}
                           </span>

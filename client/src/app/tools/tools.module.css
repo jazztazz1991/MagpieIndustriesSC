@@ -350,3 +350,89 @@
   color: var(--text-secondary);
   padding: 2rem;
 }
+
+/* Wikelo shopping list row — desktop grid, mobile stacks */
+.shoppingRow {
+  display: grid;
+  grid-template-columns: 1fr 80px 70px auto;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Wikelo project material row — desktop grid, mobile stacks */
+.materialRow {
+  display: grid;
+  grid-template-columns: 1fr 70px auto;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+@media (max-width: 520px) {
+  .shoppingRow,
+  .materialRow {
+    grid-template-columns: 1fr auto;
+    row-gap: 0.35rem;
+  }
+  .shoppingRow > *:first-child,
+  .materialRow > *:first-child {
+    grid-column: 1 / -1;
+  }
+  .shoppingRow > *:last-child,
+  .materialRow > *:last-child {
+    grid-column: 1 / -1;
+    justify-self: end;
+  }
+}
+
+/* Wikelo group header — wraps on mobile */
+.groupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.groupHeaderControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Wikelo conversion "Have" row — stacks on mobile */
+.conversionHaveRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.conversionBtns {
+  display: flex;
+  gap: 0.2rem;
+  margin-left: auto;
+}
+
+@media (max-width: 520px) {
+  .conversionBtns {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* Hide on narrow screens */
+.hideMobile {
+  display: block;
+}
+
+@media (max-width: 520px) {
+  .hideMobile {
+    display: none;
+  }
+}

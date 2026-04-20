@@ -591,7 +591,7 @@ export default function WikeloTrackerPage() {
                 const pct = item.needed > 0 ? Math.round((item.collected / item.needed) * 100) : 100;
                 const complete = item.remaining <= 0;
                 return (
-                  <div key={item.name} style={{ display: "grid", gridTemplateColumns: "1fr 80px 70px auto", gap: "0.5rem", alignItems: "center", padding: "0.4rem 0", borderBottom: "1px solid var(--border)" }}>
+                  <div key={item.name} className={shared.shoppingRow}>
                     <span style={{ fontSize: "0.85rem", fontWeight: 500, color: complete ? "var(--text-secondary)" : "var(--text-primary)" }}>{item.name}</span>
                     <div style={{ height: "4px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
                       <div style={{ height: "100%", width: `${pct}%`, background: complete ? "#4ade80" : "#fb923c", borderRadius: "2px" }} />
@@ -669,7 +669,7 @@ export default function WikeloTrackerPage() {
         </div>
       ) : (
         <>
-        <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>
+        <div className={shared.hideMobile} style={{ fontSize: "0.7rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>
           Drag to reorder — items fill first project first
         </div>
         <div className={shared.methodGrid}>
