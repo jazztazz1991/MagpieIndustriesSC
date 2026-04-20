@@ -1,13 +1,23 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ores as staticOres } from "@/data/mining";
 import { miningLocations as staticLocations } from "@/data/mining-locations";
 import { useWithOverrides } from "@/hooks/useOverrides";
 import LivePrice from "@/components/prices/LivePrice";
+import {
+  filterLocations,
+  DEFAULT_FILTERS,
+  filtersToSearchParams,
+  filtersFromSearchParams,
+  type LocationFilters,
+} from "@/domain/miningLocations";
 import shared from "../tools.module.css";
 
 type View = "locations" | "by-ore";
+
+const RARITY_TIERS = ["common", "uncommon", "rare", "epic", "legendary"] as const;
+const ORE_TYPES = ["rock", "gem", "metal"] as const;
 
 const dangerColor: Record<string, string> = {
   low: "#4ade80",
@@ -27,10 +37,36 @@ export default function MiningLocationsPage() {
   const { data: miningLocations } = useWithOverrides("mining_location", staticLocations, (l) => l.name);
 
   const [view, setView] = useState<View>("locations");
-  const [filterParent, setFilterParent] = useState("all");
-  const [filterDanger, setFilterDanger] = useState("all");
-  const [filterOre, setFilterOre] = useState("all");
-  const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState<LocationFilters>(DEFAULT_FILTERS);
+
+  // Load filters from URL on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.toString()) {
+      setFilters(filtersFromSearchParams(params));
+    }
+  }, []);
+
+  // Sync filters back to URL (without triggering Next router navigation)
+  useEffect(() => {
+    const params = filtersToSearchParams(filters);
+    const query = params.toString();
+    const newUrl = query ? `?${query}` : window.location.pathname;
+    window.history.replaceState(null, "", newUrl);
+  }, [filters]);
+
+  const updateFilter = <K extends keyof LocationFilters>(key: K, value: LocationFilters[K]) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const resetFilters = () => setFilters(DEFAULT_FILTERS);
+  const hasActiveFilters =
+    filters.search ||
+    filters.parentBody !== "all" ||
+    filters.danger !== "all" ||
+    filters.ore !== "all" ||
+    filters.rarity !== "all" ||
+    filters.oreType !== "all";
 
   const parents = useMemo(
     () => [...new Set(miningLocations.map((l) => l.parentBody))].sort(),
@@ -45,15 +81,12 @@ export default function MiningLocationsPage() {
     [ores]
   );
 
-  const filtered = useMemo(() => {
-    return miningLocations.filter((loc) => {
-      if (filterParent !== "all" && loc.parentBody !== filterParent) return false;
-      if (filterDanger !== "all" && loc.danger !== filterDanger) return false;
-      if (filterOre !== "all" && !loc.ores.includes(filterOre) && !loc.fpsOres.includes(filterOre)) return false;
-      if (search && !loc.name.toLowerCase().includes(search.toLowerCase())) return false;
-      return true;
-    });
-  }, [filterParent, filterDanger, filterOre, search, miningLocations]);
+  const oresByName = useMemo(() => new Map(ores.map((o) => [o.name, o])), [ores]);
+
+  const filtered = useMemo(
+    () => filterLocations(miningLocations, filters, oresByName),
+    [miningLocations, filters, oresByName]
+  );
 
   const locationsForOre = (oreName: string) =>
     miningLocations.filter((loc) => loc.ores.includes(oreName));
@@ -96,19 +129,19 @@ export default function MiningLocationsPage() {
         <>
           {/* Filters */}
           <div className={shared.panel}>
-            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>
               <input
                 type="text"
                 placeholder="Search locations..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                value={filters.search}
+                onChange={(e) => updateFilter("search", e.target.value)}
                 className={shared.input}
                 style={{ flex: "1", minWidth: "180px" }}
                 aria-label="Search locations"
               />
               <select
-                value={filterParent}
-                onChange={(e) => setFilterParent(e.target.value)}
+                value={filters.parentBody}
+                onChange={(e) => updateFilter("parentBody", e.target.value)}
                 className={shared.select}
                 aria-label="Filter by parent body"
               >
@@ -118,8 +151,8 @@ export default function MiningLocationsPage() {
                 ))}
               </select>
               <select
-                value={filterDanger}
-                onChange={(e) => setFilterDanger(e.target.value)}
+                value={filters.danger}
+                onChange={(e) => updateFilter("danger", e.target.value)}
                 className={shared.select}
                 aria-label="Filter by danger"
               >
@@ -129,8 +162,30 @@ export default function MiningLocationsPage() {
                 <option value="high">High</option>
               </select>
               <select
-                value={filterOre}
-                onChange={(e) => setFilterOre(e.target.value)}
+                value={filters.rarity}
+                onChange={(e) => updateFilter("rarity", e.target.value)}
+                className={shared.select}
+                aria-label="Filter by rarity tier"
+              >
+                <option value="all">All Rarity</option>
+                {RARITY_TIERS.map((r) => (
+                  <option key={r} value={r}>{r[0].toUpperCase() + r.slice(1)}</option>
+                ))}
+              </select>
+              <select
+                value={filters.oreType}
+                onChange={(e) => updateFilter("oreType", e.target.value)}
+                className={shared.select}
+                aria-label="Filter by ore type"
+              >
+                <option value="all">All Types</option>
+                {ORE_TYPES.map((t) => (
+                  <option key={t} value={t}>{t[0].toUpperCase() + t.slice(1)}</option>
+                ))}
+              </select>
+              <select
+                value={filters.ore}
+                onChange={(e) => updateFilter("ore", e.target.value)}
                 className={shared.select}
                 aria-label="Filter by ore"
               >
@@ -139,6 +194,15 @@ export default function MiningLocationsPage() {
                   <option key={o.name} value={o.name}>{o.name}</option>
                 ))}
               </select>
+              {hasActiveFilters && (
+                <button
+                  onClick={resetFilters}
+                  className={shared.shipBtn}
+                  style={{ fontSize: "0.8rem" }}
+                >
+                  Clear
+                </button>
+              )}
             </div>
           </div>
 
