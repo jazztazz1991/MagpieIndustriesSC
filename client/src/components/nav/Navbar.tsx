@@ -27,6 +27,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Crafting", href: "/tools/crafting" },
       { label: "Ship Compare", href: "/tools/ship-compare" },
       { label: "Wikelo Tracker", href: "/tools/wikelo-tracker" },
+      { label: "Cargo Hauling", href: "/tools/cargo-hauling" },
       { label: "Notepad", href: "/tools/notepad" },
     ],
   },

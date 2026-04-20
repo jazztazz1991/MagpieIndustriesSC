@@ -61,6 +61,7 @@ async function fetchUEX(path: string): Promise<any> {
 // --- DTO mappers (never return raw UEX data) ---
 
 interface CommodityPriceDTO {
+  commodityName: string;
   terminalName: string;
   locationName: string;
   priceBuy: number;
@@ -72,6 +73,7 @@ interface CommodityPriceDTO {
 
 function mapCommodityPrice(raw: any): CommodityPriceDTO {
   return {
+    commodityName: raw.commodity_name || "",
     terminalName: raw.terminal_name || "",
     locationName: [raw.city_name, raw.outpost_name, raw.space_station_name, raw.planet_name]
       .filter(Boolean).join(", ") || raw.terminal_name || "",
