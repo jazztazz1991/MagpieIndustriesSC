@@ -44,6 +44,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Guides",
     items: [
       { label: "Beginner Guide", href: "/guides/beginner" },
+      { label: "Patch Notes", href: "/patch-notes" },
     ],
   },
   {
