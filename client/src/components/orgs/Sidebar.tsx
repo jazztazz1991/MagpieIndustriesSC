@@ -24,6 +24,7 @@ const DEFAULT_SECTIONS: SidebarSection[] = [
   { key: "missions", label: "Missions", href: "missions", icon: "🎯", group: "Operations" },
   { key: "fleet", label: "Fleet", href: "fleet", icon: "🚀", group: "Operations" },
   { key: "calendar", label: "Calendar", href: "calendar", icon: "📅", group: "Operations" },
+  { key: "members", label: "Members", href: "members", icon: "👥", group: "People" },
   { key: "recruitment", label: "Recruitment", href: "recruitment", icon: "📣", group: "People" },
   { key: "treasury", label: "Treasury", href: "treasury", icon: "💰", group: "Admin" },
   { key: "guides", label: "Guides", href: "guides", icon: "📖", group: "Admin" },
