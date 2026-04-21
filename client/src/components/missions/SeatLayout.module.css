@@ -1,0 +1,118 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.shipHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.shipName {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.fallback {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.fallbackNote {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.roleGroup {
+  margin-bottom: 0.75rem;
+}
+
+.roleLabel {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.35rem;
+  font-weight: 700;
+}
+
+.seatGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.5rem;
+}
+
+.seat {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+}
+
+.seat:hover {
+  border-color: var(--accent);
+}
+
+.seat.assigned {
+  background: rgba(74, 158, 255, 0.06);
+  border-color: rgba(74, 158, 255, 0.25);
+}
+
+.roleBar {
+  width: 3px;
+  align-self: stretch;
+  border-radius: 2px;
+}
+
+/* Role color bars */
+.role-pilot { background: #4a9eff; }
+.role-copilot { background: #60a5fa; }
+.role-engineer { background: #facc15; }
+.role-mining { background: #fb923c; }
+.role-turret { background: #f87171; }
+.role-missile { background: #c084fc; }
+.role-crew { background: #9ca3af; }
+
+.seatInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.seatLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.assignedUser {
+  font-size: 0.75rem;
+  color: var(--accent);
+  margin-top: 0.1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.unassigned {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: 0.1rem;
+}
