@@ -215,6 +215,8 @@ export interface OperationCrewDTO {
   userId: string;
   username: string;
   position: string;
+  seatId?: string | null;
+  notes?: string | null;
 }
 
 /** Ship within an operation detail */

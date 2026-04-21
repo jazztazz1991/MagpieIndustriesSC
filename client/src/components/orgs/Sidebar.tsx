@@ -21,7 +21,7 @@ interface SidebarProps {
 
 const DEFAULT_SECTIONS: SidebarSection[] = [
   { key: "overview", label: "Overview", href: "", icon: "🏠" },
-  { key: "operations", label: "Operations", href: "operations", icon: "🎯", group: "Operations" },
+  { key: "missions", label: "Missions", href: "missions", icon: "🎯", group: "Operations" },
   { key: "fleet", label: "Fleet", href: "fleet", icon: "🚀", group: "Operations" },
   { key: "calendar", label: "Calendar", href: "calendar", icon: "📅", group: "Operations" },
   { key: "recruitment", label: "Recruitment", href: "recruitment", icon: "📣", group: "People" },

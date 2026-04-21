@@ -278,11 +278,14 @@ model CrewAssignment {
   operationShipId String
   orgMemberId     String
   position        String
+  seatId          String?
+  notes           String?
   createdAt       DateTime      @default(now())
   operationShip   OperationShip @relation(fields: [operationShipId], references: [id], onDelete: Cascade)
   orgMember       OrgMember     @relation(fields: [orgMemberId], references: [id], onDelete: Cascade)
 
   @@unique([operationShipId, orgMemberId])
+  @@index([operationShipId, seatId])
   @@map("crew_assignments")
 }
 

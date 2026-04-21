@@ -30,7 +30,7 @@ describe("Sidebar", () => {
   it("renders all default sections", () => {
     render(<Sidebar slug="magpies" />);
     expect(screen.getByRole("link", { name: /Overview/ })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Operations/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Missions/ })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Fleet/ })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Treasury/ })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Guides/ })).toBeInTheDocument();
@@ -43,10 +43,10 @@ describe("Sidebar", () => {
     expect(link.className).toMatch(/linkActive/);
   });
 
-  it("marks the operations link active when on a sub-route", () => {
-    mockPathname.mockReturnValue("/orgs/magpies/operations/abc");
+  it("marks the missions link active when on a sub-route", () => {
+    mockPathname.mockReturnValue("/orgs/magpies/missions/abc");
     render(<Sidebar slug="magpies" />);
-    const link = screen.getByRole("link", { name: /Operations/ });
+    const link = screen.getByRole("link", { name: /Missions/ });
     expect(link.className).toMatch(/linkActive/);
   });
 
@@ -55,7 +55,7 @@ describe("Sidebar", () => {
     render(<Sidebar slug="magpies" />);
     const activeLinks = screen.getAllByRole("link").filter((l) => l.className.includes("linkActive"));
     expect(activeLinks).toHaveLength(1);
-    expect(activeLinks[0]).toHaveTextContent(/Fleet/);
+    expect(activeLinks[0].textContent).toMatch(/Fleet/);
   });
 
   it("shows Settings entry only when isOwner is true", () => {
@@ -69,7 +69,7 @@ describe("Sidebar", () => {
   it("links point to the correct routes", () => {
     render(<Sidebar slug="magpies" />);
     expect(screen.getByRole("link", { name: /Overview/ })).toHaveAttribute("href", "/orgs/magpies");
-    expect(screen.getByRole("link", { name: /Operations/ })).toHaveAttribute("href", "/orgs/magpies/operations");
+    expect(screen.getByRole("link", { name: /Missions/ })).toHaveAttribute("href", "/orgs/magpies/missions");
     expect(screen.getByRole("link", { name: /Fleet/ })).toHaveAttribute("href", "/orgs/magpies/fleet");
   });
 

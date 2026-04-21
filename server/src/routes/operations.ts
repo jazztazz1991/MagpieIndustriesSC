@@ -38,6 +38,8 @@ const addShipSchema = z.object({
 const assignCrewSchema = z.object({
   userId: z.string().min(1),
   position: z.string().min(1).max(100),
+  seatId: z.string().max(100).optional(),
+  notes: z.string().max(500).optional(),
 });
 
 // --- Helpers ---
@@ -249,6 +251,8 @@ operationsRouter.get("/:id", async (req, res) => {
               select: {
                 id: true,
                 position: true,
+                seatId: true,
+                notes: true,
                 createdAt: true,
                 orgMember: {
                   select: {
@@ -293,6 +297,8 @@ operationsRouter.get("/:id", async (req, res) => {
           userId: c.orgMember.user.id,
           username: c.orgMember.user.username,
           position: c.position,
+          seatId: c.seatId,
+          notes: c.notes,
         })),
       })),
     };
@@ -583,15 +589,30 @@ operationsRouter.post("/:id/ships/:shipId/crew", async (req, res) => {
       return;
     }
 
+    // If a seatId is provided, ensure no other member has it
+    if (parsed.data.seatId) {
+      const conflict = await prisma.crewAssignment.findFirst({
+        where: { operationShipId: shipId, seatId: parsed.data.seatId },
+      });
+      if (conflict) {
+        res.status(409).json({ success: false, error: "Seat is already taken" });
+        return;
+      }
+    }
+
     const assignment = await prisma.crewAssignment.create({
       data: {
         operationShipId: shipId,
         orgMemberId: orgMember.id,
         position: parsed.data.position,
+        seatId: parsed.data.seatId,
+        notes: parsed.data.notes,
       },
       select: {
         id: true,
         position: true,
+        seatId: true,
+        notes: true,
         createdAt: true,
         orgMember: {
           select: {
