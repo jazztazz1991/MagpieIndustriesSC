@@ -6,10 +6,11 @@ import styles from "./community.module.css";
 import toolStyles from "../tools/tools.module.css";
 
 const navItems = [
-  { href: "/community/friends", label: "Friends" },
-  { href: "/community/groups", label: "Groups" },
-  { href: "/community/events", label: "Events" },
   { href: "/community/feed", label: "Feed" },
+  { href: "/community/orgs", label: "Orgs" },
+  { href: "/community/events", label: "Events" },
+  { href: "/community/groups", label: "Groups" },
+  { href: "/community/friends", label: "Friends" },
 ];
 
 export default function CommunityLayout({
