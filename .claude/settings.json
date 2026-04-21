@@ -8,6 +8,11 @@
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-rules.sh\"",
             "statusMessage": "Loading project rules..."
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/cleanup-screenshots.sh\"",
+            "statusMessage": "Checking screenshots folder size..."
           }
         ]
       }

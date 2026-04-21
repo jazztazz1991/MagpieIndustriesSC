@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "C:\\Users\\jazz_\\AppData\\Roaming\\npm\\playwright-mcp.cmd"
+    }
+  }
+}

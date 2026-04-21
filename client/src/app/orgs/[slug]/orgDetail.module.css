@@ -535,3 +535,63 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* Phase 1 overview additions */
+.memberGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.6rem;
+}
+
+.memberCard {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.memberAvatar,
+.memberAvatarPlaceholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.memberAvatar {
+  object-fit: cover;
+}
+
+.memberAvatarPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(74, 158, 255, 0.15);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.memberRole {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.viewAllLink {
+  float: right;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.viewAllLink:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,140 @@
+.wrap {
+  margin-bottom: 1.5rem;
+}
+
+.banner {
+  width: 100%;
+  aspect-ratio: 4 / 1;
+  max-height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  position: relative;
+}
+
+.bannerImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bannerPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(74, 158, 255, 0.08), rgba(192, 132, 252, 0.08));
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-top: -2.5rem;
+  padding: 0 1rem;
+}
+
+.logoWrap {
+  width: 96px;
+  height: 96px;
+  border-radius: 12px;
+  border: 3px solid var(--bg-primary);
+  background: var(--bg-secondary);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.logoImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.logoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(74, 158, 255, 0.1);
+}
+
+.info {
+  flex: 1;
+  padding-bottom: 0.5rem;
+  min-width: 0;
+}
+
+.name {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.description {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.meta {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.motdBadge {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(250, 204, 21, 0.15);
+  color: #facc15;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.motd {
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(250, 204, 21, 0.06);
+  border: 1px solid rgba(250, 204, 21, 0.2);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+@media (max-width: 640px) {
+  .banner {
+    aspect-ratio: 3 / 1;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: -2rem;
+    padding: 0 0.25rem;
+  }
+
+  .logoWrap {
+    width: 72px;
+    height: 72px;
+  }
+
+  .info {
+    padding-bottom: 0;
+  }
+
+  .name {
+    font-size: 1.3rem;
+  }
+}

@@ -1,6 +1,7 @@
 {
   "permissions": {
     "allow": [
+      "mcp__playwright__*",
       "WebFetch(domain:uexcorp.space)",
       "WebFetch(domain:starcitizen.tools)",
       "WebFetch(domain:regolith.rocks)",
@@ -238,7 +239,37 @@
       "Bash(DATABASE_URL=\"postgresql://postgres:rootroot@localhost:5432/magpie_industries\" npx prisma generate)",
       "Bash(node -e \"console.log\\(require\\('crypto'\\).randomBytes\\(32\\).toString\\('hex'\\)\\)\")",
       "Bash(node -e ' *)",
-      "Bash(DATABASE_URL=\"postgresql://postgres:rootroot@localhost:5432/magpie_industries\" npx prisma migrate dev --name shared_projects)"
+      "Bash(DATABASE_URL=\"postgresql://postgres:rootroot@localhost:5432/magpie_industries\" npx prisma migrate dev --name shared_projects)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "Bash(npx -y @playwright/mcp@latest --help)",
+      "Bash(npm cache *)",
+      "Bash(mcp-server-playwright --help)",
+      "Bash(npm root *)",
+      "Bash(ls \"$\\(npm root -g\\)/@playwright/mcp/\")",
+      "Read(//c/Users/jazz_/AppData/Roaming/npm/**)",
+      "Bash(timeout 5 playwright-mcp.cmd --help)",
+      "Bash(\"C:/Users/jazz_/AppData/Roaming/npm/playwright-mcp.cmd\" --help)",
+      "mcp__playwright__browser_navigate",
+      "Bash(tasklist //FI \"PID eq 32588\")",
+      "Bash(taskkill //F //PID 32588)",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_take_screenshot",
+      "Bash(curl -s -o /dev/null -w \"client: %{http_code}\\\\n\" http://localhost:3000)",
+      "Bash(curl -s -o /dev/null -w \"server: %{http_code}\\\\n\" http://localhost:3001/api/health)",
+      "mcp__playwright__browser_click",
+      "Bash(chmod +x \"c:/Users/jazz_/Desktop/Web Development Projects/portfolioProjects/MagpieIndustriesSC/.claude/hooks/cleanup-screenshots.sh\")",
+      "Bash(CLAUDE_PROJECT_DIR=\"c:/Users/jazz_/Desktop/Web Development Projects/portfolioProjects/MagpieIndustriesSC\" bash \"c:/Users/jazz_/Desktop/Web Development Projects/portfolioProjects/MagpieIndustriesSC/.claude/hooks/cleanup-screenshots.sh\")",
+      "Bash(echo \"exit $?\")",
+      "Bash(node -e \"const s = JSON.parse\\(require\\('fs'\\).readFileSync\\('c:/Users/jazz_/Desktop/Web Development Projects/portfolioProjects/MagpieIndustriesSC/.claude/settings.json', 'utf8'\\)\\); console.log\\(JSON.stringify\\(s.hooks.SessionStart[0].hooks.map\\(h => h.command\\), null, 2\\)\\)\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001/api/health)",
+      "Bash(curl -s -X POST http://localhost:3001/api/auth/login -H \"Content-Type: application/json\" -d '{\"username\":\"demoUser\",\"password\":\"demo1234\"}' -c /tmp/cookies.txt)",
+      "Bash(curl -s -X POST http://localhost:3001/api/auth/login -H \"Content-Type: application/json\" -d '{\"login\":\"demoUser\",\"password\":\"demo1234\"}')"
     ],
     "additionalDirectories": [
       "c:\\Users\\jazz_\\Desktop\\Web Development Projects\\portfolioProjects\\MagpieIndustriesSC\\.claude",
@@ -248,7 +279,11 @@
       "C:\\Users\\jazz_\\Desktop\\Web Development Projects\\portfolioProjects\\MagpieDiscordBot\\src\\commands",
       "C:\\Users\\jazz_\\Desktop\\Web Development Projects\\portfolioProjects\\MagpieDiscordBot\\src",
       "C:\\Users\\jazz_\\Desktop\\Web Development Projects\\portfolioProjects\\MagpieDiscordBot",
-      "c:\\Users\\jazz_\\Desktop\\Web Development Projects\\portfolioProjects\\MagpieIndustriesSC\\client\\src\\app\\tools\\wikelo-tracker\\group"
+      "c:\\Users\\jazz_\\Desktop\\Web Development Projects\\portfolioProjects\\MagpieIndustriesSC\\client\\src\\app\\tools\\wikelo-tracker\\group",
+      "c:\\Users\\jazz_\\Desktop\\Web Development Projects\\portfolioProjects\\MagpieIndustriesSC\\client\\src\\app\\patch-notes",
+      "c:\\Users\\jazz_\\Desktop\\Web Development Projects\\portfolioProjects\\MagpieIndustriesSC\\client\\src\\app\\u",
+      "c:\\Users\\jazz_\\Desktop\\Web Development Projects\\portfolioProjects\\MagpieIndustriesSC\\client\\src\\app\\orgs\\[slug]"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true
 }

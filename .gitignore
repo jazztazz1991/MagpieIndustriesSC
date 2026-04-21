@@ -142,3 +142,7 @@ vite.config.ts.timestamp-*
 server/src/generated/
 data/Game2.dcb
 data/viewer.html
+
+# Playwright MCP screenshots (local-only)
+screenshots/
+.playwright-mcp/
