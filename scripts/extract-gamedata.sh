@@ -43,11 +43,25 @@ if [ ! -f "$P4K_FILE" ]; then
 fi
 
 # Read SC version from build_manifest.id (JSON format)
+# CIG doesn't always rewrite build_manifest.id on hotfixes, so we append a
+# fingerprint derived from Data.p4k mtime to distinguish patches the manifest
+# misses. Format: "<branch>-<version>[+hotfix-YYYYMMDD-HHMM]" — the suffix only
+# appears when the P4K is newer than the manifest.
 VERSION="unknown"
 MANIFEST="$SC_INSTALL/build_manifest.id"
 if [ -f "$MANIFEST" ]; then
-  VERSION=$(node -e "const d=JSON.parse(require('fs').readFileSync('$MANIFEST','utf8'));console.log(d.Data.Branch+'-'+d.Data.Version)")
-  echo "SC Version: $VERSION"
+  BASE_VERSION=$(node -e "const d=JSON.parse(require('fs').readFileSync('$MANIFEST','utf8'));console.log(d.Data.Branch+'-'+d.Data.Version)")
+  MANIFEST_MTIME=$(stat -c %Y "$MANIFEST" 2>/dev/null || echo 0)
+  P4K_MTIME=$(stat -c %Y "$P4K_FILE" 2>/dev/null || echo 0)
+  # 60-second grace window to avoid flagging simultaneous writes
+  if [ "$P4K_MTIME" -gt $(( MANIFEST_MTIME + 60 )) ]; then
+    HOTFIX_TAG=$(date -d "@$P4K_MTIME" +%Y%m%d-%H%M 2>/dev/null || date +%Y%m%d-%H%M)
+    VERSION="${BASE_VERSION}+hotfix-${HOTFIX_TAG}"
+    echo "SC Version: $VERSION (P4K is newer than manifest — hotfix detected)"
+  else
+    VERSION="$BASE_VERSION"
+    echo "SC Version: $VERSION"
+  fi
 else
   echo "WARNING: build_manifest.id not found, using 'unknown' as version"
 fi

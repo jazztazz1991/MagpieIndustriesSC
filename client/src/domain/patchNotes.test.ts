@@ -83,13 +83,19 @@ describe("isValidVersion", () => {
     expect(isValidVersion("1")).toBe(true);
   });
 
+  it("accepts hotfix-tagged versions", () => {
+    expect(isValidVersion("4.7.178.8917+hotfix-20260423-0950")).toBe(true);
+    expect(isValidVersion("4.7.2-rc1")).toBe(true);
+  });
+
   it("rejects path traversal attempts and junk", () => {
     expect(isValidVersion("../secret")).toBe(false);
     expect(isValidVersion("4.7.176/../etc")).toBe(false);
-    expect(isValidVersion("4.7.x")).toBe(false);
     expect(isValidVersion("")).toBe(false);
-    expect(isValidVersion(".")).toBe(false);
-    expect(isValidVersion(".4")).toBe(false);
-    expect(isValidVersion("4.")).toBe(false);
+    expect(isValidVersion("..")).toBe(false);
+    expect(isValidVersion("/etc/passwd")).toBe(false);
+    expect(isValidVersion("4\\7\\176")).toBe(false);
+    expect(isValidVersion("just-letters")).toBe(false);
+    expect(isValidVersion("4.7.178<script>")).toBe(false);
   });
 });

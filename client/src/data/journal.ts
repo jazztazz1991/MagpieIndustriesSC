@@ -1,4 +1,4 @@
-// Auto-generated from DataForge extraction + localization — sc-alpha-4.7.0-4.7.176.58286
+// Auto-generated from DataForge extraction + localization — sc-alpha-4.7.0-4.7.178.8917
 // Run: npm run sync:generate
 
 export type JournalCategory = "Guides" | "Jurisdiction" | "Investigation" | "Ship Logs" | "Black Box" | "Siege of Orison" | "Missing Bennys" | "Contested Zones" | "Prison" | "Crusader" | "Lore" | "Datapads" | "Reputation" | "Misc";

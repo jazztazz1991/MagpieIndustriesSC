@@ -29,6 +29,7 @@ import { generateLaw } from "./generators/law";
 import { generateFactions } from "./generators/factions";
 import { generateAmmo } from "./generators/ammo";
 import { generateMissionGivers } from "./generators/mission-givers";
+import { generateContracts } from "./generators/contracts";
 
 // --- CLI flags ---
 const args = process.argv.slice(2);
@@ -243,6 +244,11 @@ const generators: GeneratorEntry[] = [
     name: "Mission Givers",
     outputFile: "mission-givers.ts",
     run: () => generateMissionGivers(XML_DIR, path.join(CLIENT_DATA, "mission-givers.ts"), version, OVERRIDES_DIR),
+  },
+  {
+    name: "Contracts",
+    outputFile: "contracts.ts",
+    run: () => generateContracts(XML_DIR, path.join(CLIENT_DATA, "contracts.ts"), version),
   },
 ];
 

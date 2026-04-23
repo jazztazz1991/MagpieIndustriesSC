@@ -1,4 +1,4 @@
-// Auto-generated from DataForge extraction + overrides — sc-alpha-4.7.0-4.7.176.58286
+// Auto-generated from DataForge extraction + overrides — sc-alpha-4.7.0-4.7.178.8917
 // Run: npm run sync:generate
 
 export type BlueprintType = "weapon" | "armor" | "ammo";

@@ -53,9 +53,14 @@ export function buildPatchNotesIndex(
 }
 
 /**
- * Validate a version string — only digits and dots, not empty.
- * Used to guard dynamic route parameters against path traversal.
+ * Validate a version string.
+ * Accepts digits, dots, plus signs, hyphens, and lowercase letters — the format
+ * the data pipeline writes (e.g. "4.7.178.8917" or "4.7.178.8917+hotfix-20260423-0950").
+ * Rejects path traversal characters (slashes, dots-only, etc.).
  */
 export function isValidVersion(version: string): boolean {
-  return /^[\d]+(\.[\d]+)*$/.test(version);
+  if (!version) return false;
+  if (version.includes("/") || version.includes("\\") || version.includes("..")) return false;
+  if (!/[\d]/.test(version)) return false;
+  return /^[\da-z.+\-]+$/i.test(version);
 }
