@@ -47,6 +47,7 @@ model User {
   ownedWikeloGroups      WikeloGroup[]            @relation("ownedWikeloGroups")
   wikeloGroupMemberships WikeloGroupMember[]
   wikeloContributions    WikeloContributionLog[]
+  wikeloConversions      WikeloConversionContribution[]
   refinerySubmissions    RefinerySubmission[]
 
   @@map("users")
@@ -631,18 +632,40 @@ model GameMiningLocation {
 }
 
 model WikeloGroup {
-  id         String              @id @default(cuid())
-  name       String
-  inviteCode String              @unique
-  ownerId    String
-  createdAt  DateTime            @default(now())
-  updatedAt  DateTime            @updatedAt
-  owner      User                @relation("ownedWikeloGroups", fields: [ownerId], references: [id], onDelete: Cascade)
-  members    WikeloGroupMember[]
-  projects   WikeloProject[]
+  id                       String                          @id @default(cuid())
+  name                     String
+  inviteCode               String                          @unique
+  ownerId                  String
+  createdAt                DateTime                        @default(now())
+  updatedAt                DateTime                        @updatedAt
+  owner                    User                            @relation("ownedWikeloGroups", fields: [ownerId], references: [id], onDelete: Cascade)
+  members                  WikeloGroupMember[]
+  projects                 WikeloProject[]
+  conversionContributions  WikeloConversionContribution[]
 
   @@index([ownerId])
   @@map("wikelo_groups")
+}
+
+enum WikeloConversionMaterial {
+  MG_SCRIP
+  QUANTANIUM
+}
+
+model WikeloConversionContribution {
+  id        String                   @id @default(cuid())
+  groupId   String
+  userId    String
+  material  WikeloConversionMaterial
+  delta     Int
+  newTotal  Int
+  createdAt DateTime                 @default(now())
+  group     WikeloGroup              @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user      User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([groupId, material, createdAt])
+  @@index([userId, createdAt])
+  @@map("wikelo_conversion_contributions")
 }
 
 model WikeloGroupMember {

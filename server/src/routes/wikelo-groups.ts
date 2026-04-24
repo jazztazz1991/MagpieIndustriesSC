@@ -602,34 +602,53 @@ wikeloGroupsRouter.get("/:id/shopping-list", requireAuth, requireGroupMember, as
 
 // ─── Contributions (who has what) ───
 
+const CONVERSION_LABEL: Record<"MG_SCRIP" | "QUANTANIUM", string> = {
+  MG_SCRIP: "MG Scrip",
+  QUANTANIUM: "Quantanium",
+};
+
 // GET /groups/:id/contributions — net contributions per member
 wikeloGroupsRouter.get("/:id/contributions", requireAuth, requireGroupMember, async (req, res) => {
   try {
+    const groupId = req.params.id as string;
+
     const groupProjects = await prisma.wikeloProject.findMany({
-      where: { groupId: req.params.id as string },
+      where: { groupId },
       select: { id: true },
     });
     const projectIds = groupProjects.map((p) => p.id);
 
-    if (projectIds.length === 0) {
-      res.json({ success: true, data: [] });
-      return;
-    }
-
-    const logs = await prisma.wikeloContributionLog.findMany({
-      where: { projectId: { in: projectIds } },
-      include: { user: { select: { id: true, username: true } } },
-    });
-
     // Aggregate: userId → itemName → net delta
     const byUser = new Map<string, { username: string; items: Map<string, number> }>();
-    for (const log of logs) {
+
+    if (projectIds.length > 0) {
+      const logs = await prisma.wikeloContributionLog.findMany({
+        where: { projectId: { in: projectIds } },
+        include: { user: { select: { id: true, username: true } } },
+      });
+      for (const log of logs) {
+        let entry = byUser.get(log.userId);
+        if (!entry) {
+          entry = { username: log.user.username, items: new Map() };
+          byUser.set(log.userId, entry);
+        }
+        entry.items.set(log.itemName, (entry.items.get(log.itemName) || 0) + log.delta);
+      }
+    }
+
+    // Include conversion contributions (MG Scrip / Quantanium) for this group
+    const conversionLogs = await prisma.wikeloConversionContribution.findMany({
+      where: { groupId },
+      include: { user: { select: { id: true, username: true } } },
+    });
+    for (const log of conversionLogs) {
       let entry = byUser.get(log.userId);
       if (!entry) {
         entry = { username: log.user.username, items: new Map() };
         byUser.set(log.userId, entry);
       }
-      entry.items.set(log.itemName, (entry.items.get(log.itemName) || 0) + log.delta);
+      const label = CONVERSION_LABEL[log.material];
+      entry.items.set(label, (entry.items.get(label) || 0) + log.delta);
     }
 
     const data = Array.from(byUser.entries()).map(([userId, { username, items }]) => ({
@@ -641,6 +660,112 @@ wikeloGroupsRouter.get("/:id/contributions", requireAuth, requireGroupMember, as
     }));
 
     res.json({ success: true, data });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// ─── Conversion materials (MG Scrip / Quantanium) ───
+
+const conversionUpdateSchema = z.object({
+  material: z.enum(["MG_SCRIP", "QUANTANIUM"]),
+  delta: z.number().int(),
+});
+
+interface ConversionAggregateUser {
+  userId: string;
+  username: string;
+  net: number;
+}
+
+interface ConversionAggregateMaterial {
+  total: number;
+  byUser: ConversionAggregateUser[];
+}
+
+async function aggregateConversion(groupId: string): Promise<{
+  mgScrip: ConversionAggregateMaterial;
+  quantanium: ConversionAggregateMaterial;
+}> {
+  const logs = await prisma.wikeloConversionContribution.findMany({
+    where: { groupId },
+    include: { user: { select: { id: true, username: true } } },
+  });
+
+  const build = (material: "MG_SCRIP" | "QUANTANIUM"): ConversionAggregateMaterial => {
+    const filtered = logs.filter((l) => l.material === material);
+    const byUserMap = new Map<string, { username: string; net: number }>();
+    let total = 0;
+    for (const log of filtered) {
+      total += log.delta;
+      const entry = byUserMap.get(log.userId) || { username: log.user.username, net: 0 };
+      entry.net += log.delta;
+      byUserMap.set(log.userId, entry);
+    }
+    const byUser = Array.from(byUserMap.entries())
+      .map(([userId, e]) => ({ userId, username: e.username, net: e.net }))
+      .filter((u) => u.net !== 0)
+      .sort((a, b) => b.net - a.net);
+    return { total: Math.max(0, total), byUser };
+  };
+
+  return { mgScrip: build("MG_SCRIP"), quantanium: build("QUANTANIUM") };
+}
+
+// GET /groups/:id/conversion — totals + per-user net for both materials
+wikeloGroupsRouter.get("/:id/conversion", requireAuth, requireGroupMember, async (req, res) => {
+  try {
+    const data = await aggregateConversion(req.params.id as string);
+    res.json({ success: true, data });
+  } catch {
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// POST /groups/:id/conversion — append a contribution
+wikeloGroupsRouter.post("/:id/conversion", requireAuth, requireGroupMember, async (req, res) => {
+  try {
+    const userId = getUserId(req);
+    const groupId = req.params.id as string;
+    const parsed = conversionUpdateSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ success: false, error: "Invalid input" });
+      return;
+    }
+
+    const { material, delta } = parsed.data;
+    if (delta === 0) {
+      res.status(400).json({ success: false, error: "Delta must be non-zero" });
+      return;
+    }
+
+    // Atomic: compute current total, clamp delta so total never goes below 0,
+    // write the row with the new total. Single transaction so concurrent writes
+    // serialize.
+    const result = await prisma.$transaction(async (tx) => {
+      const sum = await tx.wikeloConversionContribution.aggregate({
+        where: { groupId, material },
+        _sum: { delta: true },
+      });
+      const current = sum._sum.delta ?? 0;
+      let effectiveDelta = delta;
+      if (delta < 0 && current + delta < 0) {
+        effectiveDelta = -current; // can only remove what's there
+      }
+      if (effectiveDelta === 0) {
+        return { newTotal: current, effectiveDelta: 0 };
+      }
+      const newTotal = Math.max(0, current + effectiveDelta);
+      await tx.wikeloConversionContribution.create({
+        data: { groupId, userId, material, delta: effectiveDelta, newTotal },
+      });
+      return { newTotal, effectiveDelta };
+    });
+
+    res.json({
+      success: true,
+      data: { material, total: result.newTotal, applied: result.effectiveDelta },
+    });
   } catch {
     res.status(500).json({ success: false, error: "Internal server error" });
   }

@@ -7,6 +7,7 @@ import { contracts as staticContracts } from "@/data/wikelo";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { naturalCompare } from "@/lib/sort";
+import { isConversionItemName } from "@/domain/wikeloConversion";
 import shared from "../../../tools.module.css";
 
 interface Material { id: string; itemName: string; required: number; collected: number; }
@@ -40,34 +41,51 @@ export default function GroupDetailPage() {
   const [dragIdx, setDragIdx] = useState<number | null>(null);
   const [mgScrip, setMgScrip] = useState(0);
   const [quantanium, setQuantanium] = useState(0);
+  const [refreshTick, setRefreshTick] = useState(0);
 
-  // Load tracked conversion materials from localStorage
-  useEffect(() => {
+  // Load conversion totals from the server
+  const loadConversion = useCallback(async () => {
     if (!id) return;
-    const saved = localStorage.getItem(`wikelo-group-${id}-conversion`);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setMgScrip(parsed.mgScrip || 0);
-        setQuantanium(parsed.quantanium || 0);
-      } catch { /* ignore */ }
+    const res = await apiFetch<{
+      mgScrip: { total: number };
+      quantanium: { total: number };
+    }>(`/api/wikelo/groups/${id}/conversion`);
+    if (res.success && res.data) {
+      setMgScrip(res.data.mgScrip.total);
+      setQuantanium(res.data.quantanium.total);
     }
   }, [id]);
 
-  const saveConversion = (scrip: number, quant: number) => {
-    localStorage.setItem(`wikelo-group-${id}-conversion`, JSON.stringify({ mgScrip: scrip, quantanium: quant }));
-  };
+  useEffect(() => {
+    if (!id || authLoading || !user) return;
+    loadConversion();
+  }, [id, authLoading, user, loadConversion]);
+
+  const postConversion = useCallback(
+    async (material: "MG_SCRIP" | "QUANTANIUM", delta: number) => {
+      if (!id) return;
+      const res = await apiFetch<{ material: string; total: number; applied: number }>(
+        `/api/wikelo/groups/${id}/conversion`,
+        { method: "POST", body: JSON.stringify({ material, delta }) }
+      );
+      if (res.success && res.data) {
+        if (res.data.material === "MG_SCRIP") setMgScrip(res.data.total);
+        else setQuantanium(res.data.total);
+        setRefreshTick((t) => t + 1);
+      }
+    },
+    [id]
+  );
 
   const updateMgScrip = (delta: number) => {
-    const val = Math.max(0, mgScrip + delta);
-    setMgScrip(val);
-    saveConversion(val, quantanium);
+    // Optimistic local update; reconcile after the server responds.
+    setMgScrip((v) => Math.max(0, v + delta));
+    postConversion("MG_SCRIP", delta);
   };
 
   const updateQuantanium = (delta: number) => {
-    const val = Math.max(0, quantanium + delta);
-    setQuantanium(val);
-    saveConversion(mgScrip, val);
+    setQuantanium((v) => Math.max(0, v + delta));
+    postConversion("QUANTANIUM", delta);
   };
 
   const contracts = staticContracts;
@@ -104,8 +122,6 @@ export default function GroupDetailPage() {
     if (res.success && res.data) setContributions(res.data);
     setContributionsLoading(false);
   }, [id]);
-
-  const [refreshTick, setRefreshTick] = useState(0);
 
   useEffect(() => {
     if (activeView === "log") loadLog();
@@ -600,7 +616,12 @@ export default function GroupDetailPage() {
                   </div>
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     {c.items
-                      .sort((a, b) => naturalCompare(a.itemName, b.itemName))
+                      .sort((a, b) => {
+                        const aIsConv = isConversionItemName(a.itemName);
+                        const bIsConv = isConversionItemName(b.itemName);
+                        if (aIsConv !== bIsConv) return aIsConv ? 1 : -1;
+                        return naturalCompare(a.itemName, b.itemName);
+                      })
                       .map((item, i) => (
                         <div key={item.itemName} style={{ display: "flex", alignItems: "center", padding: "0.3rem 0.5rem", fontSize: "0.85rem", background: i % 2 === 0 ? "rgba(255,255,255,0.03)" : "transparent", borderRadius: "3px" }}>
                           <span style={{ whiteSpace: "nowrap" }}>{item.itemName}</span>
