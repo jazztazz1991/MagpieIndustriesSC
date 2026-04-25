@@ -134,6 +134,9 @@ export default function GroupDetailPage() {
     const timer = setTimeout(() => {
       if (activeView === "log") loadLog();
       if (activeView === "contributions") loadContributions();
+      // Favor/Bit adds auto-debit the conversion pool server-side, so the
+      // displayed totals must refresh too.
+      loadConversion();
     }, 300);
     return () => clearTimeout(timer);
   }, [refreshTick]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -645,7 +648,16 @@ export default function GroupDetailPage() {
             <div className={shared.emptyMessage}>No contributions yet.</div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-              {contributions.map((c) => (
+              {contributions
+                .slice()
+                .sort((a, b) => {
+                  if (user) {
+                    if (a.userId === user.id) return -1;
+                    if (b.userId === user.id) return 1;
+                  }
+                  return a.username.localeCompare(b.username);
+                })
+                .map((c) => (
                 <div key={c.userId}>
                   <div style={{ fontWeight: 600, color: "var(--accent)", fontSize: "0.9rem", marginBottom: "0.4rem", borderBottom: "1px solid var(--border)", paddingBottom: "0.25rem" }}>
                     {c.username}
