@@ -172,6 +172,16 @@ export default function GroupDetailPage() {
     setCreating(false);
   };
 
+  // Delete project
+  const handleDeleteProject = async (projectId: string, projectLabel: string) => {
+    if (!confirm(`Remove "${projectLabel}" from this group? This cannot be undone.`)) return;
+    const res = await apiFetch(`/api/wikelo/groups/${id}/projects/${projectId}`, { method: "DELETE" });
+    if (res.success) {
+      setGroup((prev) => prev ? { ...prev, projects: prev.projects.filter((p) => p.id !== projectId) } : prev);
+      if (expandedProject === projectId) setExpandedProject(null);
+    }
+  };
+
   // Update material — sends delta for atomic server-side increment
   const updateMaterial = useCallback(async (projectId: string, materialId: string, delta: number) => {
     const res = await apiFetch<Material>(`/api/wikelo/groups/${id}/projects/${projectId}/materials/${materialId}`, {
@@ -566,9 +576,17 @@ export default function GroupDetailPage() {
               if (!project) return null;
               return (
                 <div className={shared.panel} style={{ marginTop: "1rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem", gap: "0.5rem" }}>
                     <h3 style={{ margin: 0 }}>{project.displayName || project.name}</h3>
-                    <button onClick={() => setExpandedProject(null)} style={{ background: "none", border: "none", color: "var(--text-secondary)", fontSize: "1.2rem", cursor: "pointer" }}>&times;</button>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <button
+                        onClick={() => handleDeleteProject(project.id, project.displayName || project.name)}
+                        style={{ padding: "0.25rem 0.6rem", background: "rgba(248, 113, 113, 0.1)", border: "1px solid rgba(248, 113, 113, 0.25)", borderRadius: "4px", color: "#f87171", fontSize: "0.75rem", cursor: "pointer" }}
+                      >
+                        Delete project
+                      </button>
+                      <button onClick={() => setExpandedProject(null)} style={{ background: "none", border: "none", color: "var(--text-secondary)", fontSize: "1.2rem", cursor: "pointer" }}>&times;</button>
+                    </div>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
                     {[...project.materials].sort((a, b) => naturalCompare(a.itemName, b.itemName)).map((mat) => {

@@ -435,6 +435,28 @@ wikeloGroupsRouter.patch(
   }
 );
 
+// DELETE /groups/:groupId/projects/:projectId — remove a project from the group
+wikeloGroupsRouter.delete(
+  "/:groupId/projects/:projectId",
+  requireAuth,
+  requireGroupMember,
+  async (req, res) => {
+    try {
+      const project = await prisma.wikeloProject.findFirst({
+        where: { id: req.params.projectId as string, groupId: req.params.groupId as string },
+      });
+      if (!project) {
+        res.status(404).json({ success: false, error: "Project not found" });
+        return;
+      }
+      await prisma.wikeloProject.delete({ where: { id: project.id } });
+      res.json({ success: true });
+    } catch {
+      res.status(500).json({ success: false, error: "Internal server error" });
+    }
+  }
+);
+
 // POST /groups/:groupId/projects/reorder — reorder group projects
 const reorderSchema = z.object({
   projectIds: z.array(z.string()).min(1),
