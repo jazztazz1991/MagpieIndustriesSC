@@ -51,9 +51,17 @@ export function bitsToQuant(bits: number): number {
 }
 
 /**
- * True if the entry is a conversion material so the UI can sort them
- * to the bottom of contribution lists.
+ * Display labels used by the contributions feed for conversion materials.
+ * These are intentionally distinct from the raw project-material names
+ * ("MG Scrip", "Quantanium") so project contributions and Favor/Bit minting
+ * contributions don't merge in the "Who Has What" tab.
+ */
+export const CONVERSION_DISPLAY_LABELS = ["MG Scrip (Favors)", "Quantanium (Bits)"] as const;
+
+/**
+ * True if the entry is a conversion contribution (Favor/Bit minting) so the
+ * UI can sort them to the bottom of contribution lists.
  */
 export function isConversionItemName(itemName: string): boolean {
-  return itemName === "MG Scrip" || itemName === "Quantanium";
+  return (CONVERSION_DISPLAY_LABELS as readonly string[]).includes(itemName);
 }

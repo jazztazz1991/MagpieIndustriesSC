@@ -603,8 +603,8 @@ wikeloGroupsRouter.get("/:id/shopping-list", requireAuth, requireGroupMember, as
 // ─── Contributions (who has what) ───
 
 const CONVERSION_LABEL: Record<"MG_SCRIP" | "QUANTANIUM", string> = {
-  MG_SCRIP: "MG Scrip",
-  QUANTANIUM: "Quantanium",
+  MG_SCRIP: "MG Scrip (Favors)",
+  QUANTANIUM: "Quantanium (Bits)",
 };
 
 // GET /groups/:id/contributions — net contributions per member

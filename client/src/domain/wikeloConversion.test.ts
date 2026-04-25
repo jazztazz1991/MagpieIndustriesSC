@@ -57,15 +57,20 @@ describe("quantanium <-> bits", () => {
 });
 
 describe("isConversionItemName", () => {
-  it("matches the canonical display strings", () => {
-    expect(isConversionItemName("MG Scrip")).toBe(true);
-    expect(isConversionItemName("Quantanium")).toBe(true);
+  it("matches the canonical display strings (with disambiguating suffix)", () => {
+    expect(isConversionItemName("MG Scrip (Favors)")).toBe(true);
+    expect(isConversionItemName("Quantanium (Bits)")).toBe(true);
+  });
+
+  it("returns false for the raw project-material names", () => {
+    // Project materials use the bare names; conversion uses the suffixed form.
+    expect(isConversionItemName("MG Scrip")).toBe(false);
+    expect(isConversionItemName("Quantanium")).toBe(false);
   });
 
   it("returns false for other items", () => {
     expect(isConversionItemName("Wikelo Favor")).toBe(false);
     expect(isConversionItemName("Polaris Bit")).toBe(false);
-    expect(isConversionItemName("mg scrip")).toBe(false);
     expect(isConversionItemName("")).toBe(false);
   });
 });
