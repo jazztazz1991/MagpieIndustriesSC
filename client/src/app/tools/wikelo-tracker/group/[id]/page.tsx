@@ -182,12 +182,30 @@ export default function GroupDetailPage() {
     }
   };
 
-  // Update material — sends delta for atomic server-side increment
+  // Update material — sends delta for atomic server-side increment.
+  // If the server reports INSUFFICIENT_POOL (group MG Scrip / Quantanium not
+  // enough to back a Favor / Bit mint), prompt the user — if the favor/bit
+  // was purchased externally, retry with external: true to skip the debit.
   const updateMaterial = useCallback(async (projectId: string, materialId: string, delta: number) => {
-    const res = await apiFetch<Material>(`/api/wikelo/groups/${id}/projects/${projectId}/materials/${materialId}`, {
-      method: "PATCH",
-      body: JSON.stringify({ delta }),
-    });
+    const post = (external?: boolean) =>
+      apiFetch<Material>(`/api/wikelo/groups/${id}/projects/${projectId}/materials/${materialId}`, {
+        method: "PATCH",
+        body: JSON.stringify(external ? { delta, external: true } : { delta }),
+      });
+
+    let res = await post();
+    if (!res.success && (res as { error?: string }).error === "INSUFFICIENT_POOL") {
+      const r = res as unknown as { material: "MG_SCRIP" | "QUANTANIUM"; needed: number; available: number };
+      const matLabel = r.material === "MG_SCRIP" ? "MG Scrip" : "Quantanium";
+      const unit = r.material === "MG_SCRIP" ? "scrip" : "SCU";
+      const proceed = confirm(
+        `Not enough ${matLabel} in the group pool to mint this (need ${r.needed} ${unit}, pool has ${r.available} ${unit}). ` +
+        `Was this purchased from someone else?`
+      );
+      if (!proceed) return;
+      res = await post(true);
+    }
+
     if (res.success && res.data) {
       setGroup((prev) => {
         if (!prev) return prev;

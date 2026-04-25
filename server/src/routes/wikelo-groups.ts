@@ -317,7 +317,26 @@ wikeloGroupsRouter.post("/:id/projects", requireAuth, requireGroupMember, async 
 const updateMaterialSchema = z.object({
   delta: z.number().int().optional(),
   collected: z.number().int().min(0).optional(),
+  external: z.boolean().optional(),
 });
+
+function conversionForItem(
+  itemName: string
+): { material: "MG_SCRIP" | "QUANTANIUM"; ratio: number } | null {
+  if (itemName === "Wikelo Favor") return { material: "MG_SCRIP", ratio: 50 };
+  if (itemName === "Polaris Bit") return { material: "QUANTANIUM", ratio: 24 };
+  return null;
+}
+
+class InsufficientPoolError extends Error {
+  constructor(
+    public material: "MG_SCRIP" | "QUANTANIUM",
+    public needed: number,
+    public available: number
+  ) {
+    super("INSUFFICIENT_POOL");
+  }
+}
 
 wikeloGroupsRouter.patch(
   "/:groupId/projects/:projectId/materials/:materialId",
@@ -343,48 +362,89 @@ wikeloGroupsRouter.patch(
 
       // Atomic update via delta or fallback to absolute collected
       const materialId = req.params.materialId as string;
-      const result = await prisma.$transaction(async (tx) => {
-        const current = await tx.wikeloProjectMaterial.findUnique({ where: { id: materialId } });
-        if (!current) return null;
+      const groupId = req.params.groupId as string;
+      const external = parsed.data.external === true;
+      try {
+        const result = await prisma.$transaction(async (tx) => {
+          const current = await tx.wikeloProjectMaterial.findUnique({ where: { id: materialId } });
+          if (!current) return null;
 
-        let delta: number;
-        let newCollected: number;
-        if (parsed.data.delta !== undefined) {
-          delta = parsed.data.delta;
-          newCollected = Math.max(0, current.collected + delta);
-        } else {
-          newCollected = parsed.data.collected!;
-          delta = newCollected - current.collected;
+          let delta: number;
+          let newCollected: number;
+          if (parsed.data.delta !== undefined) {
+            delta = parsed.data.delta;
+            newCollected = Math.max(0, current.collected + delta);
+          } else {
+            newCollected = parsed.data.collected!;
+            delta = newCollected - current.collected;
+          }
+
+          // Auto-debit the group's conversion pool when minting Favors/Bits
+          // (positive delta only; no refund on removal).
+          const conv = conversionForItem(current.itemName);
+          if (conv && delta > 0 && !external) {
+            const sum = await tx.wikeloConversionContribution.aggregate({
+              where: { groupId, material: conv.material },
+              _sum: { delta: true },
+            });
+            const currentPool = sum._sum.delta ?? 0;
+            const needed = delta * conv.ratio;
+            if (currentPool < needed) {
+              throw new InsufficientPoolError(conv.material, needed, currentPool);
+            }
+            const newPoolTotal = currentPool - needed;
+            await tx.wikeloConversionContribution.create({
+              data: {
+                groupId,
+                userId,
+                material: conv.material,
+                delta: -needed,
+                newTotal: newPoolTotal,
+              },
+            });
+          }
+
+          const updated = await tx.wikeloProjectMaterial.update({
+            where: { id: materialId },
+            data: { collected: newCollected },
+          });
+          await tx.wikeloContributionLog.create({
+            data: { projectId: project.id, userId, itemName: current.itemName, delta, newTotal: newCollected },
+          });
+          await tx.wikeloProject.update({
+            where: { id: project.id },
+            data: { updatedAt: new Date() },
+          });
+          return updated;
+        });
+
+        if (!result) {
+          res.status(404).json({ success: false, error: "Material not found" });
+          return;
         }
 
-        const updated = await tx.wikeloProjectMaterial.update({
-          where: { id: materialId },
-          data: { collected: newCollected },
+        res.json({
+          success: true,
+          data: {
+            id: result.id,
+            itemName: result.itemName,
+            required: result.required,
+            collected: result.collected,
+          },
         });
-        await tx.wikeloContributionLog.create({
-          data: { projectId: project.id, userId, itemName: current.itemName, delta, newTotal: newCollected },
-        });
-        await tx.wikeloProject.update({
-          where: { id: project.id },
-          data: { updatedAt: new Date() },
-        });
-        return updated;
-      });
-
-      if (!result) {
-        res.status(404).json({ success: false, error: "Material not found" });
-        return;
+      } catch (err) {
+        if (err instanceof InsufficientPoolError) {
+          res.status(409).json({
+            success: false,
+            error: "INSUFFICIENT_POOL",
+            material: err.material,
+            needed: err.needed,
+            available: err.available,
+          });
+          return;
+        }
+        throw err;
       }
-
-      res.json({
-        success: true,
-        data: {
-          id: result.id,
-          itemName: result.itemName,
-          required: result.required,
-          collected: result.collected,
-        },
-      });
     } catch {
       res.status(500).json({ success: false, error: "Internal server error" });
     }
